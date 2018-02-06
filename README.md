@@ -1,2 +1,2 @@
-# jike-weapp
-集客小程序
+# share
+共享美导
