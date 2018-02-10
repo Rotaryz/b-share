@@ -9,11 +9,7 @@ export default class http {
       method: method,
       data: data
     }
-    const Authorization = wepy.getStorageSync('token')
-    if (Authorization) {
-      param.header = Object.assign({}, {Authorization}, {'X-Requested-With': 'XMLHttpRequest'})
-    }
-    param.header = Object.assign({}, param.header, {'Current-merchant': wepy.getStorageSync('merchantId') || 100000})
+    param.header = Object.assign({}, {'X-Requested-With': 'XMLHttpRequest'})
     if (loading) {
       Tips.loading()
     }
@@ -26,22 +22,13 @@ export default class http {
     }
   }
 
-  static async update(url, name, loading = true) {
+  static async upload(url, name, loading = true) {
     const resImage = await wepy.chooseImage()
-    const token = wepy.getStorageSync('token')
     const param = {
       url: url,
       filePath: resImage.tempFilePaths[0],
-      name: name,
-      formData: {
-        jk_token: token
-      }
+      name: name
     }
-    const Authorization = wepy.getStorageSync('token')
-    if (Authorization) {
-      param.header = Object.assign({}, {Authorization})
-    }
-    param.header = Object.assign({}, param.header, {'Current-merchant': wepy.getStorageSync('merchantId') || 100000})
     if (loading) {
       Tips.loading()
     }
@@ -53,13 +40,14 @@ export default class http {
       throw this.requestException(resData)
     }
   }
+
   /**
    * 判断请求是否成功
    */
   static isSuccess(res) {
     const wxCode = res.statusCode
     // 微信请求错误
-    if ((wxCode === 200 && res.data.code === 0) || wxCode === 422) {
+    if (wxCode === 200 || wxCode === 201 || wxCode === 422) {
       return true
     }
     return false
@@ -100,9 +88,5 @@ export default class http {
 
   static delete(url, data, loading = true) {
     return this.request('DELETE', url, data, loading)
-  }
-
-  static updateImg (url, name, loading = true) {
-    return this.update(url, name, loading)
   }
 }

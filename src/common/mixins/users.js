@@ -1,7 +1,5 @@
 /* eslint-disable no-undef */
 import wepy from 'wepy'
-import User from 'api/user'
-import {ERR_OK} from '@/api/base'
 
 export default class userMixin extends wepy.mixin {
   isFunction(item) {
