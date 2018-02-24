@@ -1,0 +1,209 @@
+<template>
+  <view class="guide-center">
+    <view class="header">
+      <image class="head-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/bg-ability@3x.png'}}"></image>
+      <view class="content">
+        <view class="left">
+          <view class="avatar">
+            <image class="avatar-img"></image>
+          </view>
+          <view class="msg">
+            <view class="top">
+              <view class="name">刘娇刘娇</view>
+              <view class="occup">美容导师</view>
+            </view>
+            <view class="down">
+              <view class="des-txt">满五年</view>
+              <view class="des-txt">专业门店</view>
+            </view>
+          </view>
+        </view>
+        <view class="right">
+          <image class="right-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-index_follow@2x.png'}}"></image>
+        </view>
+      </view>
+    </view>
+    <view class="tab-box">
+      <view class="tab {{tabIdx===0?'active':''}}">
+        <view class="tab-item" @tap="changeTab(0)">服务日志</view>
+        <view class="tab-underline"></view>
+      </view>
+      <view class="tab {{tabIdx===1?'active':''}}">
+        <view class="tab-item" @tap="changeTab(1)">能力模型</view>
+       <view class="tab-underline"></view>
+      </view>
+    </view>
+    <view class="tab-container">
+      <scroll-view class="Service-log" hidden="{{tabIdx===1}}"></scroll-view>
+      <view class="ability-model" hidden="{{tabIdx===0}}">
+        <Radar :configArr.sync="configArr"></Radar>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+  import Radar from '@/base/radar/radar'
+
+  export default class guideCenter extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: ''
+    }
+
+    data = {
+      imageUrl: URIS.image,
+      tabIdx: 1,
+      configArr: {
+        eventIn: true,
+        checked: 0
+      }
+    }
+
+    methods = {
+      changeTab(idx) {
+        this.tabIdx = idx * 1
+        this.$apply()
+      }
+    }
+
+    components = {
+      Radar
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+
+  page
+    background: $color-white
+
+  .guide-center
+    background: $color-white
+
+    .header
+      height: 27.333333333vw
+      width: 100%
+      position: relative
+      .head-BC
+        position: absolute
+        left: 0
+        top: 0
+        width: 100%
+        height: 100%
+
+      .content
+        height: 100%
+        position: absolute
+        left: 15px
+        right: 15px
+        top: 0
+        display: flex
+        align-items: center
+        justify-content: space-between
+
+        .left
+          display: flex
+          align-items: center
+
+          .avatar
+            width: 60px
+            height: 60px
+            border-radius: 50%
+            margin-right: 10px
+            .avatar-img
+              width: 60px
+              height: 60px
+              border-radius: 50%
+              background: #ccc
+
+          .msg
+            display: flex
+            flex-direction: column
+            justify-content: center
+            .top
+              display: flex
+              margin-bottom: 10px
+              align-items: flex-end
+              .name
+                font-size: $font-size-large
+                font-family:  PingFangSC-Regular
+                margin-right: 8px
+              .occup
+                font-size: $font-size-medium
+                color: $color-text-d
+            .down
+              display: flex
+              .des-txt
+                line-height: 20px
+                padding: 0 6.5px
+                border: 0.5px solid $color-text-tr
+                border-radius: 4px
+                margin-right: 10px
+                font-size: $font-size-small
+                color: $color-text-tr
+
+        .right
+          width: 74px
+          height: 29px
+          position: relative
+          .right-BC
+            width: 74px
+            height: 29px
+            border-radius: 14.5px
+            background: #ccc
+            position: absolute
+            left: 0
+            top: 0
+          .right-txt
+            width: 74px
+            height: 29px
+            line-height: 29px
+            color: $color-white
+            text-align: center
+            font-size: $font-size-medium
+            position: absolute
+            left: 0
+            top: 0
+
+    .tab-box
+      height: 44px
+      display: flex
+      border-bottom: 0.5px solid $color-col-line
+      .tab
+        flex: 1
+        display: flex
+        flex-direction: column
+        align-items: center
+        height: 44px
+        position: relative
+        .tab-item
+          height: 44px
+          line-height: 44px
+          font-size: $font-size-medium-x
+          color: $color-text-tr
+        .tab-underline
+          height: 2px
+          width: 24px
+          position: absolute
+          left: 50%
+          bottom: -0.5px
+          transform: translate(-50%, 0)
+          background: transparent
+      .tab.active
+        .tab-item
+          color: $color-text
+        .tab-underline
+          background: $color-assist-pink
+
+
+
+
+</style>

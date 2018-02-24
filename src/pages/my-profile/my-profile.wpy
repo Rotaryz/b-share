@@ -1,0 +1,285 @@
+<template>
+  <view class="my-profile">
+    <view class="container" wx:if="{{false}}">
+      <view class="avatar-box">
+        <view class="title">LOGO</view>
+        <image class="avatar" src="" mode="aspectFill" wx:if="{{false}}"></image>
+        <image class="avatar" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png'}}"></image>
+      </view>
+      <view class="txt-item-count">
+        <view class="title">店名</view>
+        <view class="right">
+          <input type="text" placeholder="请输入(必填)" placeholder-class="holder-class" class="txt-input" bindinput="storeNameChange" maxlength="10"/>
+          <view class="count">{{storeName.length}}/10</view>
+        </view>
+      </view>
+      <view class="txt-in-item">
+        <view class="title">电话</view>
+        <view class="txt">13544566444</view>
+      </view>
+      <view class="txt-item">
+        <view class="title">地址</view>
+        <input type="text" placeholder="请输入(必填)" placeholder-class="holder-class" class="txt-input" bindinput="addressChange"/>
+      </view>
+      <picker bindchange="IndustryChange" value="{{2}}" range="{{industryArr}}">
+        <view class="chiose-item last">
+          <view class="title">行业类型</view>
+            <view class="right">
+              <view class="txt">{{industry}}</view>
+              <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+            </view>
+        </view>
+      </picker>
+    </view>
+    <view class="container">
+      <view class="avatar-box">
+        <view class="title">头像</view>
+        <image class="avatar" src="" mode="aspectFill" wx:if="{{false}}"></image>
+        <image class="avatar" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png'}}"></image>
+      </view>
+      <view class="txt-item-count">
+        <view class="title">姓名</view>
+        <view class="right">
+          <input type="text" placeholder="请输入(必填)" placeholder-class="holder-class" class="txt-input" bindinput="nameChange" maxlength="5"/>
+          <view class="count">{{name.length}}/5</view>
+        </view>
+      </view>
+      <view class="txt-in-item">
+        <view class="title">手机</view>
+        <view class="txt">13544566444</view>
+      </view>
+      <picker bindchange="genderChange" range="{{genderArr}}">
+        <view class="chiose-item">
+          <view class="title">性别</view>
+            <view class="right">
+              <view class="txt">{{gender}}</view>
+              <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+            </view>
+        </view>
+      </picker>
+      <picker bindchange="ageChange" range="{{ageArr}}">
+        <view class="chiose-item">
+          <view class="title">年龄</view>
+            <view class="right">
+              <view class="txt">{{age? age + '岁' : ''}}</view>
+              <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+            </view>
+        </view>
+      </picker>
+      <picker bindchange="workYearChange" range="{{workYearArr}}">
+        <view class="chiose-item">
+          <view class="title">工作年限</view>
+            <view class="right">
+              <view class="txt">{{workYear? workYear + '年' : ''}}</view>
+              <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+            </view>
+        </view>
+      </picker>
+      <picker bindchange="IndustryChange" value="{{2}}" range="{{industryArr}}">
+        <view class="chiose-item last">
+          <view class="title">行业类型</view>
+          <view class="right">
+            <view class="txt">{{industry}}</view>
+            <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+          </view>
+        </view>
+      </picker>
+    </view>
+
+    <view class="submit-btn">保存</view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+
+  export default class profile extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '我的资料',
+      disableScroll: true
+    }
+
+    data = {
+      imageUrl: URIS.image,
+      industryArr: ['美容院', '美发店', '整形公司', '化妆品公司', '培训学校'],
+      industry: '',
+      genderArr: ['男', '女'],
+      gender: '',
+      ageArr: [],
+      age: '',
+      workYearArr: [],
+      workYear: '',
+      storeName: '',
+      name: '',
+      address: ''
+    }
+
+    methods = {
+      IndustryChange(e) {
+        this.industry = this.industryArr[e.detail.value]
+        this.$apply()
+      },
+      genderChange(e) {
+        this.gender = this.genderArr[e.detail.value]
+        this.$apply()
+      },
+      ageChange(e) {
+        this.age = this.ageArr[e.detail.value]
+        this.$apply()
+      },
+      workYearChange(e) {
+        this.workYear = this.workYearArr[e.detail.value]
+        this.$apply()
+      },
+      storeNameChange(e) {
+        this.storeName = e.detail.value
+        this.$apply()
+      },
+      nameChange(e) {
+        this.name = e.detail.value
+        this.$apply()
+      },
+      addressChange(e) {
+        this.address = e.detail.value
+        this.$apply()
+      }
+    }
+
+    onLoad() {
+      for (let i = 18; i <= 50; i++) {
+        this.ageArr.push(i)
+      }
+      for (let j = 1; j <= 30; j++) {
+        this.workYearArr.push(j)
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+
+  .my-profile
+
+    .container
+      background: $color-white
+      padding-left: 15px
+      .avatar-box
+        display: flex
+        height: 60px
+        align-items: center
+        justify-content: space-between
+        padding-right: 15px
+        border-bottom: 0.5px solid $color-col-line
+        .title
+          font-size: $font-size-medium-x
+          color: $color-text
+        .avatar
+          width: 48px
+          height: 48px
+          border-radius: 50%
+
+      .txt-item
+        display: flex
+        align-items: center
+        height: 54px
+        padding-right: 15px
+        border-bottom: 0.5px solid $color-col-line
+        .title
+          font-size: $font-size-medium-x
+          color: $color-text
+          margin-right: 15px
+        .txt-input
+          flex: 1
+          font-size: $font-size-medium
+          color: $color-text
+        .holder-class
+          font-size: $font-size-medium
+          color: $color-assist-gray-b
+
+      .txt-item-count
+        display: flex
+        align-items: center
+        height: 54px
+        padding-right: 15px
+        border-bottom: 0.5px solid $color-col-line
+        .title
+          font-size: $font-size-medium-x
+          color: $color-text
+          margin-right: 15px
+        .right
+          flex: 1
+          display: flex
+          align-items: center
+          .txt-input
+            flex: 1
+            font-size: $font-size-medium
+            color: $color-text
+          .holder-class
+            font-size: $font-size-medium
+            color: $color-assist-gray-b
+          .count
+            font-size: $font-size-medium
+            color: $color-text-tr
+
+      .txt-in-item
+        display: flex
+        align-items: center
+        height: 54px
+        padding-right: 15px
+        border-bottom: 0.5px solid $color-col-line
+        .title
+          font-size: $font-size-medium-x
+          color: $color-text
+          margin-right: 15px
+        .txt
+          font-size: $font-size-medium
+          color: $color-text-tr
+
+      .chiose-item
+        display: flex
+        align-items: center
+        justify-content: space-between
+        height: 54px
+        padding-right: 15px
+        border-bottom: 0.5px solid $color-col-line
+        .title
+          font-size: $font-size-medium-x
+          color: $color-text
+          margin-right: 15px
+        .right
+          display: flex
+          align-items: center
+          .txt
+            font-size: $font-size-medium
+            color: $color-text
+            margin-right: 14px
+          .right-icon
+            width: 16px
+            height: 16px
+
+      .last
+        border-bottom: 0 none
+
+    .submit-btn
+      position: fixed
+      left: 0
+      right: 0
+      bottom: 0
+      height: 12vw
+      line-height: 12vw
+      text-align: center
+      font-size: $font-size-medium-x
+      color: $color-white
+      nomal-icon(0, 0)
+      &:active
+        hover-icon(0, 0)
+    .submit-btn.dis
+      disable-icon(0, 0)
+</style>
