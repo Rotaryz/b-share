@@ -61,13 +61,18 @@
 
     config = {
       pages: [
+        'pages/index/index',
+        'pages/find/find',
+        'pages/mine/mine',
+        'pages/guide-center/guide-center',
+        'pages/ability/ability',
+        'pages/my-profile/my-profile',
+        'pages/my-wellet/my-wellet',
+        'pages/withdraw/withdraw',
         'pages/login/login',
         'pages/compile/compile',
-        'pages/find/find',
         'pages/register/register',
         'pages/forget/forget',
-        'pages/index/index',
-        'pages/mine/mine'
       ],
       window: {
         backgroundColor: '#F9F9F9',
@@ -81,22 +86,24 @@
         selectedColor: '#706B82',
         backgroundColor: '#fff',
         borderStyle: 'black',
-        list: [{
-          pagePath: 'pages/index/index',
-          text: '美导',
-          iconPath: './common/image/icon-tab_find2@2x.png',
-          selectedIconPath: './common/image/icon-tab_find1@2x.png'
-        }, {
-          pagePath: 'pages/find/find',
-          text: '发现',
-          iconPath: './common/image/icon-tab_find2@2x.png',
-          selectedIconPath: './common/image/icon-tab_find1@2x.png'
-        }, {
-          pagePath: 'pages/mine/mine',
-          text: '我的',
-          iconPath: './common/image/icon-tab_mine2@2x.png',
-          selectedIconPath: './common/image/icon-tab_mine1@2x.png'
-        }]
+        list: [
+          {
+            pagePath: 'pages/index/index',
+            text: '美导',
+            iconPath: './common/image/icon-tab_find2@2x.png',
+            selectedIconPath: './common/image/icon-tab_find1@2x.png'
+          }, {
+            pagePath: 'pages/find/find',
+            text: '发现',
+            iconPath: './common/image/icon-tab_find2@2x.png',
+            selectedIconPath: './common/image/icon-tab_find1@2x.png'
+          }, {
+            pagePath: 'pages/mine/mine',
+            text: '我的',
+            iconPath: './common/image/icon-tab_mine2@2x.png',
+            selectedIconPath: './common/image/icon-tab_mine1@2x.png'
+          }
+        ]
       }
     }
 

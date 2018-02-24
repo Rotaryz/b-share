@@ -1,6 +1,83 @@
 <template>
     <view class="mine">
+      <view class="head">
+        <view class="avatar-box">
+          <view class="name">udjsh</view>
+          <view class="avatar">
+            <image class="avatar-img" mode="aspectFill" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png'}}"></image>
+          </view>
+        </view>
 
+        <navigator class="mine-item" url="/pages/my-profile/my-profile">
+          <view class="left">
+            <image class="left-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-mine_data@2x.png'}}"></image>
+          </view>
+          <view class="right">
+            <view class="title">我的资料</view>
+            <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+          </view>
+        </navigator>
+        <navigator class="mine-item" url="">
+          <view class="left">
+            <image class="left-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-mine_program@2x.png'}}"></image>
+          </view>
+          <view class="right">
+            <view class="title">我的小程序</view>
+            <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+          </view>
+        </navigator>
+      </view>
+
+      <view class="container">
+        <navigator class="mine-item" url="/pages/ability/ability">
+          <view class="left">
+            <image class="left-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-mine_ability@2x.png'}}"></image>
+          </view>
+          <view class="right">
+            <view class="title">能力提升</view>
+            <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+          </view>
+        </navigator>
+        <navigator class="mine-item" url="/pages/my-wellet/my-wellet">
+          <view class="left">
+            <image class="left-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-mine-wallet@2x.png'}}"></image>
+          </view>
+          <view class="right">
+            <view class="title">我的钱包</view>
+            <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+          </view>
+        </navigator>
+      </view>
+
+      <view class="container">
+        <navigator class="mine-item" url="">
+          <view class="left">
+            <image class="left-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-mine_women@2x.png'}}"></image>
+          </view>
+          <view class="right">
+            <view class="title">邀请美导</view>
+            <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+          </view>
+        </navigator>
+        <navigator class="mine-item" url="">
+          <view class="left">
+            <image class="left-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-mine_shop@2x.png'}}"></image>
+          </view>
+          <view class="right">
+            <view class="title">邀请门店</view>
+            <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+          </view>
+        </navigator>
+        <navigator class="mine-item" url="">
+          <view class="left">
+            <image class="left-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-mine_service@2x.png'}}"></image>
+          </view>
+          <view class="right">
+            <view class="title">联系客服</view>
+            <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+          </view>
+        </navigator>
+      </view>
     </view>
 </template>
 
@@ -31,4 +108,66 @@
 <style lang="stylus">
     @import '../../common/stylus/variable'
     @import '../../common/stylus/mixin'
+
+  .mine
+    .mine-item
+      display: flex
+      height: 53px
+      align-items: center
+      padding-left: 15px
+      .left
+        margin-right: 10px
+        .left-icon
+          width: 25px
+          height: 25px
+      .right
+        flex: 1
+        display: flex
+        height: 53px
+        border-bottom: 0.5px solid $color-col-line
+        justify-content: space-between
+        align-items: center
+        .title
+          font-size: $font-size-medium-x
+          color: $color-text
+        .right-icon
+          width: 16px
+          height: 16px
+          margin-right: 11.5px
+
+    .head
+      background: $color-white
+
+      .avatar-box
+        height: 60px
+        display: flex
+        justify-content: space-between
+        align-items: center
+        padding: 0 15px
+        .name
+          font-size: $font-size-large-l
+          color: $color-text
+          font-family: PingFangSC-Medium
+
+        .avatar
+          width: 48px
+          height: 48px
+          border-radius: 50%
+
+          .avatar-img
+            width: 48px
+            height: 48px
+            border-radius: 50%
+            background: #ccc
+
+      .mine-item:last-child .right
+        border-bottom: 0 none
+
+    .container
+      margin-top: 10px
+      background: $color-white
+
+      .mine-item:last-child .right
+        border-bottom: 0 none
+
 </style>

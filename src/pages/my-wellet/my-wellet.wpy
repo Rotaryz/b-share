@@ -1,0 +1,232 @@
+<template>
+  <view class="my-wellet">
+    <view class="top">
+      <image class="top-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/bg-wallet@3x.png'}}"></image>
+      <view class="container">
+        <view class="top-head">
+          <view class="money">
+            <view class="little">￥</view>
+            <view class="big">200.00</view>
+          </view>
+          <view class="text">可提现红包金额</view>
+          <view class="btn" @tap="toWithdraw">立即提现</view>
+        </view>
+        <view class="top-foot">
+          <view class="item">
+            <view class="item-top">￥0.00</view>
+            <view class="item-foot">红包总额</view>
+          </view>
+          <view class="item">
+            <view class="item-top">0</view>
+            <view class="item-foot">红包个数</view>
+          </view>
+          <view class="line"></view>
+        </view>
+      </view>
+    </view>
+    <view class="content">
+      <view class="head">
+        <view class="blue-black"></view>
+        <view class="title-txt">红包记录</view>
+      </view>
+      <scroll-view scroll-y class="list" bindscrolltolower="loadMore" wx:if="{{false}}">
+        <view class="item" wx:for="123456756454544">
+          <view class="item-left">
+            <view class="title">邀请返现红包</view>
+            <view class="time">12-01 1：00</view>
+          </view>
+          <view class="item-right"><text class="small">￥</text>8.00</view>
+        </view>
+      </scroll-view>
+      <view class="empty">
+        <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@3x.png'}}" class="empty-img"></image>
+        <view class="txt">去赚钱</view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+
+  export default class wellet extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '我的钱包',
+      disableScroll: true
+    }
+
+    data = {
+      imageUrl: URIS.image
+    }
+
+    methods = {
+      loadMore() {
+        console.log(999)
+      },
+      toWithdraw() {
+        this.$navigate('/pages/withdraw/withdraw')
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+
+  .my-wellet
+    display: flex
+    height: 100vh
+    flex-direction: column
+
+    .top
+      height: 61.866666666666vw
+      position: relative
+      .top-BC
+        position: absolute
+        left: 0
+        top: 0
+        width: 100%
+        height: 100%
+      .container
+        position: absolute
+        left: 0
+        top: 0
+        width: 100%
+        height: 100%
+        display: flex
+        flex-direction: column
+        .top-head
+          flex: 3
+          display: flex
+          flex-direction: column
+          align-items: center
+          justify-content: flex-end
+          .money
+            display: flex
+            align-items: flex-end
+            margin-bottom: 5px
+            .little
+              font-size: $font-size-large-m
+              color: $color-text
+              font-family: PingFangSC-Regular
+              margin-bottom: 2px
+            .big
+              font-size: 34px
+              color: $color-text
+              font-family: PingFangSC-Medium
+          .text
+            font-size: $font-size-small
+            color: $color-text-d
+            margin-bottom: 18px
+          .btn
+            width: 135px
+            height: 34px
+            line-height: 34px
+            text-align: center
+            font-size: $font-size-medium
+            color: $color-white
+            font-family: PingFangSC-Regular
+            border-radius: 17px
+            nomal-icon(0, 0)
+            &:active
+              hover-icon(0, 0)
+          .btn.dis
+            disable-icon(0, 0)
+
+        .top-foot
+          flex: 2
+          display: flex
+          align-items: center
+          position: relative
+          .item
+            flex: 1
+            display: flex
+            flex-direction: column
+            align-items: center
+            .item-top
+              font-size: $font-size-large
+              color: $color-text
+              font-family: PingFangSC-Regular
+            .item-foot
+              font-size: $font-size-medium
+              color: $color-text-d
+              margin-top: 7px
+          .line
+            position: absolute
+            width: 1px
+            height: 30px
+            background: $color-row-line
+            left: 50%
+            top: 50%
+            transform: translate(-50%, -50%)
+
+    .content
+      background: $color-white
+      flex: 1
+      padding-left: 15px
+      display: flex
+      flex-direction: column
+      .head
+        height: 54px
+        display: flex
+        align-items: center
+        .blue-black
+          width: 4px
+          height: 14px
+          background: $color-assist-bule
+          margin-right: 5px
+        .title-txt
+          font-size: $font-size-medium-x
+          color: $color-text
+          font-family: PingFangSC-Regular
+      .list
+        flex: 1
+        overflow-y: auto
+        .item
+          display: flex
+          justify-content: space-between
+          padding-right: 15px
+          border-bottom: 0.5px solid $color-col-line
+          align-items: center
+          .item-left
+            height: 54px
+            display: flex
+            flex-direction: column
+            justify-content: center
+            .title
+              font-size: $font-size-medium
+              color: $color-text
+              margin-bottom: 6px
+            .time
+              font-size: $font-size-small
+              color: $color-text-tr
+          .item-right
+            color: $color-assist-pink
+            font-size: $font-size-medium
+            font-family: PingFangSC-Regular
+            .small
+              font-size: $font-size-small-s
+              margin-right: 2px
+
+      .empty
+        display: flex
+        margin-top: 50px
+        flex-direction: column
+        justify-content: center
+        align-items: center
+        .empty-img
+          width: 102px
+          height: 112.5px
+        .txt
+          font-size: $font-size-medium
+          color: $color-text-tr
+          font-family: PingFangSC-Regular
+          margin-top: 10px
+
+</style>
