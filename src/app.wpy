@@ -17,14 +17,14 @@
 
     onLaunch(options) {
       // 校验SDK
-      wxUtils.checkSDK()
-      const storageDate = wepy.getStorageSync('collectDate')
-      const date = new Date()
-      const collectDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
-      if (storageDate !== collectDate) {
-        wepy.setStorageSync('collectDate', collectDate)
-        wepy.setStorageSync('collectLength', 0)
-      }
+//      wxUtils.checkSDK()
+//      const storageDate = wepy.getStorageSync('collectDate')
+//      const date = new Date()
+//      const collectDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
+//      if (storageDate !== collectDate) {
+//        wepy.setStorageSync('collectDate', collectDate)
+//        wepy.setStorageSync('collectLength', 0)
+//      }
     }
 
     isObject(item) {
@@ -68,7 +68,11 @@
         'pages/ability/ability',
         'pages/my-profile/my-profile',
         'pages/my-wellet/my-wellet',
-        'pages/withdraw/withdraw'
+        'pages/withdraw/withdraw',
+        'pages/login/login',
+        'pages/compile/compile',
+        'pages/register/register',
+        'pages/forget/forget',
       ],
       window: {
         backgroundColor: '#F9F9F9',
@@ -104,7 +108,8 @@
     }
 
     globalData = {
-      baseUrl: URIS.api
+      baseUrl: URIS.api,
+      baseLogin: URIS.login
     }
   }
 </script>
