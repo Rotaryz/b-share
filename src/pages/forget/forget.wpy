@@ -1,0 +1,243 @@
+<template>
+  <view class="logn">
+    <image class="login-img"></image>
+    <view class="lg-from">
+      <view class="mistake {{showLogo ? 'right-tip':''}}"
+            wx:if="{{showMistake}}">
+        <image
+          src="{{showLogo ? imageUri+'/defaults/b-image/page/icon-login_right@2x.png':imageUri+'/defaults/b-image/page/icon-login_prompt@2x.png'}}"></image>
+        {{mistakeTip}}
+      </view>
+      <view
+        class="lg-ch phone">
+        <view>
+          <input id="phones" class="phone inputs"
+                 type="number" placeholder="请输入手机号码"
+                 placeholder-class="placeholder" value="{{phoneNum}}"
+                 focus="{{phoneFocus}}"
+                 bindinput="putPhone" maxlength="11"/>
+          <view class="eye" @tap.stop="clearPhone">
+            <image class="close"
+                   src="{{imageUri + '/defaults/b-image/page/icon-del34@2x.png'}}"
+                   wx:if="{{imageUri && showClose}}"></image>
+          </view>
+
+        </view>
+        <text class="codes {{isSet ? 'set-code' : ''}}" @tap="setCode">{{time}}
+        </text>
+      </view>
+      <view class="lg-ch">
+        <input type="number" class="inputs" placeholder="请输入6位验证码"
+               placeholder-class="placeholder" value="{{code}}"
+               bindinput="getCode"/>
+      </view>
+      <view class="password lg-ch">
+        <view class="ciphertext">
+          <input class="inputs" type="{{ciphertext ? 'text' : 'password'}}"
+                 placeholder="新密码(6-16位数字或字母)"
+                 placeholder-class="placeholder" bindinput="putPassword"
+                 maxlength="16" value="{{password}}" focus="{{isfocus}}"/>
+          <view class="eye" @tap="showCiphertext('fi')">
+            <image class="close" wx:if="{{imageUri}}"
+                   src="{{ciphertext ? imageUri + '/defaults/b-image/page/icon-display@2x.png' : imageUri + '/defaults/b-image/page/icon-hide@2x.png'}}"></image>
+          </view>
+
+        </view>
+      </view>
+      <view class="password lg-ch">
+        <view class="ciphertext">
+          <input class="inputs {{anPassStatus ? '' : 'error'}}"
+                 type="{{anCiphertext ? 'text' : 'password'}}"
+                 placeholder="再次输入新密码"
+                 placeholder-class="placeholder" maxlength="16"
+                 bindinput="anginPassword" value="{{anPassword}}"
+                 focus="{{isagfocus}}"/>
+          <view class="eye" @tap="showCiphertext('tw')">
+            <image class="close" wx:if="{{imageUri}}"
+                   src="{{anCiphertext ? imageUri + '/defaults/b-image/page/icon-display@2x.png' : imageUri + '/defaults/b-image/page/icon-hide@2x.png'}}"></image>
+          </view>
+        </view>
+      </view>
+      <button class="submit {{submit ? '' : 'disable'}}"
+              @tap="submit()">确定
+      </button>
+    </view>
+    <Toast></Toast>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+  import Toast from '@/base/toast/toast'
+
+  export default class login extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '共享美导',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTextStyle: 'black'
+    }
+    components = {
+      Toast: Toast
+    }
+    data = {
+      regType: 0,
+      imageUri: URIS.image,
+      guidance: false,
+      submitDisabled: false,
+      phoneNum: '',
+      phoneSusses: '',
+      password: '',
+      submitType: 1,
+      anPassword: '',
+      passtext: '密码(6-16位数字或字母)',
+      submitText: '登录',
+      code: '',
+      login: true,
+      submit: false,
+      time: '获取验证码',
+      ciphertext: false,
+      anCiphertext: false,
+      phoneStatus: true,
+      phoneImage: URIS.image + '/defaults/b-image/page/icon-phone@2x.png',
+      passError: URIS.image + '/defaults/b-image/page/icon-password@2x.png',
+      anPassStatus: true,
+      anPassImage: URIS.image + '/defaults/b-image/page/icon-password@2x.png',
+      codeError: true,
+      showClose: false,
+      isfocus: false,
+      tapCode: true,
+      showMistake: false,
+      mistakeTip: '',
+      showLogo: false,
+      isSet: false,
+      phoneFocus: false
+    }
+
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  page
+    background: $color-white
+    font-family: $font-family-light
+  .login-img
+    height :160px
+    width :100vw
+    background :#ccc
+
+  .logn
+    text-align: center
+
+  .lg-from
+    position: relative
+    .mistake
+      position: absolute
+      row-center()
+      top: -12px
+      color: $color-assist-tr
+      font-size: $font-size-small
+      text-align: center
+      width: 100%
+      image
+        height: 12px
+        width: 12px
+        transform: translateY(2px)
+    .right-tip
+      color: $color-theme
+    .lg-ch
+      position: relative
+      border-bottom: 0.5px solid $color-split-line
+      width :85.333%
+      margin :0 auto
+      .icon,.close
+        position: absolute
+        col-center()
+        width: 18px
+        height: 18px
+      .icon
+        left: 0
+      .eye
+        position: absolute
+        height: 100%
+        width: 18%
+        right: 0
+        top: 0
+        z-index: 150
+        .close
+          right: 10px
+      .inputs
+        text-align: left
+        height: 54px
+        line-height: 54px
+        font-size: $font-size-medium-x
+        color: #363547
+        width: 83%
+        font-family :$font-family-light
+      .phone
+        width: 75%
+      .error
+        color: $color-assist-f
+      .placeholder
+        color: $color-placeholder
+        font-family :$font-family-light
+    .error-fa
+      border-bottom: 0.5px solid $color-assist-f
+    .phone
+      display: flex
+      align-items: center
+      #phones
+        width: 80%
+      view
+        position: relative
+        flex: 7.5
+        border-bottom: none
+      .codes
+        flex: 3
+        border-left: 0.5px solid $color-split-line
+        font-size: $font-size-medium
+        color: $color-text-gray
+        line-height: 24px
+      .set-code
+        color: $color-text
+    .submit
+      margin-top: 14px
+      background: $color-theme
+      color: $color-white
+      font-size: $font-size-medium-x
+      height: 45px
+      line-height: 45px
+      width :90.667%
+      border-radius :50px
+      nomal-icon()
+      &::after
+        border: 1px solid rgba(0, 0, 0, 0)
+    .disable
+      disable-icon()
+    .hover-btn
+      hover-icon()
+  .tip
+    position: fixed
+    width :100%
+    bottom: 10vw
+    font-size: $font-size-medium
+    color: $color-text
+    display: flex
+    justify-content: center
+    margin-top: 17px
+    .tip-text
+      padding: 0 15.5px
+      &:first-child
+        border-right: 1px solid $color-split-line
+</style>

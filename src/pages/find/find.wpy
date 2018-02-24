@@ -1,6 +1,44 @@
 <template>
   <view class="find">
-
+    <cover-view class="nav">
+      <cover-view wx:for="{{nav}}" wx:key="{{index}}"
+                  class="item {{navIndex === index ? 'item-active' : ''}}">
+        {{item.title}}
+        <cover-view class="item-line"></cover-view>
+      </cover-view>
+      <cover-view class="find-line"></cover-view>
+    </cover-view>
+    <view class="loading" wx:if="{{isLoad}}">
+      <image class="load-img" wx:if="{{imageUrl}}"
+             src="{{imageUrl + '/defaults/share/page/icon-loading@2x.png'}}"></image>
+      <view class="load-refresh">刷新中…</view>
+    </view>
+    <view
+      class="find-item guidance {{!isLoad ? 'find-box-active' : 'find-box'}}"
+      wx:if="{{showGuidance}}">
+      <view class="find-box">
+        <view class="cainter">
+          <view class="user">
+            <image class="header"></image>
+            <text class="nickname">共享美导</text>
+          </view>
+          <view class="words">完成实名认证后，领取更多现金红包！</view>
+          <image src="" class="img-one-item"></image>
+        </view>
+        <view class="information">
+          <view class="time">10分钟前
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="{{!isLoad && !showGuidance ? 'find-box-active' : 'find-box'}}">
+      <FindDetail></FindDetail>
+    </view>
+    <view class="compile-icon">
+      <image class="compile-pic" wx:if="{{imageUrl}}"
+             src="{{imageUrl + '/defaults/share/page/icon-write@2x.png'}}"></image>
+    </view>
+    <Toast></Toast>
   </view>
 </template>
 
@@ -9,22 +47,124 @@
   import base from 'common/mixins/base'
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
+  import FindDetail from '@/base/find-detail/find-detail'
+  import Toast from '@/base/toast/toast'
+  import logs from 'api/logs'
 
+  const nav = [{title: '我关注的'}, {title: '全部'}, {title: '美导'}, {title: '门店'}]
   export default class find extends wepy.page {
     mixins = [base]
 
     config = {
       navigationBarTitleText: '共享美导'
     }
-
     data = {
-      imageUrl: URIS.image
+      imageUrl: URIS.image,
+      nav: nav,
+      navIndex: 0,
+      isLoad: false,
+      showGuidance: true
+    }
+
+    async onLoad() {
+      await this.load()
+      this.loaded()
+    }
+
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+
+    async load() {
+      let res = this.infoRes(await logs.findList())
+      console.log(res)
+    }
+
+    components = {
+      Toast: Toast,
+      FindDetail: FindDetail
     }
   }
 </script>
 
 <style lang="stylus">
-    @import '../../common/stylus/variable'
-    @import '../../common/stylus/mixin'
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  .find
+    min-height: 100vh
+    overflow-y: auto
+    background: $color-white
+    .loading
+      margin-top: 45px
+      height: 30px
+      background: $color-background
+      display: flex
+      justify-content: center
+      align-items: center
+      font-size: $font-size-small
+      .load-refresh
+        color: $color-text-tr
+        margin-left: 5px
+      .load-img
+        width: 17px
+        height: @width
+    /*animation :loadRotate 1s linear 2s infinite*/
+    .guidance
+      .img-one-item
+        width: 100%
+        height: 26.4vw
+        background: $color-background
+      .words
+        white-space: nowrap
+    .find-box
+      margin-top: 0px
+    .find-box-active
+      margin-top: 60px
+    .nav
+      background: $color-white
+      height: 45px
+      font-size: $font-size-medium-x
+      display: flex
+      justify-content: space-between
+      padding: 0 15px
+      box-sizing: border-box
+      position: fixed
+      top: 0
+      bottom: 0
+      width: 100%
+      z-index: 1000
+      .find-line
+        height: 1px
+        background: $color-split-line
+        width: 100%
+        position: absolute
+        bottom: 0
+        left: 0
+      .item
+        color: $color-text-tr
+        position: relative
+        height: 100%
+        line-height: 45px
+        .item-line
+          height: 2px
+          width: 24px
+          row-center()
+          bottom: 0px
+          z-index: 500
+          background: transparent
+      .item-active
+        color: $color-text
+        .item-line
+          background: $color-assist-pink
+
+  .compile-icon
+    position: fixed
+    bottom: 0px
+    right: 0px
+    .compile-pic
+      width: 67px
+      height: @width
 
 </style>
