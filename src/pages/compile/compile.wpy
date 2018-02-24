@@ -1,0 +1,141 @@
+<template>
+  <view class="compile">
+    <textarea class="words-text" placeholder="记录你的点点滴滴…"
+              placeholder-class="com-words" focus></textarea>
+    <view class="com-image">
+      <image class="img-item"></image>
+      <image class="img-item"></image>
+      <image class="img-item"></image>
+      <image class="img-item"></image>
+      <image class="img-item"></image>
+      <image class="img-item"></image>
+      <image class="img-item"></image>
+      <view class="img-add"></view>
+    </view>
+    <view class="com-video"></view>
+    <view class="com-tab">
+      <view class="com-addrss">
+        <image class="com-add-icons" wx:if="{{imageUrl}}"
+               src="{{imageUrl + '/defaults/share/page/icon-find_site01@2x.png'}}"></image>
+        你在哪里
+      </view>
+      <view class="com-tab-item">
+        <image class="com-tab-icon" wx:if="{{imageUrl}}"
+               src="{{imageUrl + '/defaults/share/page/icon-pic@2x.png'}}"></image>
+        <view class="com-tab-item-title">图片</view>
+      </view>
+      <view class="com-tab-item">
+        <image class="com-tab-icon" wx:if="{{imageUrl}}"
+               src="{{imageUrl + '/defaults/share/page/icon-video@2x.png'}}"></image>
+        <view class="com-tab-item-title">视频</view>
+      </view>
+      <view class="com-tab-item">
+        发布
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+
+  export default class compile extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '写服务日志'
+    }
+    data = {
+      imageUrl: URIS.image
+    }
+
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  .compile
+    height: 100vh
+    background: $color-white
+    .com-words
+      color: #CCCCCC
+      font-size: $font-size-medium-x
+    .words-text
+      height: 73px
+      font-size: $font-size-medium-x
+      color: $color-text
+      width: 100%
+      box-sizing: border-box
+      padding: 10.5px 24px 0 15px
+
+  .com-tab
+    position: relative
+    border-top: 1px solid $color-split-line
+    border-bottom: 1px solid $color-split-line
+    height: 49px
+    display: flex
+    margin-top :64.5px
+    .com-addrss
+      position: absolute
+      top: -36px
+      left: 15px
+      background: $color-background
+      border-radius: 50px
+      height: 29px
+      padding: 0 13px
+      display: flex
+      align-items: center
+      justify-content: center
+      font-size: $font-size-medium
+      color: $color-text-tr
+      white-space: nowrap
+      .com-add-icons
+        width: 16px
+        height: @width
+    .com-tab-item
+      height: 100%
+      flex: 2.5
+      line-height: 49px
+      border-right: 1px solid $color-split-line
+      display: flex
+      flex-direction: column
+      justify-content: center
+      align-items: center
+      .com-tab-icon
+        height: 17.5px
+        width: @height
+      .com-tab-item-title
+        font-size: $font-size-small-s
+        color: $color-text-tr
+        margin-top: 5px
+        transform: translateX(1px)
+      &:last-child
+        flex: 5
+        color: $color-assist-pink
+        opacity: 0.5
+        border-right: none
+        text-align: center
+
+  .com-image
+    padding: 0 4vw 0 2.4vw
+    display :inline-block
+    .img-item
+      height: 29.6vw
+      margin: 1.6vw 0 0 1.6vw
+      width: @height
+      background: $color-background
+    .img-add
+      height: 29.6vw
+      width: @height
+      margin: 1.6vw 0 0 1.6vw
+      border :1px dashed $color-split-line
+</style>
