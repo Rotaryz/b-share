@@ -1,21 +1,22 @@
 <template>
   <view class="my-profile">
-    <view class="container" wx:if="{{false}}">
-      <view class="avatar-box">
+    <view class="container" wx:if="{{true}}">
+      <view class="avatar-box" @tap="uploadAvatar">
         <view class="title">LOGO</view>
-        <image class="avatar" src="" mode="aspectFill" wx:if="{{false}}"></image>
-        <image class="avatar" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png'}}"></image>
+        <image class="avatar" src="{{avatarUrl}}" mode="aspectFill" wx:if="{{avatarUrl}}"></image>
+        <image class="avatar" mode="aspectFill" wx:if="{{imageUrl && role === 1}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png'}}"></image>
+        <image class="avatar" mode="aspectFill" wx:if="{{imageUrl && role === 0}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png'}}"></image>
       </view>
       <view class="txt-item-count">
         <view class="title">店名</view>
         <view class="right">
-          <input type="text" placeholder="请输入(必填)" placeholder-class="holder-class" class="txt-input" bindinput="storeNameChange" maxlength="10"/>
-          <view class="count">{{storeName.length}}/10</view>
+          <input type="text" placeholder="请输入(必填)" placeholder-class="holder-class" class="txt-input" bindinput="nameChange" maxlength="10" value="{{name}}"/>
+          <view class="count">{{name.length}}/10</view>
         </view>
       </view>
       <view class="txt-in-item">
         <view class="title">电话</view>
-        <view class="txt">13544566444</view>
+        <view class="txt">{{mobile}}</view>
       </view>
       <view class="txt-item">
         <view class="title">地址</view>
@@ -34,19 +35,20 @@
     <view class="container">
       <view class="avatar-box">
         <view class="title">头像</view>
-        <image class="avatar" src="" mode="aspectFill" wx:if="{{false}}"></image>
-        <image class="avatar" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png'}}"></image>
+        <image class="avatar" src="{{avatarUrl}}" mode="aspectFill" wx:if="{{avatarUrl}}"></image>
+        <image class="avatar" mode="aspectFill" wx:if="{{imageUrl && role === 1}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png'}}"></image>
+        <image class="avatar" mode="aspectFill" wx:if="{{imageUrl && role === 0}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png'}}"></image>
       </view>
       <view class="txt-item-count">
         <view class="title">姓名</view>
         <view class="right">
-          <input type="text" placeholder="请输入(必填)" placeholder-class="holder-class" class="txt-input" bindinput="nameChange" maxlength="5"/>
+          <input type="text" placeholder="请输入(必填)" placeholder-class="holder-class" class="txt-input" bindinput="nameChange" maxlength="5" value="{{name}}"/>
           <view class="count">{{name.length}}/5</view>
         </view>
       </view>
       <view class="txt-in-item">
         <view class="title">手机</view>
-        <view class="txt">13544566444</view>
+        <view class="txt">{{mobile}}</view>
       </view>
       <picker bindchange="genderChange" range="{{genderArr}}">
         <view class="chiose-item">
@@ -95,6 +97,8 @@
   import base from 'common/mixins/base'
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
+  import Info from 'api/info'
+  import Upload from '@/api/uploads'
 
   export default class profile extends wepy.page {
     mixins = [base]
@@ -114,9 +118,10 @@
       age: '',
       workYearArr: [],
       workYear: '',
-      storeName: '',
       name: '',
-      address: ''
+      address: '',
+      mobile: '',
+      role: 0
     }
 
     methods = {
@@ -136,10 +141,6 @@
         this.workYear = this.workYearArr[e.detail.value]
         this.$apply()
       },
-      storeNameChange(e) {
-        this.storeName = e.detail.value
-        this.$apply()
-      },
       nameChange(e) {
         this.name = e.detail.value
         this.$apply()
@@ -147,16 +148,37 @@
       addressChange(e) {
         this.address = e.detail.value
         this.$apply()
+      },
+      async uploadAvatar() {
+        let res = await wepy.chooseImage({sizeType: ['compressed']})
+        console.log(res)
+        if (!res) {
+          return
+        }
+        let upRes = await Upload.uploadImages(res.tempFilePaths[0])
+        this.loaded()
+        console.log(upRes)
       }
     }
 
-    onLoad() {
+    async onLoad() {
       for (let i = 18; i <= 50; i++) {
         this.ageArr.push(i)
       }
       for (let j = 1; j <= 30; j++) {
         this.workYearArr.push(j)
       }
+      let Json = await Info.getUserInfo()
+      this.loaded()
+      if (Json.error !== ERR_OK) {
+        return
+      }
+      let res = Json.data
+      console.log(res)
+      this.mobile = res.mobile
+      this.name = res.name
+      this.role = res.role
+      this.$apply()
     }
   }
 </script>
