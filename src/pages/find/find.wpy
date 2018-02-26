@@ -14,8 +14,7 @@
              src="{{imageUrl + '/defaults/share/page/icon-loading@2x.png'}}"></image>
       <view class="load-refresh">刷新中…</view>
     </view>
-    <view class="list-box {{!isLoad ? 'find-box-active' : 'find-big-box'}}"
-          @touchstart="start" @touchmove="move" @touchend="end">
+    <view class="list-box {{!isLoad ? 'find-box-active' : 'find-big-box'}}">
       <view class="find-item guidance" wx:if="{{showGuidance}}">
         <view class="find-box">
           <view class="cainter">
@@ -40,11 +39,13 @@
         </repeat>
       </view>
     </view>
-    <view class="compile-icon">
+    <UnderlineBlock></UnderlineBlock>
+    <view class="compile-icon" @tap="goCompile">
       <image class="compile-pic" wx:if="{{imageUrl}}"
              src="{{imageUrl + '/defaults/share/page/icon-write@2x.png'}}"></image>
     </view>
     <Toast></Toast>
+    <PopUpWindows :content.sync="content"></PopUpWindows>
   </view>
 </template>
 
@@ -56,6 +57,8 @@
   import FindDetail from '@/base/find-detail/find-detail'
   import Toast from '@/base/toast/toast'
   import logs from 'api/logs'
+  import PopUpWindows from '@/base/pop-up-windows/pop-up-windows'
+  import UnderlineBlock from '@/base/underline-block/underline-block'
 
   const NAV = [{title: '我关注的', type: 1}, {title: '全部', type: 0}, {
     title: '美导',
@@ -65,7 +68,8 @@
     mixins = [base]
 
     config = {
-      navigationBarTitleText: '共享美导'
+      navigationBarTitleText: '共享美导',
+      onReachBottomDistance: 30
     }
     data = {
       imageUrl: URIS.image,
@@ -79,56 +83,25 @@
       scrollTop: '',
       startTop: 0,
       endTop: 0,
-      isPull: false
+      isPull: false,
+      option: '',
+      loadMore: true,
+      content: '',
+      delIndex: {}
     }
 
     async onLoad() {
       this.findList = await this.load()
+      wepy.startPullDownRefresh()
     }
 
-    infoRes(res) {
-      if (res.error === ERR_OK) {
-        return res.data
-      }
-    }
+    async onReachBottom() {
+      this.page++
 
-    methods = {
-      start(e) {
-        this.startTop = e.changedTouches[0].clientY
-        wx.createSelectorQuery().select('.find').fields({
-          dataset: true,
-          size: true,
-          scrollOffset: true,
-          properties: ['scrollX', 'scrollY']
-        }, (res) => {
-          console.log(res)
-          this.scrollTop = res.scrollTop
-        }).exec()
-      },
-      move(e) {
-        console.log(this.scrollTop)
-        if (!this.isPull) {
-          if (this.scrollTop < 10) {
-            this.endTop = e.changedTouches[0].clientY
-            if (this.endTop - this.startTop > 20) {
-              this.isLoad = true
-            } else {
-              this.isLoad = false
-            }
-          }
-        }
-      },
-      end() {
-        if (this.endTop - this.startTop > 20) {
-          this.isLoad = true
-          this.isPull = true
-        }
-      },
-      async checkNav(index) {
-        this.navIndex = index * 1
-        let option = this.nav[this.navIndex].type
-        this.findList = await this.load(option)
-        console.log(this.findList)
+      if (this.loadMore) {
+        let res = await this.load(this.option, this.page)
+        this.loadMore = res.length !== 0
+        this.findList = this.findList.concat(res)
         this.$apply()
       }
     }
@@ -138,8 +111,72 @@
       let findList = await logs.findList(data)
       this.isChecked = findList.is_checked
       let res = this.infoRes(findList)
+      res.map((item) => {
+        if (item.user_live_log_details.length === 0 && item.content.length > 50) {
+          item.content = item.content.slice(0, 50)
+          item.showDetail = true
+          return item
+        }
+      })
       this.loaded()
       return res
+    }
+
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+
+//    onPullDownRefresh() {
+//      let res = wepy.startPullDownRefresh()
+//      console.log(res)
+//    }
+
+    methods = {
+      async start(e) {
+        this.startTop = e.changedTouches[0].clientY
+//        wepy.createSelectorQuery().select('.find').fields({
+//          dataset: true,
+//          size: true,
+//          scrollOffset: true,
+//          properties: ['scrollX', 'scrollY']
+//        }, (res) => {
+//          console.log(res)
+//          this.scrollTop = res.scrollTop
+//        }).exec()
+      },
+      move(e) {
+        console.log(this.scrollTop)
+//        if (!this.isPull) {
+//          if (this.scrollTop < 10) {
+//            this.endTop = e.changedTouches[0].clientY
+//            if (this.endTop - this.startTop > 20) {
+//              this.isLoad = true
+//            } else {
+//              this.isLoad = false
+//            }
+//          }
+//        }
+      },
+      end() {
+//        if (this.endTop - this.startTop > 20) {
+//          this.isLoad = true
+//          this.isPull = true
+//        }
+      },
+      async checkNav(index) {
+        this.navIndex = index * 1
+        this.option = this.nav[this.navIndex].type
+        this.findList = await this.load(this.option)
+        this.loadMore = true
+        this.$apply()
+      },
+      goCompile() {
+        wepy.navigateTo({
+          url: '/pages/compile/compile'
+        })
+      }
     }
 
     events = {
@@ -159,12 +196,42 @@
             break
           }
         }
+      },
+      async delFind(id) {
+        this.$invoke('PopUpWindows', 'show')
+        this.content = '是否确定删除服务日志？'
+        for (let i = 0; i < this.findList.length; i++) {
+          if (this.findList[i].id === id) {
+            Object.assign(this.delIndex, {id: id, index: i})
+            console.log(this.delIndex)
+            break
+          }
+        }
+      },
+      async sure() {
+        let res = await logs.delFind(this.delIndex.id)
+        this.loaded()
+        if (res.error === ERR_OK) {
+          this.findList.splice(this.delIndex.index, 1)
+          this.$apply()
+        }
+      }
+    }
+    watch = {
+      loadMore(newValue) {
+        if (!newValue) {
+          this.$invoke('UnderlineBlock', 'show')
+        } else {
+          this.$invoke('UnderlineBlock', 'hide')
+        }
       }
     }
 
     components = {
       Toast: Toast,
-      FindDetail: FindDetail
+      FindDetail: FindDetail,
+      PopUpWindows: PopUpWindows,
+      UnderlineBlock: UnderlineBlock
     }
   }
 </script>
@@ -224,14 +291,14 @@
     box-sizing: border-box
     position: absolute
     top: 0
-    bottom: 0
+    left: 0
     width: 100%
     z-index: 1000
     .find-line
       height: 1px
       background: $color-split-line
       width: 100%
-      position: absolute
+      position: fixed
       bottom: 0
       left: 0
     .item

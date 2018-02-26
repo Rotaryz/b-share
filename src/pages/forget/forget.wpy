@@ -26,7 +26,7 @@
       </view>
       <view class="lg-ch code-box">
         <input type="number" id="phone-code" class="inputs"
-               placeholder="请输入6位验证码"
+               placeholder="请输入6位验证码" maxlength="6"
                placeholder-class="placeholder" value="{{code}}"
                bindinput="getCode"/>
         <text class="codes {{isSet ? 'set-code' : ''}}" @tap="setCode">{{time}}

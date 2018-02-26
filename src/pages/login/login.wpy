@@ -205,7 +205,6 @@
           })
           this.loaded()
           if (res.error === ERR_OK) {
-            console.log(res.data.access_token)
             wepy.setStorageSync('token', res.data.access_token)
             this.$invoke('Toast', 'show', '登录成功')
             setTimeout(async () => {
