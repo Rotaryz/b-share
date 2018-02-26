@@ -6,8 +6,8 @@
             <view class="name">{{name}}</view>
             <view class="avatar">
               <image class="avatar-img" mode="aspectFill" wx:if="{{avatarUrl}}" src="{{avatarUrl}}"></image>
-              <image class="avatar-img" mode="aspectFill" wx:if="{{imageUrl && role === 1}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png'}}"></image>
-              <image class="avatar-img" mode="aspectFill" wx:if="{{imageUrl && role === 0}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png'}}"></image>
+              <image class="avatar-img" mode="aspectFill" wx:if="{{imageUrl && role === 1 && !avatarUrl}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png'}}"></image>
+              <image class="avatar-img" mode="aspectFill" wx:if="{{imageUrl && role === 0 && !avatarUrl}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png'}}"></image>
             </view>
           </view>
 
@@ -112,6 +112,10 @@
     }
 
     async onShow() {
+      await this.load()
+    }
+
+    async load() {
       let Json = await Info.getUserInfo()
       this.loaded()
       if (Json.error !== ERR_OK) {
@@ -183,7 +187,6 @@
             width: 48px
             height: 48px
             border-radius: 50%
-            background: #ccc
 
       navigator.mine-item:last-child .right
         border-bottom: 0 none

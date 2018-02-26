@@ -72,7 +72,9 @@
         'pages/login/login',
         'pages/compile/compile',
         'pages/register/register',
-        'pages/forget/forget'
+        'pages/forget/forget',
+        'pages/answer-index/answer-index',
+        'pages/answer/answer'
       ],
       window: {
         backgroundColor: '#F9F9F9',

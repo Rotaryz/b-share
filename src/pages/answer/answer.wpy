@@ -1,0 +1,118 @@
+<template>
+  <view class="answer">
+    <view class="container">
+      <view class="container-BC-box">
+        <image class="container-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-answer_bg-top@3x.png'}}"></image>
+        <view class="time-box">
+          <image class="time-img left" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time1@3x.png'}}" style="transform: rotate({{leftTranslate}}deg);transition: {{leftTransition}}"></image>
+          <image class="time-img right" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time2@3x.png'}}" style="transform: rotate({{rightTranslate}}deg);transition: {{rightTransition}}"></image>
+          <image class="time-img right" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time3@3x.png'}}" style="transform: rotate({{rightTranslate}}deg);transition: {{leftTransition}}"></image>
+        </view>
+      </view>
+      <view class="content"></view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+  import Beauticians from 'api/beauticians'
+
+  export default class answer extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '问答认证',
+      disableScroll: true
+    }
+
+    data = {
+      imageUrl: URIS.image,
+      leftTranslate: 180,
+      rightTranslate: 30,
+      leftTransition: ''
+    }
+
+    async onLoad() {
+      await this.load()
+    }
+
+    async load() {
+      let Json = await Beauticians.getMajors()
+      this.loaded()
+      if (Json.error !== ERR_OK) {
+        return
+      }
+      this.majorArr = Json.data
+      setInterval(() => {
+        this.leftTranslate --
+        this.$apply()
+      }, 100)
+      this.$apply()
+    }
+
+    methods = {
+
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+
+  page
+    width: 100vw
+    height: 100vh
+    background: #f8f6fb
+
+    .answer
+      width: 100%
+      height: 100%
+      padding: 10px 15px 15px
+      box-sizing: border-box
+      .container
+        width: 100%
+        height: 100%
+        display: flex
+        flex-direction: column
+        align-items: center
+        .container-BC-box
+          height: 9.466666666666vw
+          width: 100%
+          position: relative
+          .container-BC
+            width: 23.466666666666vw
+            height: 9.466666666666vw
+            position: absolute
+            left: 50%
+            bottom: -1px
+            transform: translate(-50%)
+        .content
+          flex: 1
+          width: 100%
+          border-radius: 4px
+          box-shadow: 0 11px 22px 0 rgba(177,177,177,0.20)
+          border: 1px solid #eaeaea
+          background: $color-white
+
+        .time-box
+          width: 14.1333333333vw
+          height: 14.1333333333vw
+          position: absolute
+          left: 50%
+          top: 2.6666666666vw
+          transform: translate(-50%)
+          border-radius: 50%
+          .time-img
+            width: 50%
+            height: 100%
+          .left
+            transform-origin: 100% 50%
+          .right
+            transform-origin: 0% 50%
+
+</style>

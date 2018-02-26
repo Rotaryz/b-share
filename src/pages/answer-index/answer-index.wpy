@@ -1,0 +1,175 @@
+<template>
+  <view class="answer-index">
+    <view class="head">
+      <view class="title">
+        <text>选择你专业的分类</text>
+      </view>
+      <view class="subhead">请慎重选择，确定后不可修改</view>
+    </view>
+    <view class="content">
+      <view class="item" wx:for="{{majorArr}}" wx:key="{{item}}" @tap="choice({{item.id}})">
+        <image class="item-BC" src="{{item.image_url}}" mode="aspectFit"></image>
+        <view class="item-name">{{item.name}}</view>
+        <view class="item-cover"></view>
+        <view class="item-checked" wx:if="{{checked === item.id}}">
+          <image class="item-draw" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-select@2x.png'}}"></image>
+        </view>
+      </view>
+    </view>
+    <view class="btn {{checked?'':'dis'}}">Ready Go!</view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+  import Beauticians from 'api/beauticians'
+
+  export default class answerIndex extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '问答认证',
+      disableScroll: true
+    }
+
+    data = {
+      imageUrl: URIS.image,
+      majorArr: [],
+      checked: ''
+    }
+
+    async onLoad() {
+      await this.load()
+    }
+
+    async load() {
+      let Json = await Beauticians.getMajors()
+      this.loaded()
+      if (Json.error !== ERR_OK) {
+        return
+      }
+      this.majorArr = Json.data
+      this.$apply()
+    }
+
+    methods = {
+      choice(id) {
+        this.checked = id
+        this.$apply()
+      }
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+
+  page
+    background: $color-white
+
+    .answer-index
+
+      .head
+        padding-top: 10.6666666666vw
+        .title
+          font-size: $font-size-large
+          color: $color-text
+          display: flex
+          align-items: center
+          justify-content: center
+          &:before, &:after
+            content: ""
+            width: 18.5px
+            height: 1px
+            background: $color-col-line
+            display: block
+          text
+            margin: 0 4px
+            font-family: PingFangSC-Light
+
+        .subhead
+          font-size: $font-size-medium
+          color: $color-text-tr
+          text-align: center
+          margin-top: 12.5px
+
+      .content
+        margin: 8vw 0
+        padding: 0 15px
+        display: flex
+        flex-wrap: wrap
+        justify-content: space-between
+
+        .item
+          width: 28.4vw
+          height: 28.4vw
+          position: relative
+          box-sizing: border-box
+          border-radius: 5px
+          margin-bottom: 3.3333333333333vw
+          .item-BC
+            position: absolute
+            left: 0
+            top: 0
+            width: 100%
+            height: 100%
+          .item-name
+            width: 100%
+            height: 23px
+            background: rgba(255, 255, 255, 0.9)
+            line-height: 23px
+            text-align: center
+            font-size: $font-size-medium
+            color: $color-text
+            position: absolute
+            left: 0
+            bottom: 0
+          .item-cover
+            width: 100%
+            height: 100%
+            box-sizing: border-box
+            border-radius: 5px
+            position: absolute
+            left: 0
+            right: 0
+            border: 0.5px solid $color-col-line
+          .item-checked
+            width: 100%
+            height: 100%
+            overflow: hidden
+            box-sizing: border-box
+            border-radius: 5px
+            position: absolute
+            left: 0
+            right: 0
+            border: 2px solid $color-assist-pink
+            .item-draw
+              width: 30px
+              height: 30px
+              position: absolute
+              right: -2px
+              bottom: -2px
+        .item:nth-child(3n)
+          margin-right: 0
+
+      .btn
+        width: 167px
+        height: 44px
+        margin: 0 auto
+        border-radius: 22px
+        text-align: center
+        line-height: 44px
+        font-size: $font-size-medium-x
+        color: $color-white
+        font-family: PingFangSC-Regular
+        nomal-icon()
+        &:active
+          hover-icon()
+      .btn.dis
+        disable-icon()
+
+</style>
