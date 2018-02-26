@@ -1,36 +1,43 @@
 <template>
   <view class="find-deatil">
-    <view class="text find-item">
+    <view class="text find-item"
+          wx:if="{{find.user_live_log_details[0] === []}}">
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header"></image>
-            <text class="nickname">刘娇 </text>
+            <image class="header"
+                   src="{{!ind.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : find.user_data.image_url && find.role === null ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
+            <text class="nickname">{{find.user_data.name}} </text>
           </view>
           <view class="words">
-            写日志是否已成为我生活中的一部分，我享受其中的乐趣，我也愿意和大家分享我的点滴，只要你们不觉得乏味。
-            <text class="text-more">查看详情</text>
+            {{find.content}}
+            <text class="text-more" wx:if="{{find.content.length > 50}}">查看详情
+            </text>
           </view>
         </view>
-        <view class="address">
+        <view class="address" wx:if="{{find.address}}">
           <image class="add-icon" wx:if="{{imageUrl}}"
                  src="{{imageUrl + '/defaults/share/page/icon-find_site03@2x.png'}}"></image>
-          广州市白云区黄石路国际单位
+          {{find.address}}
         </view>
         <view class="information">
-          <view class="time">10分钟前
-            <text class="del">删除</text>
+          <view class="time">{{find.differ_time}}
+            <text class="del" wx:if="{{find.current_user}}">删除</text>
           </view>
           <view class="share">
             <view class="share-item comment">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
-              <view class="find-num">评论</view>
+              <view class="find-num">
+                {{find.comment_count === 0 ? '评论' : find.comment_count}}
+              </view>
             </view>
-            <view class="share-item thumbs-up">
+            <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} ">
               <image class="find-icon" wx:if="{{imageUrl}}"
-                     src="{{press}}"></image>
-              <view class="find-num">2</view>
+                     src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
+              <view class="find-num">
+                {{find.like_count === 0 ? '点赞' : find.like_count}}
+              </view>
             </view>
           </view>
         </view>
@@ -40,145 +47,167 @@
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header"></image>
-            <text class="nickname">刘娇 </text>
+            <image class="header"
+                   src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : find.user_data.image_url && find.role === null ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
+            <text class="nickname">{{find.user_data.name}} </text>
           </view>
-          <view class="words">写写日志是否已成为我生活中的一部分，我享受其中的乐趣，我也愿意和大家分享我的点滴。</view>
-          <video src="" class="find-video"></video>
+          <view class="words">{{find.content}}</view>
+          <video src="{{find.user_live_log_details[0].file_url[0]}}"
+                 class="find-video"></video>
         </view>
-        <view class="address">
+        <view class="address" wx:if="{{find.address}}">
           <image class="add-icon" wx:if="{{imageUrl}}"
                  src="{{imageUrl + '/defaults/share/page/icon-find_site03@2x.png'}}"></image>
-          广州市白云区黄石路国际单位
+          {{find.address}}
         </view>
         <view class="information">
-          <view class="time">10分钟前
-            <text class="del">删除</text>
+          <view class="time">{{find.differ_time}}
+            <text class="del" wx:if="{{find.current_user}}">删除</text>
           </view>
           <view class="share">
             <view class="share-item comment">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
-              <view class="find-num">评论</view>
+              <view class="find-num">
+                {{find.comment_count === 0 ? '评论' : find.comment_count}}
+              </view>
             </view>
-            <view class="share-item thumbs-up">
-              <image wx:if="{{imageUrl}}" src="{{press}}"
-                     class="find-icon"></image>
-              <view class="find-num">2</view>
+            <view class="share-item {{find.is_like ? 'thumbs-up' : ''}}"
+                  @tap="good({{find.id}})">
+              <image class="find-icon" wx:if="{{imageUrl}}"
+                     src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
+              <view class="find-num">
+                {{find.like_count === 0 ? '点赞' : find.like_count}}
+              </view>
             </view>
           </view>
         </view>
       </view>
     </view>
-    <view class="find-item img-one">
+    <view class="find-item img-one"
+          wx:if="{{find.user_live_log_details[0].type === 1 && find.user_live_log_details[0].file_url.length === 1}}">
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header"></image>
-            <text class="nickname">刘娇 </text>
+            <image class="header"
+                   src="{{!ind.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : find.user_data.image_url && find.role === null ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
+            <text class="nickname">{{find.user_data.name}}</text>
           </view>
-          <view class="words">写写日志是否已成为我生活中的一部分，我享受其中的乐趣，我也愿意和大家分享我的点滴。</view>
-          <image src="" class="img-one-item"></image>
+          <view class="words">{{find.content}}</view>
+          <image src="find.user_live_log_details[0].file_url[0]"
+                 class="img-one-item"></image>
         </view>
-        <view class="address">
+        <view class="address" wx:if="{{find.address}}">
           <image class="add-icon" wx:if="{{imageUrl}}"
                  src="{{imageUrl + '/defaults/share/page/icon-find_site03@2x.png'}}"></image>
-          广州市白云区黄石路国际单位
+          {{find.address}}
         </view>
         <view class="information">
-          <view class="time">10分钟前
-            <text class="del">删除</text>
+          <view class="time">{{find.differ_time}}
+            <text class="del" wx:if="{{find.current_user}}">删除</text>
           </view>
           <view class="share">
             <view class="share-item comment">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
-              <view class="find-num">评论</view>
+              <view class="find-num">
+                {{find.comment_count === 0 ? '评论' : find.comment_count}}
+              </view>
             </view>
-            <view class="share-item thumbs-up">
+            <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} ">
               <image class="find-icon" wx:if="{{imageUrl}}"
-                     src="{{press}}"></image>
-              <view class="find-num">2</view>
+                     src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
+              <view class="find-num">
+                {{find.like_count === 0 ? '点赞' : find.like_count}}
+              </view>
             </view>
           </view>
         </view>
       </view>
     </view>
-    <view class="find-item img-two">
+    <view class="find-item img-two"
+          wx:if="{{find.user_live_log_details[0].type === 1 && find.user_live_log_details[0].file_url.length === 2}}">
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header"></image>
-            <text class="nickname">刘娇 </text>
+            <image class="header"
+                   src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : find.user_data.image_url && find.role === null ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
+            <text class="nickname">{{find.user_data.name}} </text>
           </view>
-          <view class="words">写写日志是否已成为我生活中的一部分，我享受其中的乐趣，我也愿意和大家分享我的点滴。</view>
+          <view class="words">{{find.content}}</view>
           <view class="img-item-two">
-            <image class="two-item"></image>
-            <image class="two-item"></image>
+            <image class="two-item"
+                   wx:for="find.user_live_log_details[0].file_url"
+                   wx:key="index" src="{{item}}"></image>
           </view>
         </view>
-        <view class="address">
+        <view class="address" wx:if="{{find.address}}">
           <image class="add-icon" wx:if="{{imageUrl}}"
                  src="{{imageUrl + '/defaults/share/page/icon-find_site03@2x.png'}}"></image>
-          广州市白云区黄石路国际单位
+          {{find.address}}
         </view>
         <view class="information">
-          <view class="time">10分钟前
-            <text class="del">删除</text>
+          <view class="time">{{find.differ_time}}
+            <text class="del" wx:if="{{find.current_user}}">删除</text>
           </view>
           <view class="share">
             <view class="share-item comment">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
-              <view class="find-num">评论</view>
+              <view class="find-num">
+                {{find.comment_count === 0 ? '评论' : find.comment_count}}
+              </view>
             </view>
-            <view class="share-item thumbs-up">
+            <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} ">
               <image class="find-icon" wx:if="{{imageUrl}}"
-                     src="{{press}}"></image>
-              <view class="find-num">2</view>
+                     src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
+              <view class="find-num">
+                {{find.like_count === 0 ? '点赞' : find.like_count}}
+              </view>
             </view>
           </view>
         </view>
       </view>
     </view>
-    <view class="find-item img-more">
+    <view class="find-item img-more"
+          wx:if="{{find.user_live_log_details[0].type === 1 && find.user_live_log_details[0].file_url.length > 2}}">
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header"></image>
-            <text class="nickname">刘娇 </text>
+            <image class="header"
+                   src="{{!ind.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : find.user_data.image_url && find.role === null ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
+            <text class="nickname">{{find.user_data.name}} </text>
           </view>
-          <view class="words">写写日志是否已成为我生活中的一部分，我享受其中的乐趣，我也愿意和大家分享我的点滴。</view>
+          <view class="words">{{find.content}}</view>
           <view class="img-item-two">
-            <image class="two-item"></image>
-            <image class="two-item"></image>
-            <image class="two-item"></image>
-            <image class="two-item"></image>
-            <image class="two-item"></image>
-            <image class="two-item"></image>
-            <image class="two-item"></image>
-
+            <image class="two-item"
+                   wx:for="find.user_live_log_details[0].file_url"
+                   wx:key="index" src="{{item}}"></image>
           </view>
         </view>
-        <view class="address">
+        <view class="address" wx:if="{{find.address}}">
           <image class="add-icon" wx:if="{{imageUrl}}"
                  src="{{imageUrl + '/defaults/share/page/icon-find_site03@2x.png'}}"></image>
-          广州市白云区黄石路国际单位
+          {{find.address}}
         </view>
         <view class="information">
-          <view class="time">10分钟前
-            <text class="del">删除</text>
+          <view class="time">{{find.differ_time}}
+            <text class="del" wx:if="{{find.current_user}}">删除</text>
           </view>
           <view class="share">
             <view class="share-item comment">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
-              <view class="find-num">评论</view>
+              <view class="find-num">
+                {{find.comment_count === 0 ? '评论' : find.comment_count}}
+              </view>
             </view>
-            <view class="share-item thumbs-up">
+            <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} ">
               <image class="find-icon" wx:if="{{imageUrl}}"
-                     src="{{press}}"></image>
-              <view class="find-num">2</view>
+                     src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
+              <view class="find-num">
+                {{find.like_count === 0 ? '点赞' : find.like_count}}
+              </view>
             </view>
           </view>
         </view>
@@ -199,6 +228,12 @@
     config = {
       navigationBarTitleText: ''
     }
+    props = {
+      find: {
+        type: Object,
+        default: {}
+      }
+    }
     data = {
       imageUrl: URIS.image,
       press: URIS.image + '/defaults/share/page/icon-like@2x.png'
@@ -211,8 +246,8 @@
     }
 
     methods = {
-      information(index) {
-
+      good(id) {
+        this.$emit('good', id)
       }
     }
   }
@@ -271,6 +306,7 @@
           color: $color-del
           margin-left: 12px
         .find-num, .time
+          min-width: 24px
           color: $color-text-tr
         .share
           display: flex

@@ -26,7 +26,8 @@
         </view>
       </view>
       <view class="lg-ch code-box">
-        <input class="inputs" id="phone-code" type="number" placeholder="请输入6位验证码"
+        <input class="inputs" id="phone-code" type="number"
+               placeholder="请输入6位验证码"
                placeholder-class="placeholder" value="{{code}}"
                bindinput="getCode"/>
         <text class="codes {{isSet ? 'set-code' : ''}}" @tap="setCode">{{
@@ -47,12 +48,12 @@
       </view>
       <view class="lg-ch">
         <picker mode="selector" bindchange="bindPickerChange" value="{{index}}"
-                range="{{array}}">
+                range="{{industries}}" range-key="{{'name'}}">
           <view class="inputs placeholder picker">
             {{industry}}
           </view>
         </picker>
-        <view class="eye" @tap="showCiphertext">
+        <view class="eye">
           <image class="close" wx:if="{{imageUri}}"
                  src="{{imageUri + '/defaults/share/page/iocn-invite_enter@2x.png'}}"></image>
         </view>
@@ -63,8 +64,8 @@
       </button>
     </view>
     <view class="tip">
+      <text class="tip-text" @tap="showOther('login')">立即登录</text>
       <text class="tip-text" @tap="showOther('forget')">忘记密码</text>
-      <text class="tip-text" @tap="showOther('register')">立即注册</text>
     </view>
     <Toast></Toast>
   </view>
@@ -77,9 +78,12 @@
   import {ERR_OK} from 'api/base'
   import Toast from '@/base/toast/toast'
   import user from 'api/user'
+  import industries from 'api/industries'
+
   const REGPASS = /^[a-zA-Z0-9]{6,16}$/
-  const REGPHONE = /^1[3|4|5|7|8][0-9]{9}$/
+  const REGPHONE = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
   const REGLIST = ['我是美导', '我是门店']
+
   export default class login extends wepy.page {
     mixins = [base]
 
@@ -122,7 +126,19 @@
       mistakeTip: '',
       showLogo: false,
       isSet: false,
-      phoneFocus: false
+      phoneFocus: false,
+      industries: []
+    }
+
+    async onLoad() {
+      await this.load()
+    }
+
+    async load() {
+      let res = this.infoRes(await industries.industries())
+      this.loaded()
+      this.industries = res
+      this.$apply()
     }
 
     infoRes(res) {
@@ -157,13 +173,25 @@
         this.$invoke('Toast', 'show', '请输入正确的手机号码')
 //        this.showTip(true, '请输入正确的手机号码')
       } else if (!passStatus && this.password.length >= 6) {
-        this.$invoke('Toast', 'show', '请输入6-18位数字或字母的密码')
+        this.$invoke('Toast', 'show', '请输入6-16位数字或字母的密码')
 //        this.showTip(true, '请输入6-18位数字或字母的密码')
       }
       this.$apply()
     }
 
     methods = {
+      showOther(type) {
+        wepy.navigateTo({
+          url: `/pages/${type}/${type}`
+        })
+      },
+      bindPickerChange(e) {
+        let index = e.detail.value * 1
+        this.industryId = this.industries[index].id
+        this.indType = true
+        this.industry = this.industries[index].name
+        this.checkAngin()
+      },
 //      切换
       showReg(index) {
         this.regType = index
@@ -171,7 +199,9 @@
         this.code = ''
         this.showClose = false
         this.password = ''
+        this.industry = '行业类型'
         this.indType = false
+        this.checkAngin()
       },
 //      输入手机号码
       putPhone(e) {
@@ -208,7 +238,7 @@
       },
 //      点击获取验证码
       async setCode() {
-        let regPhone = /^1[3|4|5|7|8][0-9]{9}$/
+        let regPhone = REGPHONE
         if (this.phoneNum === '') {
 //          this.showTip(true, '请输入手机号码')
           this.$invoke('Toast', 'show', '请输入手机号码')
@@ -282,20 +312,18 @@
             mobile: this.phoneNum,
             password: this.password,
             code: this.code,
-            wx_code: data.code
+            wx_code: data.code,
+            industry_id: this.industryId,
+            role: this.regType
           })
           this.loaded()
           if (res.error === ERR_OK) {
             wepy.setStorageSync('token', res.data.access_token)
-            wepy.setStorageSync('is_leader',
-              res.data.merchant_info.merchant_data.is_leader)
-            wepy.setStorageSync('is_parent',
-              res.data.merchant_info.is_parent)
             this.$invoke('Toast', 'show', '注册成功')
 //            this.rightTip('注册成功')
             setTimeout(async () => {
               await wepy.switchTab({
-                url: '/pages/shop/shop'
+                url: '/pages/index/index'
               })
             }, 1000)
           } else {
@@ -399,6 +427,8 @@
         color: #363547
         width: 80%
         font-family: $font-family-light
+      .picker
+        width: 100%
       .phone
         width: 75%
       .error
@@ -418,7 +448,7 @@
         flex: 7.5
         border-bottom: none
       .codes
-        white-space :nowrap
+        white-space: nowrap
         flex: 3
         border-left: 0.5px solid $color-split-line
         font-size: $font-size-medium
