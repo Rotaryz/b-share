@@ -1,18 +1,46 @@
 <template>
   <view class="compile">
     <textarea class="words-text" placeholder="记录你的点点滴滴…"
-              placeholder-class="com-words" focus></textarea>
-    <view class="com-image">
+              placeholder-class="com-words" focus show-confirm-bar="{{false}}" cursor-spacing="70"	></textarea>
+    <view class="com-image" wx:if="{{image}}">
+      <image class="img-item">
+        <view class="close">
+          <view class="close-icon">
+            <image class="close-icon" wx:if="{{imageUrl}}"
+                   src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></image>
+          </view>
+        </view>
+      </image>
+      <image class="img-item">
+        <view class="close">
+          <view class="close-icon">
+            <image class="close-icon" wx:if="{{imageUrl}}"
+                   src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></image>
+          </view>
+        </view>
+      </image>
       <image class="img-item"></image>
       <image class="img-item"></image>
       <image class="img-item"></image>
       <image class="img-item"></image>
       <image class="img-item"></image>
-      <image class="img-item"></image>
-      <image class="img-item"></image>
-      <view class="img-add"></view>
+      <view class="img-add">
+        <image class="add-image" wx:if="{{imageUrl}}"
+               src="{{imageUrl + '/defaults/share/page/icon-diary_add@2x.png'}}"></image>
+      </view>
     </view>
-    <view class="com-video"></view>
+    <view class="com-video">
+      <image class="img-item">
+        <view class="close">
+          <view class="close-icon">
+            <image class="close-icon" wx:if="{{imageUrl}}"
+                   src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></image>
+          </view>
+        </view>
+        <image class="play" wx:if="{{imageUrl}}"
+               src="{{imageUrl + '/defaults/share/page/icon-diary_video@2x.png'}}"></image>
+      </image>
+    </view>
     <view class="com-tab">
       <view class="com-addrss">
         <image class="com-add-icons" wx:if="{{imageUrl}}"
@@ -49,7 +77,8 @@
       navigationBarTitleText: '写服务日志'
     }
     data = {
-      imageUrl: URIS.image
+      imageUrl: URIS.image,
+      image: false
     }
 
     infoRes(res) {
@@ -63,9 +92,11 @@
 <style lang="stylus">
   @import '../../common/stylus/variable'
   @import '../../common/stylus/mixin'
-  .compile
-    height: 100vh
+  page
     background: $color-white
+  .compile
+    max-height: 443px
+
     .com-words
       color: #CCCCCC
       font-size: $font-size-medium-x
@@ -78,12 +109,11 @@
       padding: 10.5px 24px 0 15px
 
   .com-tab
-    position: relative
     border-top: 1px solid $color-split-line
     border-bottom: 1px solid $color-split-line
-    height: 49px
+    height: 8.6vh
     display: flex
-    margin-top :64.5px
+    margin-top: 4.56vh
     .com-addrss
       position: absolute
       top: -36px
@@ -125,17 +155,52 @@
         border-right: none
         text-align: center
 
-  .com-image
+  .com-image, .com-video
     padding: 0 4vw 0 2.4vw
-    display :inline-block
+    display: inline-block
     .img-item
       height: 29.6vw
       margin: 1.6vw 0 0 1.6vw
       width: @height
       background: $color-background
+      position: relative
+      .play
+        all-center()
+        width: 36.363%
+        height: @width
+      .close
+        position: absolute
+        top: 0
+        right: 0
+        width: 30px
+        height: 30px
+        z-index: 100
+        .close-icon
+          height: 16.5px
+          width: 16.5px
+          line-height: 16.5px
+          text-align: center
+          background: rgba(0, 0, 0, 0.20)
+          color: $color-white
+          font-size: $font-size-small-s
+          position: absolute
+          right: 0
+          top: 0
+          .close-icon
+            cll-center()
+            height: 16.5px
+            width: 16.5px
     .img-add
+      display: inline-block
       height: 29.6vw
       width: @height
       margin: 1.6vw 0 0 1.6vw
-      border :1px dashed $color-split-line
+      border: 1px dashed $color-split-line
+      position: relative
+      box-sizing: border-box
+      .add-image
+        height: 30.9%
+        width: @height
+        all-center()
+
 </style>
