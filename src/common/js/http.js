@@ -26,20 +26,23 @@ export default class http {
     }
   }
 
-  static async upload(url, name, loading = true) {
-    const resImage = await wepy.chooseImage()
+  static async upload(url, data, name = 'file', loading = true) {
     const param = {
       url: url,
-      filePath: resImage.tempFilePaths[0],
+      filePath: data,
       name: name
     }
+    const Authorization = wepy.getStorageSync('token')
+    param.header = Object.assign({}, {Authorization})
     if (loading) {
       Tips.loading()
     }
     const res = await wepy.uploadFile(param)
     const resData = JSON.parse(res.data)
-    if (res.statusCode === 200 && resData.error === 0) {
-      return resData
+    console.log(resData)
+    Tips.loaded()
+    if (resData.status_code === 200 && resData.error === 0) {
+      return resData.data
     } else {
       throw this.requestException(resData)
     }

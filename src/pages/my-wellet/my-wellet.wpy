@@ -9,7 +9,9 @@
             <view class="big">200.00</view>
           </view>
           <view class="text">可提现红包金额</view>
-          <view class="btn" @tap="toWithdraw">立即提现</view>
+          <navigator url="/pages/withdraw/withdraw" hover-class="none">
+            <view class="btn">立即提现</view>
+          </navigator>
         </view>
         <view class="top-foot">
           <view class="item">
@@ -67,9 +69,6 @@
     methods = {
       loadMore() {
         console.log(999)
-      },
-      toWithdraw() {
-        this.$navigate('/pages/withdraw/withdraw')
       }
     }
   }

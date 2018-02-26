@@ -72,7 +72,7 @@
         'pages/login/login',
         'pages/compile/compile',
         'pages/register/register',
-        'pages/forget/forget',
+        'pages/forget/forget'
       ],
       window: {
         backgroundColor: '#F9F9F9',
