@@ -1,66 +1,65 @@
 <template>
   <view class="compile">
-    <textarea class="words-text" placeholder="记录你的点点滴滴…"
-              placeholder-class="com-words" focus show-confirm-bar="{{false}}" cursor-spacing="70"	></textarea>
-    <view class="com-image" wx:if="{{image}}">
-      <image class="img-item">
-        <view class="close">
-          <view class="close-icon">
-            <image class="close-icon" wx:if="{{imageUrl}}"
-                   src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></image>
+
+       <textarea class="words-text" placeholder="记录你的点点滴滴…"
+                 placeholder-class="com-words" focus
+                 show-confirm-bar="{{false}}" @focus="bindfocus"
+                 @blur="showTop" @input="getWords"></textarea>
+    <view class="com-box" style="height: {{comHeight}}px">
+      <view class="com-image">
+        <image class="img-item" mode="aspectFill" wx:for="{{imgUrl}}"
+               wx:key="{{index}}"
+               src="{{item}}">
+          <view class="close" @tap="delImage({{index}})">
+            <view class="close-icon">
+              <image class="close-icon" wx:if="{{imageUrl}}"
+                     src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></image>
+            </view>
           </view>
+        </image>
+        <view class="img-add" wx:if="{{imgUrl.length > 0 && imgUrl.length < 9}}"
+              @tap="choiceImage">
+          <image class="add-image" wx:if="{{imageUrl}}"
+                 src="{{imageUrl + '/defaults/share/page/icon-diary_add@2x.png'}}"></image>
         </view>
-      </image>
-      <image class="img-item">
-        <view class="close">
-          <view class="close-icon">
-            <image class="close-icon" wx:if="{{imageUrl}}"
-                   src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></image>
+      </view>
+      <view class="com-video" wx:if="{{videoUrl !== ''}}">
+        <image class="img-item" mode="aspectFill" src="{{videoUrl}}">
+          <view class="close" @tap="delVideo">
+            <view class="close-icon">
+              <image class="close-icon" wx:if="{{imageUrl}}"
+                     src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></image>
+            </view>
           </view>
-        </view>
-      </image>
-      <image class="img-item"></image>
-      <image class="img-item"></image>
-      <image class="img-item"></image>
-      <image class="img-item"></image>
-      <image class="img-item"></image>
-      <view class="img-add">
-        <image class="add-image" wx:if="{{imageUrl}}"
-               src="{{imageUrl + '/defaults/share/page/icon-diary_add@2x.png'}}"></image>
+          <image class="play" wx:if="{{imageUrl}}"
+                 src="{{imageUrl + '/defaults/share/page/icon-diary_video@2x.png'}}"></image>
+        </image>
       </view>
     </view>
-    <view class="com-video">
-      <image class="img-item">
-        <view class="close">
-          <view class="close-icon">
-            <image class="close-icon" wx:if="{{imageUrl}}"
-                   src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></image>
-          </view>
-        </view>
-        <image class="play" wx:if="{{imageUrl}}"
-               src="{{imageUrl + '/defaults/share/page/icon-diary_video@2x.png'}}"></image>
-      </image>
-    </view>
-    <view class="com-tab">
-      <view class="com-addrss">
+    <view class="com-tab" style="bottom: {{height}}px">
+      <view class="com-addrss" @tap="getAddress">
         <image class="com-add-icons" wx:if="{{imageUrl}}"
                src="{{imageUrl + '/defaults/share/page/icon-find_site01@2x.png'}}"></image>
-        你在哪里
+        <text class="add-title">{{address}}</text>
       </view>
-      <view class="com-tab-item">
+      <view class="com-tab-item" @tap="choiceImage">
         <image class="com-tab-icon" wx:if="{{imageUrl}}"
+               style="opacity: {{fileType === 2 ? 0.5:fileType === -1 ? 0.5 :1}}"
                src="{{imageUrl + '/defaults/share/page/icon-pic@2x.png'}}"></image>
         <view class="com-tab-item-title">图片</view>
       </view>
-      <view class="com-tab-item">
+      <view class="com-tab-item" @tap="choiceVideo">
         <image class="com-tab-icon" wx:if="{{imageUrl}}"
+               style="opacity: {{fileType === 1 ? 0.5:fileType === -1 ? 0.5 :1}}"
                src="{{imageUrl + '/defaults/share/page/icon-video@2x.png'}}"></image>
         <view class="com-tab-item-title">视频</view>
       </view>
-      <view class="com-tab-item">
+      <view class="com-tab-item {{showSend ? 'com-tab-item-active' : ''}}"
+            @tap="submit">
         发布
       </view>
     </view>
+    <Toast></Toast>
   </view>
 </template>
 
@@ -69,7 +68,9 @@
   import base from 'common/mixins/base'
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
-
+  import Uploads from 'api/uploads'
+  import logs from 'api/logs'
+  import Toast from '@/base/toast/toast'
   export default class compile extends wepy.page {
     mixins = [base]
 
@@ -78,13 +79,142 @@
     }
     data = {
       imageUrl: URIS.image,
-      image: false
+      image: false,
+      video: false,
+      height: 0,
+      screenHeight: 0,
+      comHeight: 0,
+      words: '',
+      fileType: 0,
+      imgUrl: [],
+      fileId: [],
+      videoUrl: '',
+      videoId: '',
+      showSend: false,
+      address: '你在哪里'
+    }
+
+    async onShow() {
+      let res = await wepy.getSystemInfo()
+      this.screenHeight = res.screenHeight
+      this.height = this.screenHeight * 0.445
+      this.comHeight = this.screenHeight * 0.179
     }
 
     infoRes(res) {
       if (res.error === ERR_OK) {
         return res.data
       }
+    }
+
+    checkSend() {
+      this.showSend = this.words !== '' || this.videoUrl !== '' || this.imgUrl.length !== 0
+      this.imgUrl.length === 9 ? this.fileType = -1 : this.fileType = this.fileType
+      this.$apply()
+    }
+
+    methods = {
+      bindfocus() {
+        setTimeout(() => {
+          this.height = this.screenHeight * 0.445
+          this.comHeight = this.screenHeight * 0.179
+          this.$apply()
+        }, 30)
+      },
+      showTop() {
+        setTimeout(() => {
+          this.height = 1
+          this.comHeight = this.screenHeight * 0.55
+          this.$apply()
+        }, 30)
+      },
+      getWords(e) {
+        this.words = e.detail.value
+        this.checkSend()
+      },
+      async choiceImage() {
+        if (this.fileType !== 2 && this.fileType !== -1 && this.imgUrl.length !== 9) {
+          let res = await wepy.chooseImage()
+          if (!res) {
+            return
+          }
+          this.fileType = 1
+          let imgArr = res.tempFilePaths
+          imgArr.forEach(async (item) => {
+            let image = await Uploads.uploadImages(item)
+            this.loaded()
+            this.fileId.push(image.id)
+            this.imgUrl.push(image.url)
+            this.checkSend()
+            this.$apply()
+          })
+        }
+      },
+      async choiceVideo() {
+        if (this.fileType !== 1 && this.fileType !== -1) {
+          let res = await wepy.chooseVideo()
+          if (!res) {
+            return
+          }
+          this.fileType = -1
+          let video = await Uploads.uploadVideo(res.tempFilePath)
+          this.videoUrl = `${video.url}?second=1&width=94&height=94`
+          this.fileId.push(video.id)
+          this.loaded()
+          this.checkSend()
+        }
+      },
+      delImage(index) {
+        index = index * 1
+        this.imgUrl.splice(index, 1)
+        this.imageId.splice(index, 1)
+        this.imgUrl.length === 0 ? this.fileType = 0 : this.fileType = 1
+        this.checkSend()
+      },
+      delVideo() {
+        this.videoUrl = ''
+        this.fileId = []
+        this.fileType = 0
+        this.checkSend()
+      },
+      async getAddress() {
+        let res = await wepy.chooseLocation()
+        if (!res.address) {
+          return
+        }
+        this.address = res.address
+        this.$apply()
+      },
+      async submit() {
+        if (!this.showSend) {
+          return false
+        }
+        let detail = []
+        this.fileId.forEach((item, index) => {
+          detail.push({
+            type: this.fileType === -1 ? 2 : this.fileType,
+            detail_id: item
+          })
+        })
+        console.log(detail)
+        let data = {
+          content: this.words,
+          user_live_log_details: detail,
+          address: this.address === '你在哪里' ? '' : this.address
+        }
+        let res = await logs.sendFind(data)
+        this.loaded()
+        console.log(res.error)
+        if (res.error === ERR_OK) {
+          this.$invoke('Toast', 'show', '发表成功')
+          setTimeout(() => {
+            this.$back(1)
+          }, 500)
+        }
+      }
+    }
+    components = {
+      Toast: Toast
     }
   }
 </script>
@@ -94,14 +224,16 @@
   @import '../../common/stylus/mixin'
   page
     background: $color-white
-  .compile
-    max-height: 443px
 
+    .com-box
+      height: 17.9vh
+      overflow-y: auto
+      padding: 0 4vw 0 2.4vw
     .com-words
       color: #CCCCCC
       font-size: $font-size-medium-x
     .words-text
-      height: 73px
+      height: 19.467vw
       font-size: $font-size-medium-x
       color: $color-text
       width: 100%
@@ -109,8 +241,12 @@
       padding: 10.5px 24px 0 15px
 
   .com-tab
-    border-top: 1px solid $color-split-line
-    border-bottom: 1px solid $color-split-line
+    background: $color-white
+    position: fixed
+    width: 100%
+    bottom: 0
+    border-top: 0.5px solid $color-split-line
+    border-bottom: 0.5px solid $color-split-line
     height: 8.6vh
     display: flex
     margin-top: 4.56vh
@@ -118,16 +254,18 @@
       position: absolute
       top: -36px
       left: 15px
+      height: 29px
+      max-width: 82%
       background: $color-background
       border-radius: 50px
-      height: 29px
       padding: 0 13px
       display: flex
       align-items: center
       justify-content: center
       font-size: $font-size-medium
       color: $color-text-tr
-      white-space: nowrap
+      .add-title
+        no-wrap()
       .com-add-icons
         width: 16px
         height: @width
@@ -135,34 +273,33 @@
       height: 100%
       flex: 2.5
       line-height: 49px
-      border-right: 1px solid $color-split-line
+      border-right: 0.5px solid $color-split-line
       display: flex
       flex-direction: column
       justify-content: center
       align-items: center
       .com-tab-icon
-        height: 17.5px
+        height: 22px
         width: @height
       .com-tab-item-title
         font-size: $font-size-small-s
         color: $color-text-tr
         margin-top: 5px
-        transform: translateX(1px)
       &:last-child
         flex: 5
         color: $color-assist-pink
         opacity: 0.5
         border-right: none
         text-align: center
+    .com-tab-item-active
+      opacity: 1 !important
 
   .com-image, .com-video
-    padding: 0 4vw 0 2.4vw
     display: inline-block
     .img-item
       height: 29.6vw
       margin: 1.6vw 0 0 1.6vw
       width: @height
-      background: $color-background
       position: relative
       .play
         all-center()
@@ -195,7 +332,7 @@
       height: 29.6vw
       width: @height
       margin: 1.6vw 0 0 1.6vw
-      border: 1px dashed $color-split-line
+      border: 0.5px dashed $color-split-line
       position: relative
       box-sizing: border-box
       .add-image
