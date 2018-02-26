@@ -1,47 +1,52 @@
 <template>
   <view class="compile">
-    <textarea class="words-text" placeholder="记录你的点点滴滴…"
-              placeholder-class="com-words" focus show-confirm-bar="{{false}}" cursor-spacing="70"	></textarea>
-    <view class="com-image" wx:if="{{image}}">
-      <image class="img-item">
-        <view class="close">
-          <view class="close-icon">
-            <image class="close-icon" wx:if="{{imageUrl}}"
-                   src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></image>
+
+       <textarea class="words-text" placeholder="记录你的点点滴滴…"
+                 placeholder-class="com-words" focus
+                 show-confirm-bar="{{false}}" @focus="bindfocus"
+                 @blur="showTop" @input="getWords"></textarea>
+    <view class="com-box" style="height: {{comHeight}}px">
+      <view class="com-image" wx:if="{{image}}">
+        <image class="img-item">
+          <view class="close">
+            <view class="close-icon">
+              <image class="close-icon" wx:if="{{imageUrl}}"
+                     src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></image>
+            </view>
           </view>
-        </view>
-      </image>
-      <image class="img-item">
-        <view class="close">
-          <view class="close-icon">
-            <image class="close-icon" wx:if="{{imageUrl}}"
-                   src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></image>
+        </image>
+        <image class="img-item">
+          <view class="close">
+            <view class="close-icon">
+              <image class="close-icon" wx:if="{{imageUrl}}"
+                     src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></image>
+            </view>
           </view>
+        </image>
+        <image class="img-item"></image>
+        <image class="img-item"></image>
+        <image class="img-item"></image>
+        <image class="img-item"></image>
+        <image class="img-item"></image>
+        <view class="img-add">
+          <image class="add-image" wx:if="{{imageUrl}}"
+                 src="{{imageUrl + '/defaults/share/page/icon-diary_add@2x.png'}}"></image>
         </view>
-      </image>
-      <image class="img-item"></image>
-      <image class="img-item"></image>
-      <image class="img-item"></image>
-      <image class="img-item"></image>
-      <image class="img-item"></image>
-      <view class="img-add">
-        <image class="add-image" wx:if="{{imageUrl}}"
-               src="{{imageUrl + '/defaults/share/page/icon-diary_add@2x.png'}}"></image>
+      </view>
+      <view class="com-video" wx:if="{{video}}">
+        <image class="img-item">
+          <view class="close">
+            <view class="close-icon">
+              <image class="close-icon" wx:if="{{imageUrl}}"
+                     src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></image>
+            </view>
+          </view>
+          <image class="play" wx:if="{{imageUrl}}"
+                 src="{{imageUrl + '/defaults/share/page/icon-diary_video@2x.png'}}"></image>
+        </image>
       </view>
     </view>
-    <view class="com-video">
-      <image class="img-item">
-        <view class="close">
-          <view class="close-icon">
-            <image class="close-icon" wx:if="{{imageUrl}}"
-                   src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></image>
-          </view>
-        </view>
-        <image class="play" wx:if="{{imageUrl}}"
-               src="{{imageUrl + '/defaults/share/page/icon-diary_video@2x.png'}}"></image>
-      </image>
-    </view>
-    <view class="com-tab">
+    <view class="com-tab" style="bottom: {{height}}px">
       <view class="com-addrss">
         <image class="com-add-icons" wx:if="{{imageUrl}}"
                src="{{imageUrl + '/defaults/share/page/icon-find_site01@2x.png'}}"></image>
@@ -49,12 +54,12 @@
       </view>
       <view class="com-tab-item">
         <image class="com-tab-icon" wx:if="{{imageUrl}}"
-               src="{{imageUrl + '/defaults/share/page/icon-pic@2x.png'}}"></image>
+               src="{{fileType === 1 ? imageUrl+ '/defaults/share/page/icon-diary_add@2x.png':imageUrl + '/defaults/share/page/icon-pic@2x.png'}}"></image>
         <view class="com-tab-item-title">图片</view>
       </view>
       <view class="com-tab-item">
         <image class="com-tab-icon" wx:if="{{imageUrl}}"
-               src="{{imageUrl + '/defaults/share/page/icon-video@2x.png'}}"></image>
+               src="{{fileType === 2 ? imageUrl+ '/defaults/share/page/icon-diary_add@2x.png':imageUrl + '/defaults/share/page/icon-video@2x.png'}}"></image>
         <view class="com-tab-item-title">视频</view>
       </view>
       <view class="com-tab-item">
@@ -78,12 +83,47 @@
     }
     data = {
       imageUrl: URIS.image,
-      image: false
+      image: false,
+      video: false,
+      height: 0,
+      screenHeight: 0,
+      comHeight: 0,
+      words: '',
+      fileType: 0
+    }
+
+    async onShow() {
+      let res = await wepy.getSystemInfo()
+      this.screenHeight = res.screenHeight
+      this.height = this.screenHeight * 0.445
+      this.comHeight = this.screenHeight * 0.179
     }
 
     infoRes(res) {
       if (res.error === ERR_OK) {
         return res.data
+      }
+    }
+
+    methods = {
+      bindfocus() {
+        setTimeout(() => {
+          this.height = this.screenHeight * 0.445
+          this.comHeight = this.screenHeight * 0.179
+          this.$apply()
+        }, 30)
+      },
+      showTop() {
+        setTimeout(() => {
+          this.height = 1
+          this.comHeight = this.screenHeight * 0.55
+          this.$apply()
+        }, 30)
+
+        console.log('dgss')
+      },
+      getWords(e) {
+        this.words = e.detail.value
       }
     }
   }
@@ -94,14 +134,15 @@
   @import '../../common/stylus/mixin'
   page
     background: $color-white
-  .compile
-    max-height: 443px
 
+    .com-box
+      height: 17.9vh
+      overflow-y: auto
     .com-words
       color: #CCCCCC
       font-size: $font-size-medium-x
     .words-text
-      height: 73px
+      height: 19.467vw
       font-size: $font-size-medium-x
       color: $color-text
       width: 100%
@@ -109,6 +150,10 @@
       padding: 10.5px 24px 0 15px
 
   .com-tab
+    background: $color-white
+    position: fixed
+    width: 100%
+    bottom: 0
     border-top: 1px solid $color-split-line
     border-bottom: 1px solid $color-split-line
     height: 8.6vh
@@ -141,13 +186,12 @@
       justify-content: center
       align-items: center
       .com-tab-icon
-        height: 17.5px
+        height: 22px
         width: @height
       .com-tab-item-title
         font-size: $font-size-small-s
         color: $color-text-tr
         margin-top: 5px
-        transform: translateX(1px)
       &:last-child
         flex: 5
         color: $color-assist-pink

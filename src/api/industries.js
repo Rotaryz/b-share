@@ -2,7 +2,7 @@
  * Created by user on 2018/2/24.
  */
 import base from './base'
-export default class logIn extends base {
+export default class industries extends base {
   /**
    * 行业列表
    * @param
