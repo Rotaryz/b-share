@@ -2,26 +2,33 @@
   <view class="findParticulars">
     <view class="find-par-box">
       <repeat for="{{findDetail}}" key="index" index="index" item="item">
-        <FindDetail :find.sync="item" :listNum.sync="index"></FindDetail>
+        <FindDetail :find.sync="item" :listNum.sync="index"
+                    :comment.sync="true"></FindDetail>
       </repeat>
     </view>
     <view class="find-comment">
       <view class="comment-title">评论{{num}}</view>
       <view class="comment-item">
-        <image class="com-header"></image>
+        <view class="header-box">
+          <image class="com-header"></image>
+        </view>
         <view class="com-container">
           <view class="nickname">Miu_Chan</view>
           <view class="com-content">哈哈，同意娇姐姐～</view>
           <view class="time">11月10日 11:20
-            <image class="comment-icon"></image>
+            <image class="comment-icon" wx:if="{{imageUrl}}"
+                   src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
           </view>
-          <view class="commnet-item">
-            <image class="com-header"></image>
+          <view class="comment-item">
+            <view class="header-box">
+              <image class="com-header"></image>
+            </view>
             <view class="com-container">
               <view class="nickname">美导周：</view>
               <view class="com-content">哈哈，同意娇姐姐～</view>
               <view class="time">11月10日 11:20
-                <image class="comment-icon"></image>
+                <image class="comment-icon" wx:if="{{imageUrl}}"
+                       src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
               </view>
             </view>
           </view>
@@ -54,10 +61,10 @@
 
     async onLoad(option) {
       if (option.id) {
-        this.findDetail = await this.load(option.id)
+        this.findDetail[0] = await this.load(option.id)
         console.log(this.findDetail)
       }
-      this.findDetail[0] = await this.load(22)
+//      this.findDetail[0] = await this.load(22)
       this.$apply()
       console.log(this.findDetail)
     }
@@ -89,4 +96,51 @@
     background: $color-white
     padding-top: 15px
     transition: translateY(-15px)
+
+  .find-comment
+    background: $color-white
+    margin-top: 10px
+    padding-left: 15px
+    font-size: $font-size-medium
+    box-sizing: border-box
+    .comment-title
+      font-family: $font-family-regular
+      line-height: 44px
+    .comment-item
+      display: flex
+      margin-top: 14px
+      .header-box
+        height: 9.067vw
+        width: @height
+      .com-header
+        border-radius: 100%
+        height: 100%
+        width: @height
+        background: $color-split-line
+      .com-container
+        width: 84.2667vw
+        margin-left: 10px
+        .com-container
+          width: 77.6vw
+        .comment-item
+          .header-box
+            height: 4.267vw
+            width: @height
+        .nickname
+          color: $color-text-tr
+          margin-bottom: 5px
+        .time
+          margin-top: 10px
+          color: $color-text-tr
+          font-size: $font-size-small
+          border-bottom: 0.5px solid $color-split-line
+          padding-bottom: 15px
+          position: relative
+        .comment-icon
+          position: absolute
+          bottom: 15.3px
+          right: 18px
+          height: 18px
+          width: @height
+
 </style>

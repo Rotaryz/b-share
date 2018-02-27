@@ -99,7 +99,6 @@
     }
 
     onShow() {
-      console.log(this.$parent.globalData.status)
       if (this.$parent.globalData.status && this.$parent.globalData.status === 2) {
         this.$invoke('PopUpWindows', 'show')
         this.content = '内容不会保存，退出编辑？'

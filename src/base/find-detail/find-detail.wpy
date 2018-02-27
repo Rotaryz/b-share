@@ -28,7 +28,7 @@
             </text>
           </view>
           <view class="share">
-            <view class="share-item comment">
+            <view class="share-item comment" @tap="isComment({{find.id}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
               <view class="find-num">
@@ -73,7 +73,7 @@
             </text>
           </view>
           <view class="share">
-            <view class="share-item comment">
+            <view class="share-item comment" @tap="isComment({{find.id}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
               <view class="find-num">
@@ -121,7 +121,7 @@
             </text>
           </view>
           <view class="share">
-            <view class="share-item comment">
+            <view class="share-item comment" @tap="isComment({{find.id}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
               <view class="find-num">
@@ -170,7 +170,7 @@
             </text>
           </view>
           <view class="share">
-            <view class="share-item comment">
+            <view class="share-item comment" @tap="isComment({{find.id}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
               <view class="find-num">
@@ -218,7 +218,7 @@
             </text>
           </view>
           <view class="share">
-            <view class="share-item comment">
+            <view class="share-item comment" @tap="isComment({{find.id}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
               <view class="find-num">
@@ -260,6 +260,10 @@
       listNum: {
         type: Number,
         default: 0
+      },
+      comment: {
+        type: Boolean,
+        default: false
       }
     }
     data = {
@@ -281,6 +285,17 @@
     }
 
     methods = {
+//      点击评论的icon
+      isComment(id) {
+        console.log(id)
+        if (this.comment) {
+
+        } else {
+          wepy.navigateTo({
+            url: '/pages/find-particulars/find-particulars?id=' + id
+          })
+        }
+      },
       good(id) {
         this.$emit('good', id)
       },
