@@ -7,7 +7,7 @@
           <view class="user">
             <image class="header"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname">{{find.user_data.name}} </text>
+            <text class="nickname">{{find.user_data.name}}</text>
           </view>
           <view class="words">
             {{find.content}}
@@ -15,14 +15,17 @@
             </text>
           </view>
         </view>
-        <view class="address" wx:if="{{find.address}}">
+        <view class="address" wx:if="{{find.address}}"
+              @tap="openLocation({{find}})">
           <image class="add-icon" wx:if="{{imageUrl}}"
                  src="{{imageUrl + '/defaults/share/page/icon-find_site03@2x.png'}}"></image>
           {{find.address}}
         </view>
         <view class="information">
           <view class="time">{{find.differ_time}}
-            <text class="del" wx:if="{{find.current_user}}" @tap="delFind({{find.id}})">删除</text>
+            <text class="del" wx:if="{{find.current_user}}"
+                  @tap="delFind({{find.id}})">删除
+            </text>
           </view>
           <view class="share">
             <view class="share-item comment">
@@ -57,14 +60,17 @@
           <video src="{{find.user_live_log_details[0].file_url}}"
                  class="find-video"></video>
         </view>
-        <view class="address" wx:if="{{find.address}}">
+        <view class="address" wx:if="{{find.address}}"
+              @tap="openLocation({{find}})">
           <image class="add-icon" wx:if="{{imageUrl}}"
                  src="{{imageUrl + '/defaults/share/page/icon-find_site03@2x.png'}}"></image>
           {{find.address}}
         </view>
         <view class="information">
           <view class="time">{{find.differ_time}}
-            <text class="del" wx:if="{{find.current_user}}" @tap="delFind({{find.id}})">删除</text>
+            <text class="del" wx:if="{{find.current_user}}"
+                  @tap="delFind({{find.id}})">删除
+            </text>
           </view>
           <view class="share">
             <view class="share-item comment">
@@ -87,7 +93,7 @@
       </view>
     </view>
     <view class="find-item img-one"
-          wx:if="{{find.user_live_log_details[0].type === 1 && find.user_live_log_details[0].file_url.length === 1}}">
+          wx:if="{{find.user_live_log_details[0].type === 1 && find.user_live_log_details.length === 1}}">
       <view class="find-box">
         <view class="cainter">
           <view class="user">
@@ -96,17 +102,23 @@
             <text class="nickname">{{find.user_data.name}}</text>
           </view>
           <view class="words">{{find.content}}</view>
-          <image src="{{find.user_live_log_details[0].file_url}}"
-                 class="img-one-item"></image>
+          <view @tap="showBigImg({{find}})">
+            <image src="{{find.user_live_log_details[0].file_url}}"
+                   @tap="setIndex(0)" class="img-one-item"
+                   mode="aspectFill"></image>
+          </view>
         </view>
-        <view class="address" wx:if="{{find.address}}">
+        <view class="address" wx:if="{{find.address}}"
+              @tap="openLocation({{find}})">
           <image class="add-icon" wx:if="{{imageUrl}}"
                  src="{{imageUrl + '/defaults/share/page/icon-find_site03@2x.png'}}"></image>
           {{find.address}}
         </view>
         <view class="information">
           <view class="time">{{find.differ_time}}
-            <text class="del" wx:if="{{find.current_user}}" @tap="delFind({{find.id}})">删除</text>
+            <text class="del" wx:if="{{find.current_user}}"
+                  @tap="delFind({{find.id}})">删除
+            </text>
           </view>
           <view class="share">
             <view class="share-item comment">
@@ -129,7 +141,7 @@
       </view>
     </view>
     <view class="find-item img-two"
-          wx:if="{{find.user_live_log_details[0].type === 1 && find.user_live_log_details[0].file_url.length === 2}}">
+          wx:if="{{find.user_live_log_details[0].type === 1 && find.user_live_log_details.length === 2}}">
       <view class="find-box">
         <view class="cainter">
           <view class="user">
@@ -138,20 +150,24 @@
             <text class="nickname">{{find.user_data.name}} </text>
           </view>
           <view class="words">{{find.content}}</view>
-          <view class="img-item-two">
-            <image class="two-item"
+          <view class="img-item-two" @tap="showBigImg({{find}})">
+            <image class="two-item" mode="aspectFill"
                    wx:for="{{find.user_live_log_details}}"
+                   @tap="setIndex({{index}})"
                    wx:key="index" src="{{item.file_url}}"></image>
           </view>
         </view>
-        <view class="address" wx:if="{{find.address}}">
+        <view class="address" wx:if="{{find.address}}"
+              @tap="openLocation({{find}})">
           <image class="add-icon" wx:if="{{imageUrl}}"
                  src="{{imageUrl + '/defaults/share/page/icon-find_site03@2x.png'}}"></image>
           {{find.address}}
         </view>
         <view class="information">
           <view class="time">{{find.differ_time}}
-            <text class="del" wx:if="{{find.current_user}}" @tap="delFind({{find.id}})">删除</text>
+            <text class="del" wx:if="{{find.current_user}}"
+                  @tap="delFind({{find.id}})">删除
+            </text>
           </view>
           <view class="share">
             <view class="share-item comment">
@@ -174,7 +190,7 @@
       </view>
     </view>
     <view class="find-item img-more"
-          wx:if="{{find.user_live_log_details[0].type === 1 && find.user_live_log_details[0].file_url.length > 2}}">
+          wx:if="{{find.user_live_log_details[0].type === 1 && find.user_live_log_details.length > 2}}">
       <view class="find-box">
         <view class="cainter">
           <view class="user">
@@ -183,19 +199,23 @@
             <text class="nickname">{{find.user_data.name}} </text>
           </view>
           <view class="words">{{find.content}}</view>
-          <view class="img-item-two">
-            <image class="two-item" wx:for="{{find.user_live_log_details}}"
-                   wx:key="{{index}}" src="{{item.file_url}}"></image>
+          <view class="img-item-two" @tap="showBigImg({{find}})">
+            <image class="two-item" @tap="setIndex({{index}})" mode="aspectFill"
+                   wx:for="{{find.user_live_log_details}}"
+                   wx:key="{{indexs}}" src="{{item.file_url}}"></image>
           </view>
         </view>
-        <view class="address" wx:if="{{find.address}}">
+        <view class="address" wx:if="{{find.address}}"
+              @tap="openLocation({{find}})">
           <image class="add-icon" wx:if="{{imageUrl}}"
                  src="{{imageUrl + '/defaults/share/page/icon-find_site03@2x.png'}}"></image>
           {{find.address}}
         </view>
         <view class="information">
           <view class="time">{{find.differ_time}}
-            <text class="del" wx:if="{{find.current_user}}" @tap="delFind({{find.id}})">删除</text>
+            <text class="del" wx:if="{{find.current_user}}"
+                  @tap="delFind({{find.id}})">删除
+            </text>
           </view>
           <view class="share">
             <view class="share-item comment">
@@ -236,11 +256,17 @@
       find: {
         type: Object,
         default: {}
+      },
+      listNum: {
+        type: Number,
+        default: 0
       }
     }
     data = {
       imageUrl: URIS.image,
-      press: URIS.image + '/defaults/share/page/icon-like@2x.png'
+      press: URIS.image + '/defaults/share/page/icon-like@2x.png',
+      finds: null,
+      imageIndex: null
     }
 
     infoRes(res) {
@@ -249,13 +275,47 @@
       }
     }
 
+    onShow() {
+      this.finds = null
+      this.imageIndex = null
+    }
+
     methods = {
       good(id) {
         this.$emit('good', id)
       },
       delFind(id) {
-        console.log(id)
         this.$emit('delFind', id)
+      },
+      showBigImg(index) {
+        this.finds = index
+        this.$apply()
+      },
+      setIndex(index) {
+        setTimeout(() => {
+          this.imageIndex = index * 1
+          let detail = this.finds.user_live_log_details
+          console.log(detail)
+          let image = []
+          detail.forEach((item) => {
+            image.push(item.file_url)
+          })
+          wx.previewImage({
+            current: image[index], // 当前显示图片的http链接
+            urls: image // 需要预览的图片http链接列表
+          })
+          this.$apply()
+        }, 30)
+      },
+//    定位地址
+      openLocation(find) {
+        wepy.openLocation({
+          latitude: find.latitude,
+          longitude: find.longitude,
+          scale: 28,
+          name: find.address,
+          address: find.address
+        })
       }
     }
   }
@@ -264,6 +324,12 @@
 <style lang="stylus">
   @import '../../common/stylus/variable'
   @import '../../common/stylus/mixin'
+  .find-deatil
+    &:last-child
+      .find-item
+        .find-box
+          border-bottom: none
+
   .find-item
     background: $color-white
     margin-top: 23px
@@ -351,8 +417,8 @@
       .two-item
         box-sizing: border-box
         border: 0.5px solid $color-background
-        height: 31.34vw
-        width: 39.34vw
+        height: 31.2vw
+        width: 49%
 
   .img-more
     .img-item-two

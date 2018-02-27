@@ -2,7 +2,7 @@
   <view class="compile">
 
        <textarea class="words-text" placeholder="记录你的点点滴滴…"
-                 placeholder-class="com-words" focus
+                 placeholder-class="com-words" focus value="{{words}}"
                  show-confirm-bar="{{false}}" @focus="bindfocus"
                  @blur="showTop" @input="getWords"></textarea>
     <view class="com-box" style="height: {{comHeight}}px">
@@ -91,7 +91,9 @@
       videoUrl: '',
       videoId: '',
       showSend: false,
-      address: '你在哪里'
+      address: '你在哪里',
+      longitude: 0,
+      latitude: 0
     }
 
     async onShow() {
@@ -99,6 +101,20 @@
       this.screenHeight = res.screenHeight
       this.height = this.screenHeight * 0.445
       this.comHeight = this.screenHeight * 0.179
+    }
+
+    onLoad(option) {
+      if (option.status) {
+        this.fileId = this.$parent.globalData.fileId || []
+        this.words = this.$parent.globalData.words || ''
+        this.imgUrl = this.$parent.globalData.imgUrl || []
+        this.videoUrl = this.$parent.globalData.videoUrl || ''
+        this.longitude = this.$parent.globalData.longitude || 0
+        this.latitude = this.$parent.globalData.latitude || 0
+        this.address = this.$parent.globalData.address || '你在哪里'
+        this.$apply()
+      }
+      this.checkSend()
     }
 
     infoRes(res) {
@@ -110,6 +126,11 @@
     checkSend() {
       this.showSend = this.words !== '' || this.videoUrl !== '' || this.imgUrl.length !== 0
       this.imgUrl.length === 9 ? this.fileType = -1 : this.fileType = this.fileType
+      if (this.showSend) {
+        this.$parent.updateGlobalData('status', 2)
+      } else {
+        this.$parent.updateGlobalData('status', 0)
+      }
       this.$apply()
     }
 
@@ -130,6 +151,7 @@
       },
       getWords(e) {
         this.words = e.detail.value
+        this.$parent.updateGlobalData('words', this.words)
         this.checkSend()
       },
       async choiceImage() {
@@ -145,6 +167,8 @@
             this.loaded()
             this.fileId.push(image.id)
             this.imgUrl.push(image.url)
+            this.$parent.updateGlobalData('fileId', this.fileId)
+            this.$parent.updateGlobalData('imgUrl', this.imgUrl)
             this.checkSend()
             this.$apply()
           })
@@ -160,6 +184,8 @@
           let video = await Uploads.uploadVideo(res.tempFilePath)
           this.videoUrl = `${video.url}?second=1&width=94&height=94`
           this.fileId.push(video.id)
+          this.$parent.updateGlobalData('fileId', this.fileId)
+          this.$parent.updateGlobalData('videoUrl', this.videoUrl)
           this.loaded()
           this.checkSend()
         }
@@ -183,6 +209,11 @@
           return
         }
         this.address = res.address
+        this.longitude = res.longitude
+        this.latitude = res.latitude
+        this.$parent.updateGlobalData('address', this.address)
+        this.$parent.updateGlobalData('longitude', this.longitude)
+        this.$parent.updateGlobalData('longitude', this.longitude)
         this.$apply()
       },
       async submit() {
@@ -196,19 +227,22 @@
             detail_id: item
           })
         })
-        console.log(detail)
         let data = {
           content: this.words,
           user_live_log_details: detail,
-          address: this.address === '你在哪里' ? '' : this.address
+          address: this.address === '你在哪里' ? '' : this.address,
+          latitude: this.latitude,
+          longitude: this.longitude
         }
         let res = await logs.sendFind(data)
         this.loaded()
-        console.log(res.error)
         if (res.error === ERR_OK) {
           this.$invoke('Toast', 'show', '发表成功')
+          this.$parent.updateGlobalData('status', 1)
           setTimeout(() => {
-            this.$back(1)
+            wepy.switchTab({
+              url: '/pages/find/find'
+            })
           }, 500)
         }
       }
