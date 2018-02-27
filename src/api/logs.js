@@ -42,4 +42,13 @@ export default class find extends base {
     const url = `${this.baseUrl}/api/logs/user-live-logs/${id}`
     return await this.delete(url)
   }
+  /**
+   * 日志详情
+   * @param
+   * @returns {Promise.<*>}
+   */
+  static async findDetail(id) {
+    const url = `${this.baseUrl}/api/logs/user-live-logs/${id}`
+    return await this.get(url)
+  }
 }
