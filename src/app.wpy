@@ -111,7 +111,9 @@
 
     globalData = {
       baseUrl: URIS.api,
-      baseLogin: URIS.login
+      baseLogin: URIS.login,
+      categoryId: '',
+      categoryName: ''
     }
   }
 </script>

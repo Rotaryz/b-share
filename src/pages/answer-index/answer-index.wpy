@@ -7,7 +7,7 @@
       <view class="subhead">请慎重选择，确定后不可修改</view>
     </view>
     <view class="content">
-      <view class="item" wx:for="{{majorArr}}" wx:key="{{item}}" @tap="choice({{item.id}})">
+      <view class="item" wx:for="{{majorArr}}" wx:key="{{item}}" @tap="choice({{item.id}}, {{item.name}})">
         <image class="item-BC" src="{{item.image_url}}" mode="aspectFit"></image>
         <view class="item-name">{{item.name}}</view>
         <view class="item-cover"></view>
@@ -56,14 +56,17 @@
     }
 
     methods = {
-      choice(id) {
+      choice(id, name) {
         this.checked = id
+        this.checkedName = name
         this.$apply()
       },
       toAnswer() {
         if (!this.checked) {
           return
         }
+        this.$parent.updateGlobalData('categoryId', this.checked)
+        this.$parent.updateGlobalData('categoryName', this.checkedName)
         this.$navigate('/pages/answer/answer')
       }
     }

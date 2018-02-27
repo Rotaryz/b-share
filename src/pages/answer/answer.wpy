@@ -72,12 +72,15 @@
     }
 
     async load() {
-      let Json = await Beauticians.getMajors()
+      let categoryId = this.$parent.globalData.categoryId
+      let categoryName = this.$parent.globalData.categoryName
+      console.log(categoryId, categoryName)
+      let Json = await Beauticians.beginAnswer(categoryId, categoryName)
       this.loaded()
       if (Json.error !== ERR_OK) {
         return
       }
-      this.majorArr = Json.data
+      console.log(Json)
       this._beginCountdown()
       this.$apply()
     }

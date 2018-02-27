@@ -50,6 +50,7 @@
   import base from 'common/mixins/base'
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
+  import Beauticians from 'api/beauticians'
 
   export default class index extends wepy.page {
     mixins = [base]
@@ -57,8 +58,24 @@
     config = {
       navigationBarTitleText: '共享美导'
     }
+
     data = {
       imageUrl: URIS.image
+    }
+
+    async onShow() {
+      await this.load()
+    }
+
+    async load() {
+      let Json = await Beauticians.getRanks()
+      this.loaded()
+      if (Json.error !== ERR_OK) {
+        return
+      }
+      console.log(Json)
+      this.majorArr = Json.data
+      this.$apply()
     }
 
     methods = {
