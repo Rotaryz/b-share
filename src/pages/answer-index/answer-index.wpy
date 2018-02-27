@@ -16,7 +16,7 @@
         </view>
       </view>
     </view>
-    <view class="btn {{checked?'':'dis'}}">Ready Go!</view>
+    <view class="btn {{checked?'':'dis'}}" @tap="toAnswer">Ready Go!</view>
   </view>
 </template>
 
@@ -59,6 +59,12 @@
       choice(id) {
         this.checked = id
         this.$apply()
+      },
+      toAnswer() {
+        if (!this.checked) {
+          return
+        }
+        this.$navigate('/pages/answer/answer')
       }
     }
   }

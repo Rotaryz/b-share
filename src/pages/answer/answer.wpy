@@ -4,12 +4,25 @@
       <view class="container-BC-box">
         <image class="container-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-answer_bg-top@3x.png'}}"></image>
         <view class="time-box">
-          <image class="time-img left" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time1@3x.png'}}" style="transform: rotate({{leftTranslate}}deg);transition: {{leftTransition}}"></image>
-          <image class="time-img right" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time2@3x.png'}}" style="transform: rotate({{rightTranslate}}deg);transition: {{rightTransition}}"></image>
-          <image class="time-img right" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time3@3x.png'}}" style="transform: rotate({{rightTranslate}}deg);transition: {{leftTransition}}"></image>
+          <image class="time-img left" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time1@3x.png'}}" style="transform:rotate({{leftTranslate}}deg);"></image>
+          <image class="time-img right" wx:if="{{imageUrl && time > 5}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time2@3x.png'}}" style="transform: rotate({{rightTranslate}}deg);"></image>
+          <image class="white-right" wx:if="{{imageUrl && time <= 5}}" src="{{'./pic-qa_time3@3x+.png'}}"></image>
+          <view class="time-num">{{time}}</view>
         </view>
       </view>
-      <view class="content"></view>
+      <view class="content">
+        <view class="title">1/10 美容师处理纠纷时应采用的语气是？美容师处理纠纷时应采用的语气是？</view>
+        <view class="img-box">
+          <view class="img-bc">
+            <image class="topic-img" mode="aspectFit" src=""></image>
+          </view>
+        </view>
+        <view class="options">
+          <view class="option-item" wx:for="1234" wx:key="{{item}}">
+            <view class="item">A、自信自信自信自信自信自信自信</view>
+          </view>
+        </view>
+      </view>
     </view>
   </view>
 </template>
@@ -31,13 +44,31 @@
 
     data = {
       imageUrl: URIS.image,
-      leftTranslate: 180,
-      rightTranslate: 30,
-      leftTransition: ''
+      leftTranslate: 0,
+      rightTranslate: 0,
+      time: 10,
+      timeTimer: '',
+      rotateTimer: '',
+      beginTimer: '',
+      letterArr: ['A', 'B', 'C', 'D']
     }
 
     async onLoad() {
       await this.load()
+    }
+
+    onHide() {
+      this._clearAll()
+      this.rightTranslate = 0
+      this.leftTranslate = 0
+      this.$apply()
+    }
+
+    onUnload() {
+      this._clearAll()
+      this.rightTranslate = 0
+      this.leftTranslate = 0
+      this.$apply()
     }
 
     async load() {
@@ -47,11 +78,45 @@
         return
       }
       this.majorArr = Json.data
-      setInterval(() => {
-        this.leftTranslate --
-        this.$apply()
-      }, 100)
+      this._beginCountdown()
       this.$apply()
+    }
+
+    _beginCountdown() {
+      clearTimeout(this.beginTimer)
+      this.beginTimer = setTimeout(() => {
+        this._timeRun()
+        this._rotateRun()
+      }, 1000)
+    }
+
+    _timeRun() {
+      clearInterval(this.timeTimer)
+      this.timeTimer = setInterval(() => {
+        this.time --
+        this.$apply()
+        if (this.time <= 0) {
+          clearInterval(this.timeTimer)
+          clearInterval(this.rotateTimer)
+        }
+      }, 1000)
+    }
+
+    _rotateRun() {
+      clearInterval(this.rotateTimer)
+      this.rotateTimer = setInterval(() => {
+        this.rightTranslate += 1.8
+        if (this.time <= 5) {
+          this.leftTranslate += 1.8
+        }
+        this.$apply()
+      }, 50)
+    }
+
+    _clearAll() {
+      clearInterval(this.timeTimer)
+      clearInterval(this.rotateTimer)
+      clearTimeout(this.beginTimer)
     }
 
     methods = {
@@ -94,10 +159,56 @@
         .content
           flex: 1
           width: 100%
+          box-sizing: border-box
           border-radius: 4px
           box-shadow: 0 11px 22px 0 rgba(177,177,177,0.20)
           border: 1px solid #eaeaea
           background: $color-white
+          padding: 40px 17.5px 0
+          display: flex
+          flex-direction: column
+
+          .title
+            font-size: $font-size-medium-x
+            color: $color-text
+            line-height: 24px
+          .img-box
+            width: 100%
+            flex: 1
+            padding: 20px 0
+            display: flex
+            align-items: center
+            .img-bc
+              width: 100%
+              height: 0
+              padding-top: 43.54838709677419%
+              border-radius: 4px
+              position: relative
+              background: #ccc
+              .topic-img
+                width: 100%
+                height: 100%
+                border-radius: 4px
+                position: absolute
+                left: 0
+                top: 0
+          .options
+            .option-item
+              width: 100%
+              height: 13.333333333vw
+              margin-bottom: 10px
+              display: flex
+              justify-content: center
+              align-items: center
+              .item
+                width: 100%
+                height: 13.333333333vw
+                line-height: 13.333333333vw
+                text-indent: 8vw
+                border-radius: 6.6666666665vw
+                background: $color-background
+                font-size: $font-size-medium-x
+                overflow: hidden
 
         .time-box
           width: 14.1333333333vw
@@ -107,12 +218,33 @@
           top: 2.6666666666vw
           transform: translate(-50%)
           border-radius: 50%
+          border: 1px solid $color-white
+          box-sizing: border-box
           .time-img
             width: 50%
             height: 100%
+            position: absolute
+            top: 1px
           .left
+            left: 0
             transform-origin: 100% 50%
           .right
-            transform-origin: 0% 50%
+            left: 50%
+            transform-origin: 0 50%
+          .white-right
+            width: 7.06666666665vw
+            height: 14.1333333333vw
+            position: absolute
+            top: 0
+            left: 50%
+            transform-origin: 0 50%
+          .time-num
+            position: absolute
+            left: 50%
+            top: 50%
+            transform: translate(-50%, -50%)
+            font-size: $font-size-large-xx
+            color: $color-text
+            font-family: PingFangSC-Regular
 
 </style>
