@@ -107,7 +107,7 @@
 
     methods = {
       changeTab(idx) {
-        this.tabIdx = idx * 1
+        this.tabIdx = idx
         this.$apply()
       },
       async payAttention() {
