@@ -58,6 +58,7 @@
   import Tips from 'common/js/tips'
   import Toast from '@/base/toast/toast'
   import Logs from 'api/logs'
+  import findDetail from '@/base/find-detail/find-detail'
 
   export default class guideCenter extends wepy.page {
     mixins = [base]
