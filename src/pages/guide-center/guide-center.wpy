@@ -26,20 +26,20 @@
       </view>
     </view>
     <view class="tab-box">
-      <view class="tab {{tabIdx==='0'?'active':''}}">
-        <view class="tab-item" @tap="changeTab('0')">服务日志</view>
+      <view class="tab {{tabIdx===1?'active':''}}">
+        <view class="tab-item" @tap="changeTab(1)">服务日志</view>
         <view class="tab-underline"></view>
       </view>
-      <view class="tab {{tabIdx==='1'?'active':''}}">
-        <view class="tab-item" @tap="changeTab('1')">能力模型</view>
+      <view class="tab {{tabIdx===2?'active':''}}">
+        <view class="tab-item" @tap="changeTab(2)">能力模型</view>
        <view class="tab-underline"></view>
       </view>
     </view>
     <view class="tab-container">
-      <scroll-view class="Service-log" hidden="{{tabIdx===1}}">
+      <scroll-view class="Service-log" hidden="{{tabIdx===2}}">
 
       </scroll-view>
-      <view class="ability-model" hidden="{{tabIdx===0}}">
+      <view class="ability-model" hidden="{{tabIdx===1}}">
         <Radar :configArr.sync="configArr"></Radar>
       </view>
     </view>
@@ -68,7 +68,7 @@
 
     data = {
       imageUrl: URIS.image,
-      tabIdx: '1',
+      tabIdx: 2,
       configArr: {
         eventIn: true,
         checked: 0
@@ -80,7 +80,7 @@
 
     onLoad(option) {
       this.userId = option.id
-      this.tabIdx = option.idx ? option.idx : '1'
+      this.tabIdx = option.idx ? option.idx * 1 : 2
       this.$apply()
     }
 
@@ -107,7 +107,7 @@
 
     methods = {
       changeTab(idx) {
-        this.tabIdx = idx
+        this.tabIdx = idx * 1
         this.$apply()
       },
       async payAttention() {
