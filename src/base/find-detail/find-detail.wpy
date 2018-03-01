@@ -288,7 +288,7 @@
     methods = {
       goMine(id) {
         wepy.navigateTo({
-          url: `/pages/guide-center/guide-center?id=${id}&idx=0`
+          url: `/pages/guide-center/guide-center?id=${id}&idx=1`
         })
       },
 //      点击评论的icon
