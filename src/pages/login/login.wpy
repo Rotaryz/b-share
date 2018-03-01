@@ -61,7 +61,7 @@
   import {ERR_OK} from 'api/base'
   import Toast from '@/base/toast/toast'
   const REGPASS = /^[a-zA-Z0-9]{6,16}$/
-  const REGPHONE = /^1[3|4|5|8][0-9]\d{4,8}$/
+  const REGPHONE = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/
   export default class login extends wepy.page {
     mixins = [base]
 

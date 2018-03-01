@@ -7,11 +7,14 @@
           <view class="user">
             <image class="header" @tap="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname">{{find.user_data.name}}</text>
+            <text class="nickname" @tap="goMine({{find.user_id}})">
+              {{find.user_data.name}}
+            </text>
           </view>
           <view class="words">
             {{find.content}}
-            <text class="text-more" wx:if="{{find.showDetail}}">查看详情
+            <text class="text-more" wx:if="{{find.showDetail}}"
+                  @tap="showDetail({{find.id}})">查看详情
             </text>
           </view>
         </view>
@@ -54,7 +57,9 @@
           <view class="user">
             <image class="header" @tap="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname">{{find.user_data.name}} </text>
+            <text class="nickname" @tap="goMine({{find.user_id}})">
+              {{find.user_data.name}}
+            </text>
           </view>
           <view class="words">{{find.content}}</view>
           <video src="{{find.user_live_log_details[0].file_url}}"
@@ -99,13 +104,15 @@
           <view class="user">
             <image class="header" @tap="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname">{{find.user_data.name}}</text>
+            <text class="nickname" @tap="goMine({{find.user_id}})">
+              {{find.user_data.name}}
+            </text>
           </view>
           <view class="words">{{find.content}}</view>
           <view @tap="showBigImg({{find}})">
             <image src="{{find.user_live_log_details[0].file_url}}"
                    @tap="setIndex(0)" class="img-one-item"
-                   mode="aspectFill"></image>
+                   mode="widthFix"></image>
           </view>
         </view>
         <view class="address" wx:if="{{find.address}}"
@@ -147,7 +154,9 @@
           <view class="user">
             <image class="header" @tap="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname">{{find.user_data.name}} </text>
+            <text class="nickname" @tap="goMine({{find.user_id}})">
+              {{find.user_data.name}}
+            </text>
           </view>
           <view class="words">{{find.content}}</view>
           <view class="img-item-two" @tap="showBigImg({{find}})">
@@ -196,7 +205,9 @@
           <view class="user">
             <image class="header" @tap="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname">{{find.user_data.name}} </text>
+            <text class="nickname" @tap="goMine({{find.user_id}})">
+              {{find.user_data.name}}
+            </text>
           </view>
           <view class="words">{{find.content}}</view>
           <view class="img-item-two" @tap="showBigImg({{find}})">
@@ -303,9 +314,14 @@
           this.$emit('comment', id)
         } else {
           wepy.navigateTo({
-            url: '/pages/find-particulars/find-particulars?=?comment=1&id=' + id
+            url: '/pages/find-particulars/find-particulars?comment=1&id=' + id
           })
         }
+      },
+      showDetail(id) {
+        wepy.navigateTo({
+          url: '/pages/find-particulars/find-particulars?id=' + id
+        })
       },
       async good(id, index) {
         let like = 0
