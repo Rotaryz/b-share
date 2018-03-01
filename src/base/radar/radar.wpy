@@ -1,0 +1,221 @@
+<template>
+  <view class="radar">
+    <view class="radar-container">
+      <canvas class="canvas" canvas-id="radarCanvas">
+        <cover-view wx:for="{{textArr}}" class="radar-item {{checked === index ? 'active' : ''}}" wx:key="{{item}}" @tap="show({{index}})">
+          <cover-view class="radar-item-img-box">
+            <cover-image wx:if="{{imageUrl}}" src="{{imageUrl}}/defaults/share/page/{{item.icon}}" hidden="{{checked === index}}" class="radar-item-image"></cover-image>
+            <cover-image wx:if="{{imageUrl}}" src="{{imageUrl}}/defaults/share/page/{{item.checked}}" hidden="{{checked !== index}}" class="radar-item-image"></cover-image>
+          </cover-view>
+          <cover-view class="radar-item-txt">{{item.txt}}</cover-view>
+        </cover-view>
+        <cover-view class="center-item">{{70}}</cover-view>
+      </canvas>
+    </view>
+    <view class="container" wx:if="{{eventIn}}">
+      <view class="head">
+        <view class="head-txt">{{textArr[checked].txt ? textArr[checked].txt : '销售'}}能力</view>
+      </view>
+      <view class="content">
+        <view class="describe">{{txtArr[checked].txt}}</view>
+        <view class="issue">{{txtArr[checked].issue}}</view>
+        <view class="answer">{{txtArr[checked].answer1}}</view>
+        <view class="answer">{{txtArr[checked].answer2}}</view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  /* eslint-disable no-undef */
+  import wepy from 'wepy'
+  import WxCharts from 'common/libs/wxcharts'
+  import URIS from 'common/js/config'
+
+  export default class Radar extends wepy.component {
+    props = {
+      configArr: {
+        type: Object,
+        default: {}
+      }
+    }
+
+    data = {
+      imageUrl: URIS.image,
+      chart: null,
+      textArr: [
+        {txt: '专业', icon: 'icon-ability_major@2x.png', checked: 'icon-ability_major2@2x.png'},
+        {txt: '销售', icon: 'icon-ability_sales@2x.png', checked: 'icon-ability_sales2@2x.png'},
+        {txt: '关系', icon: 'icon-ability_nexus@2x.png', checked: 'icon-ability_nexus2@2x.png'},
+        {txt: '培训', icon: 'icon-ability_train@2x.png', checked: 'icon-ability_train2@2x.png'},
+        {txt: '策划', icon: 'icon-ability_plan@2x.png', checked: 'icon-ability_plan2@2x.png'}
+      ],
+      txtArr: [
+        {txt: '我们会从您的个人信息，回答专业问题的情况进行评估。',
+          issue: '如何提升“专业能力”评估值？',
+          answer1: '提供真实、完整、丰富的个人信息',
+          answer2: '美业专业问答活动的得分' },
+        {txt: '我们会从您不同区域打卡，销售赞播小程序的情况进行评估。',
+          issue: '如何提升“销售能力”评估值？',
+          answer1: '不同地区位置的打卡记录',
+          answer2: '销售本地门店引流工具-赞播小程序' },
+        {txt: '我们会从您邀请美导和门店入驻的情况进行评估。',
+          issue: '如何提升“关系能力”评估值？',
+          answer1: '邀请美导注册和入驻的数量',
+          answer2: '邀请美业门店注册和入驻的数量' },
+        {txt: '我们会从您观察培训课程和回答培训问题的情况进行评估。',
+          issue: '如何提升“培训能力”评估值？',
+          answer1: '按时参与美导的培训课程',
+          answer2: '积极回答课程中的问题' },
+        {txt: '我们会从您发布策划日志点赞数、分享数的情况进行评估',
+          issue: '如何提升“策划能力”评估值？',
+          answer1: '发布丰富的服务日志信息',
+          answer2: '转发和分享自己的服务日志信息' }
+      ],
+      checked: 0,
+      eventIn: false
+    }
+
+    methods = {
+      show(idx) {
+        if (this.eventIn) {
+          this.checked = idx
+          this.$apply()
+        }
+      }
+    }
+
+    onLoad() {
+      this.eventIn = this.configArr.eventIn
+      this.checked = this.configArr.checked
+      this.chart = new WxCharts({
+        canvasId: 'radarCanvas',
+        type: 'radar',
+        categories: ['', '', '', '', ''],
+        series: [{
+          data: [75, 60, 65, 85, 50],
+          color: '#ff3388'
+        }],
+        width: 300,
+        height: 240,
+        extra: {
+          radar: {
+            max: 100
+          }
+        }
+      })
+      this.$apply()
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+
+  .radar
+    background: $color-white
+
+  .radar-container
+    width: 100%
+    height: 220px
+    padding: 10px 0
+    position: relative
+    background: $color-white
+
+    .canvas
+      position: absolute
+      left: 50%
+      top: 50%
+      transform: translate(-50%, -50%)
+      background: $color-white
+      width: 300px
+      height: 200px
+
+      .radar-item
+        position: absolute
+        height: 30px
+        width: 80px
+        display: flex
+        align-items: center
+        justify-content: center
+
+        .radar-item-txt
+          font-size: $font-size-medium
+          color: $color-text-tr
+          line-height: 24px
+
+        .radar-item-img-box
+          width: 24px
+          height: 24px
+          margin-right: 3px
+
+          .radar-item-image
+            width: 24px
+            height: 24px
+
+      .radar-item.active
+        .radar-item-txt
+          color: $color-text
+
+      .radar-item:nth-child(1)
+        left: 110px
+        top: -3px
+      .radar-item:nth-child(2)
+        left: 220px
+        top: 70px
+      .radar-item:nth-child(3)
+        left: 165px
+        bottom: -5px
+      .radar-item:nth-child(4)
+        left: 50px
+        bottom: -5px
+      .radar-item:nth-child(5)
+        left: 0px
+        top: 70px
+
+      .center-item
+        position: absolute
+        left: 130px
+        top: 98px
+        width: 40px
+        text-align: center
+        font-size: $font-size-large-x
+        color: $color-white
+        font-weight: bold
+
+  .container
+    width: 100%
+    .head
+      height: 50px
+      line-height: 50px
+      font-size: $font-size-medium-x
+      color: #333333
+      display: flex
+      align-items: center
+      justify-content: center
+      &:before, &:after
+        content: ''
+        width: 40px
+        height: 1px
+        background: #DAE0E4
+      &:before
+        margin-right: 15px
+      &:after
+        margin-left: 15px
+
+    .content
+      padding: 0 47px 20px
+      .describe
+        font-size: $font-size-medium
+        color: $color-text-tr
+        line-height: 21px
+      .issue
+        font-size: $font-size-medium
+        color: $color-text
+        margin: 24px 0 11px
+      .answer
+        font-size: $font-size-medium
+        color: $color-text-tr
+        line-height: 21px
+
+</style>

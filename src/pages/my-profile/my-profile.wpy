@@ -1,0 +1,384 @@
+<template>
+  <view class="my-profile">
+    <view class="container" wx:if="{{role === 1}}">
+      <view class="avatar-box" @tap="uploadAvatar">
+        <view class="title">LOGO</view>
+        <image class="avatar" src="{{avatarUrl}}" mode="aspectFill" wx:if="{{avatarUrl}}"></image>
+        <image class="avatar" mode="aspectFill" wx:if="{{imageUrl && role === 1 && !avatarUrl}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png'}}"></image>
+        <image class="avatar" mode="aspectFill" wx:if="{{imageUrl && role === 0 && !avatarUrl}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png'}}"></image>
+      </view>
+      <view class="txt-item-count">
+        <view class="title">店名</view>
+        <view class="right">
+          <input type="text" placeholder="请输入(必填)" placeholder-class="holder-class" class="txt-input" bindinput="nameChange" maxlength="10" value="{{name}}"/>
+          <view class="count">{{name.length}}/10</view>
+        </view>
+      </view>
+      <view class="txt-in-item">
+        <view class="title">电话</view>
+        <view class="txt">{{mobile}}</view>
+      </view>
+      <view class="txt-item">
+        <view class="title">地址</view>
+        <input type="text" placeholder="请输入(必填)" placeholder-class="holder-class" class="txt-input" bindinput="addressChange" value="{{address}}"/>
+      </view>
+      <picker bindchange="IndustryChange" range="{{industryArr}}" range-key="{{'name'}}">
+        <view class="chiose-item last">
+          <view class="title">行业类型</view>
+            <view class="right">
+              <view class="txt">{{industry}}</view>
+              <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+            </view>
+        </view>
+      </picker>
+    </view>
+    <view class="container" wx:if="{{role === 0}}">
+      <view class="avatar-box" @tap="uploadAvatar">
+        <view class="title">头像</view>
+        <image class="avatar" src="{{avatarUrl}}" mode="aspectFill" wx:if="{{avatarUrl}}"></image>
+        <image class="avatar" mode="aspectFill" wx:if="{{imageUrl && role === 1 && !avatarUrl}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png'}}"></image>
+        <image class="avatar" mode="aspectFill" wx:if="{{imageUrl && role === 0 && !avatarUrl}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png'}}"></image>
+      </view>
+      <view class="txt-item-count">
+        <view class="title">姓名</view>
+        <view class="right">
+          <input type="text" placeholder="请输入(必填)" placeholder-class="holder-class" class="txt-input" bindinput="nameChange" maxlength="5" value="{{name}}"/>
+          <view class="count">{{name.length}}/5</view>
+        </view>
+      </view>
+      <view class="txt-in-item">
+        <view class="title">手机</view>
+        <view class="txt">{{mobile}}</view>
+      </view>
+      <picker bindchange="genderChange" range="{{genderArr}}">
+        <view class="chiose-item">
+          <view class="title">性别</view>
+            <view class="right">
+              <view class="txt">{{gender}}</view>
+              <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+            </view>
+        </view>
+      </picker>
+      <picker bindchange="ageChange" range="{{ageArr}}">
+        <view class="chiose-item">
+          <view class="title">年龄</view>
+            <view class="right">
+              <view class="txt">{{age? age + '岁' : ''}}</view>
+              <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+            </view>
+        </view>
+      </picker>
+      <picker bindchange="workYearChange" range="{{workYearArr}}">
+        <view class="chiose-item">
+          <view class="title">工作年限</view>
+            <view class="right">
+              <view class="txt">{{workYear? workYear + '年' : ''}}</view>
+              <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+            </view>
+        </view>
+      </picker>
+      <picker bindchange="IndustryChange" range="{{industryArr}}" range-key="{{'name'}}">
+        <view class="chiose-item last">
+          <view class="title">行业类型</view>
+          <view class="right">
+            <view class="txt">{{industry}}</view>
+            <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+          </view>
+        </view>
+      </picker>
+    </view>
+
+    <view class="submit-btn {{checkAll ? '' : 'dis'}}" @tap="submitAll">保存</view>
+
+    <Toast></Toast>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+  import Info from 'api/info'
+  import Upload from '@/api/uploads'
+  import Industries from '@/api/industries'
+  import Tips from 'common/js/tips'
+  import Toast from '@/base/toast/toast'
+
+  export default class profile extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '我的资料',
+      disableScroll: true
+    }
+
+    data = {
+      imageUrl: URIS.image,
+      industryArr: [],
+      industry: '',
+      industryId: '',
+      genderArr: ['男', '女'],
+      gender: '',
+      ageArr: [],
+      age: '',
+      workYearArr: [],
+      workYear: '',
+      name: '',
+      address: '',
+      mobile: '',
+      role: 0,
+      avatarUrl: '',
+      avatarId: '',
+      userId: ''
+    }
+
+    methods = {
+      IndustryChange(e) {
+        this.industry = this.industryArr[e.detail.value].name
+        this.industryId = this.industryArr[e.detail.value].id
+        this.$apply()
+      },
+      genderChange(e) {
+        this.gender = this.genderArr[e.detail.value]
+        this.$apply()
+      },
+      ageChange(e) {
+        this.age = this.ageArr[e.detail.value]
+        this.$apply()
+      },
+      workYearChange(e) {
+        this.workYear = this.workYearArr[e.detail.value]
+        this.$apply()
+      },
+      nameChange(e) {
+        this.name = e.detail.value
+        this.$apply()
+      },
+      addressChange(e) {
+        this.address = e.detail.value
+        this.$apply()
+      },
+      async uploadAvatar() {
+        let res = await wepy.chooseImage({sizeType: ['compressed']})
+        if (!res) {
+          return
+        }
+        let upRes = await Upload.uploadImages(res.tempFilePaths[0])
+        this.loaded()
+        this.avatarUrl = upRes.url
+        this.avatarId = upRes.id
+        this.$apply()
+      },
+      async submitAll() {
+        if (!this.checkAll) {
+          return
+        }
+        let data = {
+          image_id: this.avatarId,
+          name: this.name,
+          mobile: this.mobile,
+          industry_id: this.industryId,
+          address: this.address,
+          sex: this.gender,
+          age: this.age,
+          work_seniority: this.workYear
+        }
+        let res = await Info.updateUserInfo(data, this.userId)
+        this.loaded()
+        if (res.error === ERR_OK) {
+          Tips.success('保存成功')
+          setTimeout(() => {
+            this.$back(1)
+          }, 1000)
+        } else {
+          this.$invoke('Toast', 'show', res.message)
+        }
+      }
+    }
+
+    async load() {
+      for (let i = 18; i <= 50; i++) {
+        this.ageArr.push(i)
+      }
+      for (let j = 1; j <= 30; j++) {
+        this.workYearArr.push(j)
+      }
+      let Json1 = await Industries.industries()
+      if (Json1.error !== ERR_OK) {
+        this.loaded()
+        return
+      }
+      this.industryArr = Json1.data
+      let Json2 = await Info.getUserInfo()
+      this.loaded()
+      if (Json2.error !== ERR_OK) {
+        return
+      }
+      let res = Json2.data
+      this.mobile = res.mobile
+      this.name = res.name
+      this.role = res.role
+      this.userId = res.id
+      this.address = res.address ? res.address : ''
+      this.avatarUrl = res.image_url
+      this.avatarId = res.image_id
+      this.industry = res.industry_name
+      this.industryId = res.industry_id
+      this.gender = res.sex ? res.sex : ''
+      this.age = res.age ? res.age : ''
+      this.workYear = res.work_seniority ? res.work_seniority : ''
+      this.$apply()
+    }
+
+    async onLoad() {
+      await this.load()
+    }
+
+    _checkEmpty() {
+      let arr = [...arguments]
+      return arr.every((item) => {
+        return item
+      })
+    }
+
+    computed = {
+      checkAll() {
+        if (this.role === 0) {
+          return this._checkEmpty(this.avatarUrl, this.name, this.mobile, this.gender, this.age, this.workYear, this.industry)
+        } else if (this.role === 1) {
+          return this._checkEmpty(this.avatarUrl, this.name, this.mobile, this.address, this.industry)
+        } else {
+          return false
+        }
+      }
+    }
+
+    components = {
+      Toast
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+
+  .my-profile
+
+    .container
+      background: $color-white
+      padding-left: 15px
+      .avatar-box
+        display: flex
+        height: 60px
+        align-items: center
+        justify-content: space-between
+        padding-right: 15px
+        border-bottom: 0.5px solid $color-col-line
+        .title
+          font-size: $font-size-medium-x
+          color: $color-text
+        .avatar
+          width: 48px
+          height: 48px
+          border-radius: 50%
+
+      .txt-item
+        display: flex
+        align-items: center
+        height: 54px
+        padding-right: 15px
+        border-bottom: 0.5px solid $color-col-line
+        .title
+          font-size: $font-size-medium-x
+          color: $color-text
+          margin-right: 15px
+        .txt-input
+          flex: 1
+          font-size: $font-size-medium
+          color: $color-text
+        .holder-class
+          font-size: $font-size-medium
+          color: $color-assist-gray-b
+
+      .txt-item-count
+        display: flex
+        align-items: center
+        height: 54px
+        padding-right: 15px
+        border-bottom: 0.5px solid $color-col-line
+        .title
+          font-size: $font-size-medium-x
+          color: $color-text
+          margin-right: 15px
+        .right
+          flex: 1
+          display: flex
+          align-items: center
+          .txt-input
+            flex: 1
+            font-size: $font-size-medium
+            color: $color-text
+          .holder-class
+            font-size: $font-size-medium
+            color: $color-assist-gray-b
+          .count
+            font-size: $font-size-medium
+            color: $color-text-tr
+
+      .txt-in-item
+        display: flex
+        align-items: center
+        height: 54px
+        padding-right: 15px
+        border-bottom: 0.5px solid $color-col-line
+        .title
+          font-size: $font-size-medium-x
+          color: $color-text
+          margin-right: 15px
+        .txt
+          font-size: $font-size-medium
+          color: $color-text-tr
+
+      .chiose-item
+        display: flex
+        align-items: center
+        justify-content: space-between
+        height: 54px
+        padding-right: 15px
+        border-bottom: 0.5px solid $color-col-line
+        .title
+          font-size: $font-size-medium-x
+          color: $color-text
+          margin-right: 15px
+        .right
+          display: flex
+          align-items: center
+          .txt
+            font-size: $font-size-medium
+            color: $color-text
+            margin-right: 14px
+          .right-icon
+            width: 16px
+            height: 16px
+
+      .last
+        border-bottom: 0 none
+
+    .submit-btn
+      position: fixed
+      left: 0
+      right: 0
+      bottom: 0
+      height: 12vw
+      line-height: 12vw
+      text-align: center
+      font-size: $font-size-medium-x
+      color: $color-white
+      nomal-icon(0, 0)
+      &:active
+        hover-icon(0, 0)
+    .submit-btn.dis
+      disable-icon(0, 0)
+</style>

@@ -1,0 +1,210 @@
+<template>
+    <view class="mine">
+      <view class="head">
+        <navigator url="/pages/my-profile/my-profile" hover-class="none">
+          <view class="avatar-box">
+            <view class="name">{{name}}</view>
+            <view class="avatar">
+              <image class="avatar-img" mode="aspectFill" wx:if="{{avatarUrl}}" src="{{avatarUrl}}"></image>
+              <image class="avatar-img" mode="aspectFill" wx:if="{{imageUrl && role === 1 && !avatarUrl}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png'}}"></image>
+              <image class="avatar-img" mode="aspectFill" wx:if="{{imageUrl && role === 0 && !avatarUrl}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png'}}"></image>
+            </view>
+          </view>
+
+          <view class="mine-item">
+            <view class="left">
+              <image class="left-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-mine_data@2x.png'}}"></image>
+            </view>
+            <view class="right">
+              <view class="title">我的资料</view>
+              <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+            </view>
+          </view>
+        </navigator>
+        <navigator class="mine-item" url="" hover-class="none">
+          <view class="left">
+            <image class="left-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-mine_program@2x.png'}}"></image>
+          </view>
+          <view class="right">
+            <view class="title">我的小程序</view>
+            <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+          </view>
+        </navigator>
+      </view>
+
+      <view class="container">
+        <navigator class="mine-item" url="/pages/ability/ability" hover-class="none">
+          <view class="left">
+            <image class="left-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-mine_ability@2x.png'}}"></image>
+          </view>
+          <view class="right">
+            <view class="title">能力提升</view>
+            <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+          </view>
+        </navigator>
+        <navigator class="mine-item" url="/pages/my-wellet/my-wellet" hover-class="none">
+          <view class="left">
+            <image class="left-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-mine-wallet@2x.png'}}"></image>
+          </view>
+          <view class="right">
+            <view class="title">我的钱包</view>
+            <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+          </view>
+        </navigator>
+      </view>
+
+      <view class="container">
+        <navigator class="mine-item" url="" hover-class="none">
+          <view class="left">
+            <image class="left-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-mine_women@2x.png'}}"></image>
+          </view>
+          <view class="right">
+            <view class="title">邀请美导</view>
+            <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+          </view>
+        </navigator>
+        <navigator class="mine-item" url="" hover-class="none">
+          <view class="left">
+            <image class="left-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-mine_shop@2x.png'}}"></image>
+          </view>
+          <view class="right">
+            <view class="title">邀请门店</view>
+            <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+          </view>
+        </navigator>
+        <view class="mine-item" url="" hover-class="none">
+          <view class="left">
+            <image class="left-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-mine_service@2x.png'}}"></image>
+          </view>
+          <view class="right">
+            <view class="title">联系客服</view>
+            <button open-type="contact" class="btn"></button>
+            <image class="right-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
+          </view>
+        </view>
+      </view>
+    </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+  import Info from 'api/info'
+
+  export default class mine extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '我的'
+    }
+    data = {
+      imageUrl: URIS.image,
+      avatarUrl: '',
+      role: 0,
+      name: ''
+    }
+
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+
+    async onShow() {
+      await this.load()
+    }
+
+    async load() {
+      let Json = await Info.getUserInfo()
+      this.loaded()
+      if (Json.error !== ERR_OK) {
+        return
+      }
+      let res = Json.data
+      this.role = res.role
+      this.avatarUrl = res.image_url
+      this.name = res.name ? res.name : res.random_id
+      this.$apply()
+    }
+
+    methods = {
+
+    }
+  }
+</script>
+
+<style lang="stylus">
+    @import '../../common/stylus/variable'
+    @import '../../common/stylus/mixin'
+
+  .mine
+    .mine-item
+      display: flex
+      height: 53px
+      align-items: center
+      padding-left: 15px
+      .left
+        margin-right: 10px
+        .left-icon
+          width: 25px
+          height: 25px
+      .right
+        flex: 1
+        display: flex
+        height: 53px
+        border-bottom: 0.5px solid $color-col-line
+        justify-content: space-between
+        align-items: center
+        position: relative
+        .title
+          font-size: $font-size-medium-x
+          color: $color-text
+        .right-icon
+          width: 16px
+          height: 16px
+          margin-right: 11.5px
+        .btn
+          position: absolute
+          left: 0
+          top: 0
+          width: 100%
+          height: 100%
+          opacity: 0
+
+    .head
+      background: $color-white
+
+      .avatar-box
+        height: 50px
+        display: flex
+        justify-content: space-between
+        align-items: center
+        padding: 0 15px
+        .name
+          font-size: $font-size-large-l
+          color: $color-text
+          font-family: PingFangSC-Medium
+
+        .avatar
+          width: 48px
+          height: 48px
+          border-radius: 50%
+
+          .avatar-img
+            width: 48px
+            height: 48px
+            border-radius: 50%
+
+      navigator.mine-item:last-child .right
+        border-bottom: 0 none
+
+    .container
+      margin-top: 10px
+      background: $color-white
+
+      .mine-item:last-child .right
+        border-bottom: 0 none
+
+</style>

@@ -9,7 +9,11 @@ export default class http {
       method: method,
       data: data
     }
+    const Authorization = wepy.getStorageSync('token')
     param.header = Object.assign({}, {'X-Requested-With': 'XMLHttpRequest'})
+    if (Authorization) {
+      param.header = Object.assign(param.header, {Authorization})
+    }
     if (loading) {
       Tips.loading()
     }
@@ -22,20 +26,22 @@ export default class http {
     }
   }
 
-  static async upload(url, name, loading = true) {
-    const resImage = await wepy.chooseImage()
+  static async upload(url, data, name = 'file', loading = true) {
     const param = {
       url: url,
-      filePath: resImage.tempFilePaths[0],
+      filePath: data,
       name: name
     }
+    const Authorization = wepy.getStorageSync('token')
+    param.header = Object.assign({}, {Authorization})
     if (loading) {
       Tips.loading()
     }
     const res = await wepy.uploadFile(param)
     const resData = JSON.parse(res.data)
-    if (res.statusCode === 200 && resData.error === 0) {
-      return resData
+    Tips.loaded()
+    if (resData.error === 0) {
+      return resData.data
     } else {
       throw this.requestException(resData)
     }

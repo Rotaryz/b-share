@@ -89,17 +89,36 @@ no-wrap()
 
 //  水平居中
 row-center()
+  position :absolute
   left:50%
   transform :translateX(-50%)
 
 //垂直居中
 col-center()
+  position :absolute
   top:50%
   transform :translateY(-50%)
 
 //  全居中
 all-center()
+  position :absolute
   top:50%
   left:50%
   transform :translate(-50%,-50%)
+
+//禁用状态按钮
+disable-icon(x = 7px, y = 19px)
+  background: linear-gradient(90deg, rgba(255,60,121,.5) 4%, rgba(255,109,199,.5) 97%)
+  box-shadow: 0 x y 0 rgba(255,108,166,0.5)
+
+//   可用按钮
+nomal-icon(x = 7px, y = 19px)
+  background-image: linear-gradient(90deg, #FF3C79 4%, #FF6DC7 97%)
+  box-shadow: 0 x y 0 rgba(255,108,166,0.5)
+
+//  按上状态按钮
+hover-icon(x = 7px, y = 19px)
+  background-image: linear-gradient(90deg, #e5366e 4%, #e561b2 97%)
+  box-shadow: 0 x y 0 rgba(255,108,166,0.5)
+  color: rgba(255,255,255,.9)
 

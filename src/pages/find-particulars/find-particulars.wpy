@@ -1,0 +1,234 @@
+<template>
+  <view class="findParticulars">
+    <view class="find-par-box">
+      <repeat for="{{findDetail}}" key="index" index="index" item="item">
+        <FindDetail :find.sync="item" :listNum.sync="index"
+                    :comment.sync="true"></FindDetail>
+      </repeat>
+    </view>
+    <view class="input-box" wx:if="{{send}}">
+      <input type="text" focus="{{focus}}" class="comment-input" @input="isSend"
+             cursor-spacing="8.5" placeholder="{{place}}"
+             placeholder-class="place-style"/>
+      <text class="com-send {{comment === '' ? '' : 'com-send-active'}}"
+            @tap="sendComment({{findDetail[0].id}})">发送
+      </text>
+    </view>
+    <view class="find-comment">
+      <view class="comment-title">评论{{num}}</view>
+      <view class="comment-item" wx:for="{{findDetail[0].user_live_log_comments}}" wx:key="{{index}}">
+        <view class="header-box">
+          <image class="com-header" src="{{item.user_data.image_url}}"></image>
+        </view>
+        <view class="com-container">
+          <view class="nickname">Miu_Chan</view>
+          <view class="com-content">哈哈，同意娇姐姐～</view>
+          <view class="time {{item.send ? 'time-active':''}}">11月10日 11:20
+            <image class="comment-icon" wx:if="{{imageUrl}}"
+                   src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
+          </view>
+          <view class="input-box" wx:if="{{item.send}}">
+            <input type="text" class="comment-input" cursor-spacing="8.5"
+                   placeholder-class="place-style"/>
+            <text class="com-send">发送</text>
+          </view>
+          <view class="comment-item">
+            <view class="header-box">
+              <image class="com-header"></image>
+            </view>
+            <view class="com-container">
+              <view class="nickname">美导周：</view>
+              <view class="com-content">哈哈，同意娇姐姐～</view>
+              <view class="time {{item.send ? 'time-active':''}}">11月10日 11:20
+                <image class="comment-icon" wx:if="{{imageUrl}}"
+                       src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
+              </view>
+              <view class="input-box" wx:if="{{item.send}}">
+                <input type="text" class="comment-input" cursor-spacing="8.5"
+                       placeholder-class="place-style"/>
+                <text class="com-send">发送</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <Toast></Toast>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+  import FindDetail from '@/base/find-detail/find-detail'
+  import Toast from '@/base/toast/toast'
+  import logs from 'api/logs'
+  export default class findParticulars extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '详情'
+    }
+    data = {
+      imageUrl: URIS.image,
+      findDetail: [],
+      num: 1,
+      place: '请输入评论…',
+      send: false,
+      focus: true,
+      comment: ''
+    }
+
+    async onLoad(option) {
+      if (option.id) {
+        this.findDetail[0] = await this.load(option.id)
+        console.log(this.findDetail)
+      }
+      this.findDetail[0] = await this.load(22)
+      this.$apply()
+      console.log(this.findDetail)
+    }
+
+    async load(id) {
+      let res = this._infoRes(await logs.findDetail(id))
+      this.loaded()
+      return res
+    }
+
+    _infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+
+    async _comments(id, content, commentUserId = '') {
+      let data = {
+        user_live_log_id: id,
+        content: content,
+        comment_user_id: commentUserId
+      }
+      let res = await logs.findComment(data)
+      this.loaded()
+      if (res.error === ERR_OK) {
+        this.$invoke('Toast', 'show', '评论成功')
+        this.comment = ''
+        this.send = false
+        this.findDetail[0].user_live_log_comments.push(res.data)
+        this.$apply()
+      }
+    }
+
+    methods = {
+      isSend(e) {
+        this.comment = e.detail.value
+        this.$apply()
+      },
+      sendComment(id) {
+        this._comments(id, this.comment)
+      }
+    }
+    events = {
+      comment() {
+        this.send = true
+        setTimeout(() => {
+          this.focus = true
+          this.$apply()
+        }, 20)
+      }
+    }
+    components = {
+      Toast: Toast,
+      FindDetail: FindDetail
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  .find-par-box
+    padding-bottom: 1px
+    background: $color-white
+    padding-top: 15px
+    transition: translateY(-15px)
+
+  .find-comment
+    background: $color-white
+    margin-top: 10px
+    padding-left: 15px
+    font-size: $font-size-medium
+    box-sizing: border-box
+    .comment-title
+      font-family: $font-family-regular
+      line-height: 44px
+    .comment-item
+      display: flex
+      margin-top: 14px
+      .header-box
+        height: 9.067vw
+        width: @height
+      .com-header
+        border-radius: 100%
+        height: 100%
+        width: @height
+        background: $color-split-line
+      .com-container
+        width: 83vw
+        margin-left: 10px
+        .com-container
+          width: 77.6vw
+        .comment-item
+          .header-box
+            height: 4.267vw
+            width: @height
+        .nickname
+          color: $color-text-tr
+          margin-bottom: 5px
+        .time
+          margin-top: 10px
+          color: $color-text-tr
+          font-size: $font-size-small
+          border-bottom: 0.5px solid $color-split-line
+          padding-bottom: 15px
+          position: relative
+        .time-comment
+          border: none
+        .comment-icon
+          position: absolute
+          bottom: 15.3px
+          right: 18px
+          height: 18px
+          width: @height
+
+  .input-box
+    position: absolute
+    width: 100vw
+    box-sizing: border-box
+    left: 0
+    background: $color-white
+    height: 53.35px
+    border-top: 0.5px solid $color-split-line
+    .comment-input
+      box-sizing: border-box
+      transform: translateY(8.5px)
+      border-radius: 4px
+      height: 36.35px
+      background: $color-background
+      margin: 0 14.5px
+      width: 77.5667%
+      font-size: $font-size-medium
+      color: $color-text
+      padding-left: 10px
+    .com-send
+      font-size: $font-size-medium-x
+      col-center()
+      right: 20.5px
+      color: $color-assist-pink
+      opacity: .5
+    .com-send-active
+      opacity: 1
+    .place-style
+      color: $color-placeholder
+</style>
