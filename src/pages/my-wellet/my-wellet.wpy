@@ -6,20 +6,18 @@
         <view class="top-head">
           <view class="money">
             <view class="little">￥</view>
-            <view class="big">200.00</view>
+            <view class="big">{{canUse}}</view>
           </view>
           <view class="text">可提现红包金额</view>
-          <navigator url="/pages/withdraw/withdraw" hover-class="none">
-            <view class="btn">立即提现</view>
-          </navigator>
+          <view class="btn {{canUseMoney ? '' : 'dis'}}" @tap="toWithDraw">立即提现</view>
         </view>
         <view class="top-foot">
           <view class="item">
-            <view class="item-top">￥0.00</view>
+            <view class="item-top">￥{{total}}</view>
             <view class="item-foot">红包总额</view>
           </view>
           <view class="item">
-            <view class="item-top">0</view>
+            <view class="item-top">{{count}}</view>
             <view class="item-foot">红包个数</view>
           </view>
           <view class="line"></view>
@@ -31,16 +29,16 @@
         <view class="blue-black"></view>
         <view class="title-txt">红包记录</view>
       </view>
-      <scroll-view scroll-y class="list" bindscrolltolower="loadMore" wx:if="{{false}}">
-        <view class="item" wx:for="123456756454544">
+      <scroll-view scroll-y class="list" bindscrolltolower="loadMore" wx:if="{{listEmpty}}">
+        <view class="item" wx:for="{{redPackList}}" wx:key="{{item}}">
           <view class="item-left">
-            <view class="title">邀请返现红包</view>
-            <view class="time">12-01 1：00</view>
+            <view class="title">{{typeArr[item.type]}}</view>
+            <view class="time">{{item.created_at}}</view>
           </view>
-          <view class="item-right"><text class="small">￥</text>8.00</view>
+          <view class="item-right"><text class="small">￥</text>{{item.money}}</view>
         </view>
       </scroll-view>
-      <view class="empty">
+      <view class="empty" wx:if="{{!listEmpty}}">
         <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@3x.png'}}" class="empty-img"></image>
         <view class="txt">去赚钱</view>
       </view>
@@ -53,6 +51,7 @@
   import base from 'common/mixins/base'
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
+  import Info from 'api/info'
 
   export default class wellet extends wepy.page {
     mixins = [base]
@@ -63,12 +62,69 @@
     }
 
     data = {
-      imageUrl: URIS.image
+      imageUrl: URIS.image,
+      canUse: '0.00',
+      total: '0.00',
+      count: 0,
+      redPackList: [],
+      page: 1,
+      noMore: false,
+      typeArr: ['', '邀请美导注册奖励', '邀请门店注册奖励', '邀请美导问答认证奖励', '邀请门店问答认证奖励', '问答认证奖励', '实名认证奖励']
+    }
+
+    async onLoad() {
+      await this.load()
+    }
+
+    async load() {
+      let Json = await Info.getMyMoney()
+      this.loaded()
+      if (Json.error !== ERR_OK) {
+        return
+      }
+      let res = Json.data
+      this.canUse = res.use
+      this.total = res.total
+      this.count = res.count
+      this.redPackList = res.record
+      this.$apply()
     }
 
     methods = {
-      loadMore() {
-        console.log(999)
+      async loadMore() {
+        if (this.noMore) {
+          return
+        }
+        this.page ++
+        let Json = await Info.getMyMoney(this.page)
+        this.loaded()
+        if (Json.error !== ERR_OK) {
+          return
+        }
+        let res = Json.data.record
+        if (res.length === 0) {
+          this.page --
+          this.noMore = true
+          return
+        }
+        this.redPackList = [...this.redPackList, ...res]
+        console.log(this)
+        this.$apply()
+      },
+      toWithDraw() {
+        if (!this.canUseMoney) {
+          return
+        }
+        this.$navigate('/pages/withdraw/withdraw')
+      }
+    }
+
+    computed = {
+      canUseMoney() {
+        return this.canUse * 1
+      },
+      listEmpty() {
+        return this.redPackList.length
       }
     }
   }

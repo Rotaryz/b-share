@@ -5,21 +5,23 @@
       <view class="content">
         <view class="left">
           <view class="avatar">
-            <image class="avatar-img"></image>
+            <image class="avatar-img" mode="aspectFill" src="{{userInfo.image_url}}" wx:if="{{userInfo.image_url}}"></image>
+            <image class="avatar-img" mode="aspectFill" wx:if="{{imageUrl && !userInfo.image_url}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png'}}"></image>
           </view>
           <view class="msg">
             <view class="top">
-              <view class="name">刘娇刘娇</view>
-              <view class="occup">美容导师</view>
+              <view class="name">{{userInfo.name}}</view>
+              <view class="occup">{{userInfo.profession_name}}</view>
             </view>
             <view class="down">
-              <view class="des-txt">满五年</view>
-              <view class="des-txt">专业门店</view>
+              <view class="des-txt" wx:if="{{userInfo.work_seniority}}">满{{userInfo.work_seniority}}年</view>
+              <view class="des-txt" wx:if="{{userInfo.industry_name}}">{{userInfo.industry_name}}</view>
             </view>
           </view>
         </view>
-        <view class="right">
-          <image class="right-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-index_follow@2x.png'}}"></image>
+        <view class="right" wx:if="{{!userInfo.current_user}}">
+          <image class="right-BC" wx:if="{{imageUrl}}" hidden="{{attention}}" src="{{imageUrl + '/defaults/share/page/pic-index_follow@3x.png'}}" @tap="payAttention"></image>
+          <image class="right-BC" wx:if="{{imageUrl}}" hidden="{{!attention}}" src="{{imageUrl + '/defaults/share/page/pic-index_follow2@3x.png'}}" @tap="cancelAttention"></image>
         </view>
       </view>
     </view>
@@ -34,11 +36,15 @@
       </view>
     </view>
     <view class="tab-container">
-      <scroll-view class="Service-log" hidden="{{tabIdx===1}}"></scroll-view>
+      <scroll-view class="Service-log" hidden="{{tabIdx===1}}">
+
+      </scroll-view>
       <view class="ability-model" hidden="{{tabIdx===0}}">
         <Radar :configArr.sync="configArr"></Radar>
       </view>
     </view>
+
+    <Toast></Toast>
   </view>
 </template>
 
@@ -48,6 +54,10 @@
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
   import Radar from '@/base/radar/radar'
+  import Beauticians from 'api/beauticians'
+  import Tips from 'common/js/tips'
+  import Toast from '@/base/toast/toast'
+  import Logs from 'api/logs'
 
   export default class guideCenter extends wepy.page {
     mixins = [base]
@@ -62,18 +72,77 @@
       configArr: {
         eventIn: true,
         checked: 0
-      }
+      },
+      userId: '',
+      userInfo: {},
+      attention: 0
     }
+
+    onLoad(option) {
+      this.userId = option.id
+      this.tabIdx = option.idx ? option.idx : 1
+      this.$apply()
+    }
+
+    async onShow() {
+      this.load()
+    }
+
+    async load() {
+      this._getUserInfo()
+      this.loaded()
+    }
+
+    async _getUserInfo() {
+      let Json = await Beauticians.getInformation(this.userId)
+      if (Json.error !== ERR_OK) {
+        this.loaded()
+        return
+      }
+      this.userInfo = Json.data
+      this.$apply()
+    }
+
+    async
 
     methods = {
       changeTab(idx) {
         this.tabIdx = idx * 1
         this.$apply()
+      },
+      async payAttention() {
+        let Json = await Beauticians.addFriend(this.userId)
+        this.loaded()
+        if (Json.error === ERR_OK) {
+          Tips.success(Json.message)
+          this.userInfo.is_friend = 1
+        } else {
+          Tips.toast(Json.message, 'none')
+        }
+        this.$apply()
+      },
+      async cancelAttention() {
+        let Json = await Beauticians.delFriend(this.userId)
+        this.loaded()
+        if (Json.error === ERR_OK) {
+          Tips.success(Json.message)
+          this.userInfo.is_friend = 0
+        } else {
+          this.$invoke('Toast', 'show', Json.message)
+        }
+        this.$apply()
       }
     }
 
     components = {
-      Radar
+      Radar,
+      Toast
+    }
+
+    computed = {
+      attention() {
+        return this.userInfo.is_friend
+      }
     }
   }
 </script>
@@ -122,7 +191,6 @@
               width: 60px
               height: 60px
               border-radius: 50%
-              background: #ccc
 
           .msg
             display: flex
@@ -151,27 +219,12 @@
                 color: $color-text-tr
 
         .right
-          width: 74px
-          height: 29px
-          position: relative
+          width: 19.73333333333vw
+          height: 7.73333333333vw
           .right-BC
-            width: 74px
-            height: 29px
-            border-radius: 14.5px
-            background: #ccc
-            position: absolute
-            left: 0
-            top: 0
-          .right-txt
-            width: 74px
-            height: 29px
-            line-height: 29px
-            color: $color-white
-            text-align: center
-            font-size: $font-size-medium
-            position: absolute
-            left: 0
-            top: 0
+            width: 19.73333333333vw
+            height: 7.73333333333vw
+            border-radius: 3.866666666665vw
 
     .tab-box
       height: 44px

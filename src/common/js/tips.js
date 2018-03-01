@@ -69,7 +69,7 @@ export default class Tips {
     })
   }
 
-  static toast(title, onHide, icon = 'success') {
+  static toast(title, icon = 'success', onHide) {
     wx.showToast({
       title: title,
       icon: icon,

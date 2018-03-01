@@ -12,14 +12,14 @@
           <image class="item-li-left" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-ability_women@2x.png'}}"></image>
           <view class="item-li-right">
             <view class="item-li-title">邀请一位美导</view>
-            <view class="item-li-btn">去邀请</view>
+            <view class="item-li-btn {{invite ? 'dis' : ''}}" @tap="doneAbility(1)">{{invite? '已完成' : '去邀请'}}</view>
           </view>
         </view>
         <view class="item-li">
           <image class="item-li-left" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-ability_log@2x.png'}}"></image>
           <view class="item-li-right">
             <view class="item-li-title">完成服务日志</view>
-            <view class="item-li-btn dis">已完成</view>
+            <view class="item-li-btn {{serverLog? 'dis' : ''}}" @tap="doneAbility(2)">{{serverLog? '已完成' : '去完成'}}</view>
           </view>
         </view>
       </view>
@@ -33,28 +33,28 @@
           <image class="item-li-left" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-ability_data@2x.png'}}"></image>
           <view class="item-li-right">
             <view class="item-li-title">完善详细资料</view>
-            <view class="item-li-btn">去完成</view>
+            <view class="item-li-btn {{profile? 'dis' : ''}}" @tap="doneAbility(3)">{{profile? '已完成' : '去完成'}}</view>
           </view>
         </view>
-        <view class="item-li">
+        <view class="item-li" wx:if="{{role === 1}}">
           <image class="item-li-left" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-ability_name@2x.png'}}"></image>
           <view class="item-li-right">
             <view class="item-li-title">实名认证</view>
-            <view class="item-li-btn dis">已完成</view>
+            <view class="item-li-btn {{relName? 'dis' : ''}}" @tap="doneAbility(4)">{{relName? '已完成' : '去完成'}}</view>
           </view>
         </view>
         <view class="item-li">
           <image class="item-li-left" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-ability_questions@2x.png'}}"></image>
           <view class="item-li-right">
             <view class="item-li-title">完成问答</view>
-            <view class="item-li-btn">去完成</view>
+            <view class="item-li-btn {{answer? 'dis' : ''}}" @tap="doneAbility(5)">{{answer? '已完成' : '去完成'}}</view>
           </view>
         </view>
         <view class="item-li">
           <image class="item-li-left" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-ability_program@2x.png'}}"></image>
           <view class="item-li-right">
-            <view class="item-li-title">完成销售小程序</view>
-            <view class="item-li-btn">去完成</view>
+            <view class="item-li-title">试用小程序</view>
+            <view class="item-li-btn {{tryApp? 'dis' : ''}}" @tap="doneAbility(6)">{{tryApp? '已完成' : '去完成'}}</view>
           </view>
         </view>
       </view>
@@ -68,6 +68,7 @@
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
   import Radar from '@/base/radar/radar'
+  import Info from 'api/info'
 
   export default class ability extends wepy.page {
     mixins = [base]
@@ -81,11 +82,104 @@
       configArr: {
         eventIn: false,
         checked: -1
+      },
+      role: 0,
+      everydayArr: [],
+      noviceArr: []
+    }
+
+    async onShow() {
+      await this.load()
+    }
+
+    async load() {
+      let Json = await Info.getAbilityList()
+      if (Json.error !== ERR_OK) {
+        this.loaded()
+        return
+      }
+      let res = Json.data
+      this.everydayArr = res.everyday
+      this.noviceArr = res.novice
+      let Json1 = await Info.getUserInfo()
+      if (Json1.error !== ERR_OK) {
+        this.loaded()
+        return
+      }
+      this.role = Json1.data.role
+      this.loaded()
+      this.$apply()
+    }
+
+    _testIn(arr, str) {
+      let res = arr.indexOf(str)
+      if (res === -1) {
+        return false
+      } else {
+        return true
+      }
+    }
+
+    methods = {
+      doneAbility(num) {
+        switch (num * 1) {
+          case 1:
+            if (!this.invite) {
+              console.log('邀请美导')
+            }
+            break
+          case 2:
+            if (!this.serverLog) {
+              this.$switch('/pages/find/find')
+            }
+            break
+          case 3:
+            if (!this.profile) {
+              this.$navigate('/pages/my-profile/my-profile')
+            }
+            break
+          case 4:
+            if (!this.relName) {
+              console.log('完成实名认证')
+            }
+            break
+          case 5:
+            if (!this.relName) {
+              this.$navigate('/pages/answer-index/answer-index')
+            }
+            break
+          case 6:
+            if (!this.tryApp) {
+              this.$navigate('/pages/answer-index/answer-index')
+            }
+            break
+        }
       }
     }
 
     components = {
       Radar
+    }
+
+    computed = {
+      invite() {
+        return this._testIn(this.everydayArr, '005')
+      },
+      serverLog() {
+        return this._testIn(this.everydayArr, '006')
+      },
+      profile() {
+        return this._testIn(this.noviceArr, '001')
+      },
+      relName() {
+        return this._testIn(this.noviceArr, '002')
+      },
+      answer() {
+        return this._testIn(this.noviceArr, '003')
+      },
+      tryApp() {
+        return this._testIn(this.noviceArr, '004')
+      }
     }
   }
 </script>

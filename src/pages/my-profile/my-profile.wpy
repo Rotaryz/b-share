@@ -20,7 +20,7 @@
       </view>
       <view class="txt-item">
         <view class="title">地址</view>
-        <input type="text" placeholder="请输入(必填)" placeholder-class="holder-class" class="txt-input" bindinput="addressChange"/>
+        <input type="text" placeholder="请输入(必填)" placeholder-class="holder-class" class="txt-input" bindinput="addressChange" value="{{address}}"/>
       </view>
       <picker bindchange="IndustryChange" range="{{industryArr}}" range-key="{{'name'}}">
         <view class="chiose-item last">
@@ -33,7 +33,7 @@
       </picker>
     </view>
     <view class="container" wx:if="{{role === 0}}">
-      <view class="avatar-box">
+      <view class="avatar-box" @tap="uploadAvatar">
         <view class="title">头像</view>
         <image class="avatar" src="{{avatarUrl}}" mode="aspectFill" wx:if="{{avatarUrl}}"></image>
         <image class="avatar" mode="aspectFill" wx:if="{{imageUrl && role === 1 && !avatarUrl}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png'}}"></image>
@@ -89,6 +89,8 @@
     </view>
 
     <view class="submit-btn {{checkAll ? '' : 'dis'}}" @tap="submitAll">保存</view>
+
+    <Toast></Toast>
   </view>
 </template>
 
@@ -100,6 +102,8 @@
   import Info from 'api/info'
   import Upload from '@/api/uploads'
   import Industries from '@/api/industries'
+  import Tips from 'common/js/tips'
+  import Toast from '@/base/toast/toast'
 
   export default class profile extends wepy.page {
     mixins = [base]
@@ -125,7 +129,8 @@
       mobile: '',
       role: 0,
       avatarUrl: '',
-      avatarId: ''
+      avatarId: '',
+      userId: ''
     }
 
     methods = {
@@ -165,7 +170,7 @@
         this.avatarId = upRes.id
         this.$apply()
       },
-      submitAll() {
+      async submitAll() {
         if (!this.checkAll) {
           return
         }
@@ -179,11 +184,20 @@
           age: this.age,
           work_seniority: this.workYear
         }
-        console.log(data)
+        let res = await Info.updateUserInfo(data, this.userId)
+        this.loaded()
+        if (res.error === ERR_OK) {
+          Tips.success('保存成功')
+          setTimeout(() => {
+            this.$back(1)
+          }, 1000)
+        } else {
+          this.$invoke('Toast', 'show', res.message)
+        }
       }
     }
 
-    async onLoad() {
+    async load() {
       for (let i = 18; i <= 50; i++) {
         this.ageArr.push(i)
       }
@@ -205,7 +219,20 @@
       this.mobile = res.mobile
       this.name = res.name
       this.role = res.role
+      this.userId = res.id
+      this.address = res.address ? res.address : ''
+      this.avatarUrl = res.image_url
+      this.avatarId = res.image_id
+      this.industry = res.industry_name
+      this.industryId = res.industry_id
+      this.gender = res.sex ? res.sex : ''
+      this.age = res.age ? res.age : ''
+      this.workYear = res.work_seniority ? res.work_seniority : ''
       this.$apply()
+    }
+
+    async onLoad() {
+      await this.load()
     }
 
     _checkEmpty() {
@@ -225,6 +252,10 @@
           return false
         }
       }
+    }
+
+    components = {
+      Toast
     }
   }
 </script>
