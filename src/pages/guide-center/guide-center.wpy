@@ -26,12 +26,12 @@
       </view>
     </view>
     <view class="tab-box">
-      <view class="tab {{tabIdx===0?'active':''}}">
-        <view class="tab-item" @tap="changeTab(0)">服务日志</view>
+      <view class="tab {{tabIdx==='0'?'active':''}}">
+        <view class="tab-item" @tap="changeTab('0')">服务日志</view>
         <view class="tab-underline"></view>
       </view>
-      <view class="tab {{tabIdx===1?'active':''}}">
-        <view class="tab-item" @tap="changeTab(1)">能力模型</view>
+      <view class="tab {{tabIdx==='1'?'active':''}}">
+        <view class="tab-item" @tap="changeTab('1')">能力模型</view>
        <view class="tab-underline"></view>
       </view>
     </view>
@@ -68,7 +68,7 @@
 
     data = {
       imageUrl: URIS.image,
-      tabIdx: 1,
+      tabIdx: '1',
       configArr: {
         eventIn: true,
         checked: 0
@@ -80,7 +80,7 @@
 
     onLoad(option) {
       this.userId = option.id
-      this.tabIdx = option.idx ? option.idx : 1
+      this.tabIdx = option.idx ? option.idx : '1'
       this.$apply()
     }
 
