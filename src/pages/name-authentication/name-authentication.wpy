@@ -1,0 +1,193 @@
+<template>
+  <view class="store-license-body">
+    <view class="store-license-body-title">
+      <view class="store-license-body-block"></view>
+      请上传对应的证书和照片
+    </view>
+    <view class="store-license-body-imgBox">
+      <view class="store-license-imgBC" wx:for="{{images}}" wx:key="{{item}}">
+        <!--<image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/b-image/page/pic-id_fm_slic@2x.png'}}" class="store-license-imgBC-img"></image>-->
+        <image src="{{item.image_url}}" class="store-license-upImg" mode="aspectFit"></image>
+        <view class="store-license-imgBtn" @tap="uploadImg({{index}})">{{item.title}}</view>
+      </view>
+    </view>
+  </view>
+  <view class="authentication-submit" @tap="sunmitBtn">
+    <image wx:if="{{submitImage}}" src="{{'/../../../common/image/btn-invite_nor@2x.png'}}" style="width: 100%;"/>
+    <image wx:else src="{{'/../../../common/image/btn-login_disable@2x.png'}}" style="width: 100%;"/>
+    提交审核
+  </view>
+  <!-- 提示 -->
+  <view class="prompt" wx:if="{{prompt}}">
+    <view class="prompt-message">
+      <view class="prompt-message-info">
+        <view class="prompt-message-info-title">活动规则</view>
+        <view class="prompt-message-info-body">活动内容</view>
+      </view>
+      <view class="prompt-message-close" @tap="promtClose">
+        <image src="{{'/../../../common/image/icon-diary_del@2x.png'}}"></image>
+      </view>
+    </view>
+  </view>
+  <!-- 提示over -->
+
+
+</template>
+<script>
+    import wepy from 'wepy'
+    export default class Myname extends wepy.page {
+      config = {
+        navigationBarTitleText: '实名认证',
+        navigationBarBackgroundColor: '#fff'
+      }
+      data = {
+        submitImage: false,
+        prompt: false,
+        tempFilePaths: [],
+        images: [
+          {title: '营业执照'},
+          {title: '实体铺照片'},
+          {title: '门头照片'},
+          {title: '前台照片'}],
+        test: ''
+      }
+      methods = {
+        async uploadImg(idx) {
+          let res = await wepy.chooseImage()
+          if (!res) {
+            return
+          }
+          // let upRes = await Upload.uploadImages(res.tempFilePaths[0])
+          // this.loaded()
+          this.images[idx].image_url = res.tempFilePaths[0] // upRes.url
+          this.images[idx].image_id = // upRes.id
+          this.$apply()
+        },
+        async sunmitBtn(e) {
+          this.prompt = !this.prompt
+        },
+        async promtClose(e) {
+          this.prompt = !this.prompt
+        }
+      }
+      submitImageFun() { // 切换按键背景图
+        this.submitImage = true
+      }
+    }
+</script>
+<style lang="stylus">
+  @import "../../common/stylus/variable"
+  .store-license-body
+    margin-top: 10px
+    background: $color-white
+
+    .store-license-body-title
+      font-size: $font-size-medium
+      height: 43px
+      display: flex
+      align-items: center
+      color: $color-text-d
+
+      .store-license-body-block
+        width: 5px
+        height: 13px
+        background: #707FFF
+        margin-right: 7px
+        margin-left: 10px
+
+    .store-license-body-imgBox
+      display: flex
+      flex-wrap: wrap
+      padding-left: 12px
+
+      .store-license-imgBC
+        width: 44.8vw
+        height: 28vw
+        position: relative
+        margin-right: 15px
+        margin-bottom: 15px
+        border: 1px dashed $color-text-d
+
+        .store-license-imgBC-img
+          width: 44.8vw
+          height: 28vw
+          position: absolute
+          left: 0
+          top: 0
+
+        .store-license-imgBtn
+          width: 90px
+          height: 20px
+          border: 1px solid $color-col-line
+          font-size: $font-size-small-s
+          position: absolute
+          left: 50%
+          top: 50%
+          transform: translate(-50%, -50%)
+          line-height: 20px
+          text-align: center
+          border-radius: 50px
+          background: rgba(255, 255, 255, .9)
+
+        .store-license-upImg
+          position: absolute
+          width: 44.8vw
+          height: 28vw
+
+      view:nth-child(2n)
+        margin-right: 0
+
+  .authentication-submit
+    width: 80%
+    height: 55px
+    line-height: 45px
+    color: $color-white
+    font-size: $font-size-medium-x
+    text-align: center
+    margin: 0px auto
+    position: relative
+    image
+      position: absolute
+      width: 100%
+      height: 100%
+      left: 0px
+      z-index: -1
+
+  // 提示
+  .prompt
+    width:100%
+    height: 100%
+    background-color:rgba(0,0,0,0.15)
+    position: fixed
+    top: 0px
+    left: 0px
+    .prompt-message
+      width: 70%
+      height: 60%
+      position: absolute
+      top: 20%
+      left: 15%
+      z-index: 99
+      .prompt-message-info
+        height: 80%
+        border: 1px solid #ccc
+        background-color: #fff
+        margin-bottom: 9%
+        border-radius: 4px
+        .prompt-message-info-title
+          text-align: center
+          padding: 10px
+          font-size: $font-size-medium-x
+        .prompt-message-info-body
+          font-size: $font-size-medium
+          padding: 10px
+      .prompt-message-close
+        height: 50px
+        width: 50px
+        margin: 0 auto
+        image
+          width: 100%
+          height: 100%
+
+
+</style>

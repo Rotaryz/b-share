@@ -1,0 +1,164 @@
+<template type="wxml">
+  <view class="invit">
+    <image class="invit-bac"  src="{{imageUri + '/../../../common/image/pic-invite_bg_women@2x.png'}}"></image>
+    <image class="invit-bac-btn"  src="{{imageUri + '/../../../common/image/pic-invite_bg@2x.png'}}"></image>
+    <view class="invit-text">
+      <image class="invit-text-img"  src="{{imageUri + '/../../../common/image/pic-invite_word_women@2x.png'}}"></image>
+    </view>
+    <view class="invit-text-white">
+      <image wx:if="{{fillout}}" class="invit-white-img"  src="{{imageUri + '/../../../common/image/pic-invite_bg_white@2x.png'}}"></image>
+      <!--<image wx:if="{{!fillout}}" class="invit-white-img"  src="{{imageUri + '/../../../common/image/pic-beinvite_bg_white@2x.png'}}"></image>-->
+
+      <view class="invit-li-img">
+        <view class="li-img">
+          <image   src="{{imageUri + '/../../../common/image/pic-invite_girl@2x.png'}}"></image>
+        </view>
+        <view class="li-img">
+          <image src="{{imageUri + '/../../../common/image/pic-invite_questions@2x.png'}}"></image>
+        </view>
+        <view class="li-img">
+          <image  src="{{imageUri + '/../../../common/image/pic-invite_money@2x.png'}}"></image>
+        </view>
+      </view>
+      <view class="invit-arrow">
+        <view class="view-1">
+          <image  src="{{imageUri + '/../../../common/image/pic-invite_arrow@2x.png'}}"></image>
+        </view>
+        <view class="view-2">
+          <image  src="{{imageUri + '/../../../common/image/pic-invite_arrow@2x.png'}}"></image>
+        </view>
+      </view>
+      <view class="invit-li-text">
+        <text>邀请美导入驻</text>
+        <text>美导参与问答</text>
+        <text>通过后你获得红包</text>
+      </view>
+
+      <view wx:if="{{fillout}}" class="invit-click" @tap="goshop">
+        <image  src="{{imageUri + '/../../../common/image/iocn-invite_click@2x.png'}}"></image>
+        <text>邀请我的美导好友</text>
+      </view>
+      <view wx:if="{{fillout}}" class="invit-my">
+        <view>我的邀请</view>
+        <view><navigator url="{{lookInvut}}">查看邀请记录 ></navigator></view>
+      </view>
+      <view wx:if="{{fillout}}" class="invit-my-li">
+        <view @tap="lookPack" data-current="0">
+          <text class="rmb-color"><text><text class="rmb-color-min">￥</text>{{myInvit.myMoney}}</text></text>
+          <text class="number">获得的红包</text>
+        </view>
+        <view @tap="lookPack" data-current="1">
+          <text class="number"><text>{{myInvit.myPerson}}</text>人</text>
+          <text class="number">成功邀请</text>
+        </view>
+        <view @tap="lookPack" data-current="2">
+          <text class="number"><text>{{myInvit.myMoneys}}</text>个</text>
+          <text class="number">红包在路上</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- 提示 -->
+  <view class="right-activity" @tap="promtClose">活动规则</view>
+  <view class="prompt" wx:if="{{prompt}}">
+    <view class="prompt-message">
+      <view class="prompt-message-info">
+        <view class="prompt-message-info-title">活动规则</view>
+        <view class="prompt-message-info-body">{{modalInfo}}</view>
+      </view>
+      <view class="prompt-message-close" @tap="promtClose">
+        <image src="{{'/../../../common/image/icon-diary_del@2x.png'}}"></image>
+      </view>
+    </view>
+  </view>
+  <!-- 提示over -->
+</template>
+<script>
+  import wepy from 'wepy'
+  export default class invitshops extends wepy.page {
+    config = {
+      navigationBarTitleText: '邀请美导赚钱',
+      navigationBarBackgroundColor: '#fff'
+    }
+    data = {
+      imageUri: '',
+      myInvit: {
+        myMoney: '0.00',
+        myPerson: '0',
+        myMoneys: '0'
+      },
+      prompt: false,
+      fillout: true,
+      modalInfo: '活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则....',
+      lookInvut: '/pages/invit-record/invit-record'
+    }
+    methods = {
+      goshop() {
+        wepy.navigateTo({
+          url: '/pages/invitPerson-write/invitPerson'
+        })
+      },
+      lookPack(e) {
+        var key = e.currentTarget.dataset.current
+        var that = this
+        wepy.navigateTo({
+          url: that.lookInvut + '?id=' + key
+        })
+      },
+      async promtClose(e) {
+        this.prompt = !this.prompt
+      }
+    }
+  }
+</script>
+<style lang="stylus">
+  @import "../../common/stylus/invit"
+  // 提示
+  .right-activity
+    position: fixed
+    top: 70px
+    right: 0px
+    z-index: 5
+    color: #fff
+    font-size:$font-size-medium-x
+    border:1px solid #fff
+    border-right: none
+    border-radius: 8px 0px 0px 8px
+    padding: 5px 10px
+
+  .prompt
+    width:100%
+    height: 100%
+    background-color:rgba(0,0,0,0.15)
+    position: fixed
+    top: 0px
+    left: 0px
+    z-index: 9
+    .prompt-message
+      width: 70%
+      height: 60%
+      position: absolute
+      top: 20%
+      left: 15%
+      z-index: 99
+      .prompt-message-info
+        height: 80%
+        border: 1px solid #ccc
+        background-color: #fff
+        margin-bottom: 9%
+        border-radius: 4px
+        .prompt-message-info-title
+          text-align: center
+          padding: 10px
+          font-size: $font-size-medium-x
+        .prompt-message-info-body
+          font-size: $font-size-medium
+          padding: 10px
+      .prompt-message-close
+        height: 50px
+        width: 50px
+        margin: 0 auto
+        image
+          width: 100%
+          height: 100%
+</style>
