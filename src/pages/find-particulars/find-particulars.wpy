@@ -27,7 +27,7 @@
           <view class="nickname">{{item.user_data.name}}</view>
           <view class="com-content">{{item.content}}</view>
           <view class="time {{item.send ? 'time-active':''}}">{{item.differ_time}}
-            <image class="comment-icon" wx:if="{{imageUrl}}"
+            <image class="comment-icon" wx:if="{{imageUrl && !item.current_user}}"
                    src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"
                    @tap="showInput({{index}})"></image>
           </view>
@@ -91,13 +91,20 @@
     }
 
     async onLoad(option) {
+      console.log(option)
+      if (option.comment) {
+        this.send = true
+        setTimeout(() => {
+          this.focus = true
+          this.$apply()
+        }, 20)
+      }
       if (option.id) {
         this.findDetail[0] = await this.load(option.id)
-        console.log(this.findDetail)
       }
       this.findDetail[0] = await this.load(22)
+      console.log(this.findDetail[0])
       this.$apply()
-      console.log(this.findDetail)
     }
 
     async load(id) {

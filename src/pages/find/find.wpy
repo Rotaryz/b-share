@@ -95,6 +95,7 @@
     async onLoad() {
       this.findList = await this.load()
       this.showBlank(this.findList)
+      this.$apply()
       wepy.startPullDownRefresh()
     }
 

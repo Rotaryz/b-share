@@ -265,6 +265,10 @@
       comment: {
         type: Boolean,
         default: false
+      },
+      mine: {
+        type: Boolean,
+        default: true
       }
     }
     data = {
@@ -287,9 +291,11 @@
 
     methods = {
       goMine(id) {
-        wepy.navigateTo({
-          url: `/pages/guide-center/guide-center?id=${id}&idx=1`
-        })
+        if (this.mine) {
+          wepy.navigateTo({
+            url: `/pages/guide-center/guide-center?id=${id}&idx=1`
+          })
+        }
       },
 //      点击评论的icon
       isComment(id) {
@@ -297,7 +303,7 @@
           this.$emit('comment', id)
         } else {
           wepy.navigateTo({
-            url: '/pages/find-particulars/find-particulars?id=' + id
+            url: '/pages/find-particulars/find-particulars?=?comment=1&id=' + id
           })
         }
       },
@@ -409,7 +415,8 @@
           color: $color-del
           margin-left: 12px
         .find-num, .time
-          min-width: 24px
+          min-width: 30px
+          margin-left: 3px
           color: $color-text-tr
         .share
           display: flex
