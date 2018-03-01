@@ -7,8 +7,39 @@ export default class beauticians extends base {
    * 人气榜
    * @returns {Promise.<*>}
    */
-  static async getRanks() {
+  static async getRanks(page = 1, limit = 10) {
+    let data = {
+      page,
+      limit
+    }
     const url = `${this.baseUrl}/api/beauticians/beauticians/ranking`
+    return await this.get(url, data)
+  }
+
+  /**
+   * 美导信息
+   * @returns {Promise.<*>}
+   */
+  static async getInformation(id) {
+    const url = `${this.baseUrl}/api/beauticians/beauticians/userinfo/${id}`
+    return await this.get(url)
+  }
+
+  /**
+   * 关注美导
+   * @returns {Promise.<*>}
+   */
+  static async addFriend(id) {
+    const url = `${this.baseUrl}/api/beauticians/beauticians/add-friend/${id}`
+    return await this.get(url)
+  }
+
+  /**
+   * 取消关注
+   * @returns {Promise.<*>}
+   */
+  static async delFriend(id) {
+    const url = `${this.baseUrl}/api/beauticians/beauticians/del-friend/${id}`
     return await this.get(url)
   }
 

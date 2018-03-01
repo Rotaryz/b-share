@@ -61,7 +61,6 @@
 
     config = {
       pages: [
-        'pages/find-particulars/find-particulars',
         'pages/index/index',
         'pages/find/find',
         'pages/mine/mine',
@@ -75,7 +74,8 @@
         'pages/register/register',
         'pages/forget/forget',
         'pages/answer-index/answer-index',
-        'pages/answer/answer'
+        'pages/answer/answer',
+        'pages/find-particulars/find-particulars'
       ],
       window: {
         backgroundColor: '#F9F9F9',
@@ -112,9 +112,7 @@
 
     globalData = {
       baseUrl: URIS.api,
-      baseLogin: URIS.login,
-      categoryId: '',
-      categoryName: ''
+      baseLogin: URIS.login
     }
   }
 </script>

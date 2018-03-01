@@ -26,8 +26,20 @@ export default class info extends base {
    * 我的钱包
    * @returns {Promise.<*>}
    */
-  static async getMyMoney() {
+  static async getMyMoney(page = 1) {
+    let data = {
+      page: page
+    }
     const url = `${this.baseUrl}/api/info/user-money`
+    return await this.get(url, data)
+  }
+
+  /**
+   * 任务列表
+   * @returns {Promise.<*>}
+   */
+  static async getAbilityList() {
+    const url = `${this.baseUrl}/api/info/task-progress`
     return await this.get(url)
   }
 }

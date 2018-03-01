@@ -65,9 +65,8 @@
         if (!this.checked) {
           return
         }
-        this.$parent.updateGlobalData('categoryId', this.checked)
-        this.$parent.updateGlobalData('categoryName', this.checkedName)
-        this.$navigate('/pages/answer/answer')
+        let url = '/pages/answer/answer?categoryId=' +  this.checked + '&categoryName=' + this.checkedName
+        this.$navigate(url)
       }
     }
   }

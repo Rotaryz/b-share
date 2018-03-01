@@ -2,7 +2,7 @@
   <view class="withdraw">
     <view class="top">
       <view class="left">账户余额</view>
-      <view class="right"><text class="small">￥</text>8.00</view>
+      <view class="right"><text class="small">￥</text>{{canUse}}</view>
     </view>
     <view class="content">
       <view class="title">提现金额</view>
@@ -25,6 +25,7 @@
   import base from 'common/mixins/base'
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
+  import Info from 'api/info'
 
   export default class withdraw extends wepy.page {
     mixins = [base]
@@ -34,7 +35,23 @@
     }
 
     data = {
-      imageUrl: URIS.image
+      imageUrl: URIS.image,
+      canUse: 0
+    }
+
+    async onShow() {
+      await this.load()
+    }
+
+    async load() {
+      let Json = await Info.getMyMoney()
+      this.loaded()
+      if (Json.error !== ERR_OK) {
+        return
+      }
+      let res = Json.data
+      this.canUse = res.use
+      this.$apply()
     }
   }
 </script>
@@ -44,6 +61,9 @@
   @import '../../common/stylus/mixin'
 
   .withdraw
+    height: 100vh
+    display: flex
+    flex-direction: column
     .top
       margin-top: 10px
       background: $color-white
@@ -65,6 +85,7 @@
 
     .content
       margin-top: 10px
+      flex: 1
       padding: 0 15px 80px
       background: $color-white
       .title

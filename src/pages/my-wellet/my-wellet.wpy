@@ -9,9 +9,7 @@
             <view class="big">{{canUse}}</view>
           </view>
           <view class="text">可提现红包金额</view>
-          <navigator url="/pages/withdraw/withdraw" hover-class="none">
-            <view class="btn {{canUseMoney ? '' : 'dis'}}">立即提现</view>
-          </navigator>
+          <view class="btn {{canUseMoney ? '' : 'dis'}}" @tap="toWithDraw">立即提现</view>
         </view>
         <view class="top-foot">
           <view class="item">
@@ -34,10 +32,10 @@
       <scroll-view scroll-y class="list" bindscrolltolower="loadMore" wx:if="{{listEmpty}}">
         <view class="item" wx:for="{{redPackList}}" wx:key="{{item}}">
           <view class="item-left">
-            <view class="title">{{1}}</view>
-            <view class="time">12-01 1：00</view>
+            <view class="title">{{typeArr[item.type]}}</view>
+            <view class="time">{{item.created_at}}</view>
           </view>
-          <view class="item-right"><text class="small">￥</text>8.00</view>
+          <view class="item-right"><text class="small">￥</text>{{item.money}}</view>
         </view>
       </scroll-view>
       <view class="empty" wx:if="{{!listEmpty}}">
@@ -68,7 +66,10 @@
       canUse: '0.00',
       total: '0.00',
       count: 0,
-      redPackList: []
+      redPackList: [],
+      page: 1,
+      noMore: false,
+      typeArr: ['', '邀请美导注册奖励', '邀请门店注册奖励', '邀请美导问答认证奖励', '邀请门店问答认证奖励', '问答认证奖励', '实名认证奖励']
     }
 
     async onLoad() {
@@ -90,14 +91,37 @@
     }
 
     methods = {
-      loadMore() {
-        console.log(999)
+      async loadMore() {
+        if (this.noMore) {
+          return
+        }
+        this.page ++
+        let Json = await Info.getMyMoney(this.page)
+        this.loaded()
+        if (Json.error !== ERR_OK) {
+          return
+        }
+        let res = Json.data.record
+        if (res.length === 0) {
+          this.page --
+          this.noMore = true
+          return
+        }
+        this.redPackList = [...this.redPackList, ...res]
+        console.log(this)
+        this.$apply()
+      },
+      toWithDraw() {
+        if (!this.canUseMoney) {
+          return
+        }
+        this.$navigate('/pages/withdraw/withdraw')
       }
     }
 
     computed = {
       canUseMoney() {
-        return this.canUse * 0
+        return this.canUse * 1
       },
       listEmpty() {
         return this.redPackList.length

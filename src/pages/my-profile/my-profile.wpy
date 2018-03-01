@@ -89,6 +89,8 @@
     </view>
 
     <view class="submit-btn {{checkAll ? '' : 'dis'}}" @tap="submitAll">保存</view>
+
+    <Toast></Toast>
   </view>
 </template>
 
@@ -218,11 +220,14 @@
       this.name = res.name
       this.role = res.role
       this.userId = res.id
-      this.address = res.address
+      this.address = res.address ? res.address : ''
       this.avatarUrl = res.image_url
       this.avatarId = res.image_id
       this.industry = res.industry_name
       this.industryId = res.industry_id
+      this.gender = res.sex ? res.sex : ''
+      this.age = res.age ? res.age : ''
+      this.workYear = res.work_seniority ? res.work_seniority : ''
       this.$apply()
     }
 
