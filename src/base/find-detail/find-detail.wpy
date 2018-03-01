@@ -5,7 +5,7 @@
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header"
+            <image class="header" @tap="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
             <text class="nickname">{{find.user_data.name}}</text>
           </view>
@@ -36,7 +36,7 @@
               </view>
             </view>
             <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} "
-                  @tap="good({{find.id}})">
+                  @tap="good({{find.id}},{{listNum}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
               <view class="find-num">
@@ -52,7 +52,7 @@
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header"
+            <image class="header" @tap="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
             <text class="nickname">{{find.user_data.name}} </text>
           </view>
@@ -81,7 +81,7 @@
               </view>
             </view>
             <view class="share-item {{find.is_like ? 'thumbs-up' : ''}}"
-                  @tap="good({{find.id}})">
+                  @tap="good({{find.id}},{{listNum}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
               <view class="find-num">
@@ -97,7 +97,7 @@
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header"
+            <image class="header" @tap="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
             <text class="nickname">{{find.user_data.name}}</text>
           </view>
@@ -129,7 +129,7 @@
               </view>
             </view>
             <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} "
-                  @tap="good({{find.id}})">
+                  @tap="good({{find.id}},{{listNum}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
               <view class="find-num">
@@ -145,7 +145,7 @@
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header"
+            <image class="header" @tap="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
             <text class="nickname">{{find.user_data.name}} </text>
           </view>
@@ -178,7 +178,7 @@
               </view>
             </view>
             <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} "
-                  @tap="good({{find.id}})">
+                  @tap="good({{find.id}},{{listNum}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
               <view class="find-num">
@@ -194,7 +194,7 @@
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header"
+            <image class="header" @tap="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
             <text class="nickname">{{find.user_data.name}} </text>
           </view>
@@ -226,7 +226,7 @@
               </view>
             </view>
             <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} "
-                  @tap="good({{find.id}})">
+                  @tap="good({{find.id}},{{listNum}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
               <view class="find-num">
@@ -245,6 +245,7 @@
   import base from 'common/mixins/base'
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
+  import logs from 'api/logs'
 
   export default class findDetail extends wepy.page {
     mixins = [base]
@@ -285,6 +286,11 @@
     }
 
     methods = {
+      goMine(id) {
+        wepy.navigateTo({
+          url: `/pages/guide-center/guide-center?id=${id}&idx=1`
+        })
+      },
 //      点击评论的icon
       isComment(id) {
         if (this.comment) {
@@ -295,8 +301,18 @@
           })
         }
       },
-      good(id) {
-        this.$emit('good', id)
+      async good(id, index) {
+        let like = 0
+        this.find.is_like ? like = 0 : like = 1
+        let data = {user_live_log_id: id, like: like}
+        let res = await logs.like(data)
+        this.loaded()
+        if (res.error === ERR_OK) {
+          this.find.is_like = !this.find.is_like
+          this.find.is_like ? this.find.like_count++ : this.find.like_count--
+        }
+        this.$apply()
+        this.$emit('good', this.find, index)
       },
       delFind(id) {
         this.$emit('delFind', id)
@@ -309,7 +325,6 @@
         setTimeout(() => {
           this.imageIndex = index * 1
           let detail = this.finds.user_live_log_details
-          console.log(detail)
           let image = []
           detail.forEach((item) => {
             image.push(item.file_url)

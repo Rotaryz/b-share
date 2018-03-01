@@ -208,22 +208,8 @@
     }
 
     events = {
-      async good(id) {
-        for (let i = 0; i < this.findList.length; i++) {
-          if (this.findList[i].id === id) {
-            let like = 0
-            this.findList[i].is_like ? like = 0 : like = 1
-            let data = {user_live_log_id: id, like: like}
-            let res = await logs.like(data)
-            this.loaded()
-            if (res.error === ERR_OK) {
-              this.findList[i].is_like = !this.findList[i].is_like
-              this.findList[i].is_like ? this.findList[i].like_count++ : this.findList[i].like_count--
-              this.$apply()
-            }
-            break
-          }
-        }
+      good(res, index) {
+        this.findList[index] = res
       },
       async delFind(id) {
         this.$invoke('PopUpWindows', 'show')
