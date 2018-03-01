@@ -1,49 +1,54 @@
 <template>
   <view class="guide-center">
-    <view class="header">
-      <image class="head-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/bg-ability@3x.png'}}"></image>
-      <view class="content">
-        <view class="left">
-          <view class="avatar">
-            <image class="avatar-img" mode="aspectFill" src="{{userInfo.image_url}}" wx:if="{{userInfo.image_url}}"></image>
-            <image class="avatar-img" mode="aspectFill" wx:if="{{imageUrl && !userInfo.image_url}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png'}}"></image>
+    <view class="page-top">
+      <view class="header">
+        <image class="head-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/bg-ability@3x.png'}}"></image>
+        <view class="content">
+          <view class="left">
+            <view class="avatar">
+              <image class="avatar-img" mode="aspectFill" src="{{userInfo.image_url}}" wx:if="{{userInfo.image_url}}"></image>
+              <image class="avatar-img" mode="aspectFill" wx:if="{{imageUrl && !userInfo.image_url}}" src="{{imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png'}}"></image>
+            </view>
+            <view class="msg">
+              <view class="top">
+                <view class="name">{{userInfo.name}}</view>
+                <view class="occup">{{userInfo.profession_name}}</view>
+              </view>
+              <view class="down">
+                <view class="des-txt" wx:if="{{userInfo.work_seniority}}">满{{userInfo.work_seniority}}年</view>
+                <view class="des-txt" wx:if="{{userInfo.industry_name}}">{{userInfo.industry_name}}</view>
+              </view>
+            </view>
           </view>
-          <view class="msg">
-            <view class="top">
-              <view class="name">{{userInfo.name}}</view>
-              <view class="occup">{{userInfo.profession_name}}</view>
-            </view>
-            <view class="down">
-              <view class="des-txt" wx:if="{{userInfo.work_seniority}}">满{{userInfo.work_seniority}}年</view>
-              <view class="des-txt" wx:if="{{userInfo.industry_name}}">{{userInfo.industry_name}}</view>
-            </view>
+          <view class="right" wx:if="{{!userInfo.current_user}}">
+            <image class="right-BC" wx:if="{{imageUrl}}" hidden="{{attention}}" src="{{imageUrl + '/defaults/share/page/pic-index_follow@3x.png'}}" @tap="payAttention"></image>
+            <image class="right-BC" wx:if="{{imageUrl}}" hidden="{{!attention}}" src="{{imageUrl + '/defaults/share/page/pic-index_follow2@3x.png'}}" @tap="cancelAttention"></image>
           </view>
         </view>
-        <view class="right" wx:if="{{!userInfo.current_user}}">
-          <image class="right-BC" wx:if="{{imageUrl}}" hidden="{{attention}}" src="{{imageUrl + '/defaults/share/page/pic-index_follow@3x.png'}}" @tap="payAttention"></image>
-          <image class="right-BC" wx:if="{{imageUrl}}" hidden="{{!attention}}" src="{{imageUrl + '/defaults/share/page/pic-index_follow2@3x.png'}}" @tap="cancelAttention"></image>
+      </view>
+      <view class="tab-box">
+        <view class="tab {{tabIdx===1?'active':''}}">
+          <view class="tab-item" @tap="changeTab(1)">服务日志</view>
+          <view class="tab-underline"></view>
         </view>
-      </view>
-    </view>
-    <view class="tab-box">
-      <view class="tab {{tabIdx===1?'active':''}}">
-        <view class="tab-item" @tap="changeTab(1)">服务日志</view>
-        <view class="tab-underline"></view>
-      </view>
-      <view class="tab {{tabIdx===2?'active':''}}">
-        <view class="tab-item" @tap="changeTab(2)">能力模型</view>
-       <view class="tab-underline"></view>
+        <view class="tab {{tabIdx===2?'active':''}}">
+          <view class="tab-item" @tap="changeTab(2)">能力模型</view>
+          <view class="tab-underline"></view>
+        </view>
       </view>
     </view>
     <view class="tab-container">
-      <scroll-view class="Service-log" hidden="{{tabIdx===2}}">
-
-      </scroll-view>
+      <view class="Service-log" hidden="{{tabIdx===2}}">
+        <repeat wx:if="{{logs.length > 0}}" for="{{logs}}" key="index"
+                index="index" item="item">
+          <FindDetail :find.sync="item" :listNum.sync="index" :mine="false"></FindDetail>
+        </repeat>
+        <Underline></Underline>
+      </view>
       <view class="ability-model" hidden="{{tabIdx===1}}">
         <Radar :configArr.sync="configArr"></Radar>
       </view>
     </view>
-
     <Toast></Toast>
   </view>
 </template>
@@ -58,7 +63,8 @@
   import Tips from 'common/js/tips'
   import Toast from '@/base/toast/toast'
   import Logs from 'api/logs'
-  import findDetail from '@/base/find-detail/find-detail'
+  import FindDetail from '@/base/find-detail/find-detail'
+  import Underline from '@/base/underline-block/underline-block'
 
   export default class guideCenter extends wepy.page {
     mixins = [base]
@@ -76,7 +82,10 @@
       },
       userId: '',
       userInfo: {},
-      attention: 0
+      attention: 0,
+      logs: [],
+      page: 1,
+      noMore: false
     }
 
     onLoad(option) {
@@ -89,8 +98,18 @@
       this.load()
     }
 
+    async onReachBottom() {
+      if (this.tabIdx === 2) {
+        return
+      }
+      this.page ++
+      await this._getMoreLogs(this.page)
+      this.loaded()
+    }
+
     async load() {
       this._getUserInfo()
+      this._getLogs()
       this.loaded()
     }
 
@@ -104,11 +123,60 @@
       this.$apply()
     }
 
-    async
+    async _getLogs(page = 1) {
+      let limit
+      if (this.logs.length === 0 && !this.noMore) {
+        limit = 10
+      } else if (this.logs.length > 0 && this.logs.length <= 100 && !this.noMore) {
+        limit = this.logs.length
+      } else if (this.logs.length > 0 && this.logs.length <= 100 && this.noMore) {
+        limit = 100
+      } else if (this.logs.length > 100) {
+        limit = 100
+        this.noMore = false
+        this.$invoke('Underline', 'hide')
+      }
+      let Json = await Logs.getServerLog(this.userId, page, limit)
+      if (Json.error !== ERR_OK) {
+        this.loaded()
+        return
+      }
+      this.logs = Json.data
+      this.$apply()
+    }
+
+    async _getMoreLogs(page) {
+      if (this.noMore) {
+        return
+      }
+      let Json = await Logs.getServerLog(this.userId, page)
+      if (Json.error !== ERR_OK) {
+        this.loaded()
+        return
+      }
+      let res = Json.data
+      if (res.length === 0) {
+        this.noMore = true
+        this.page --
+        this.$invoke('Underline', 'show')
+        return
+      }
+      this.logs = [...this.logs, ...res]
+      this.$apply()
+    }
 
     methods = {
       changeTab(idx) {
         this.tabIdx = idx * 1
+//        switch (this.tabIdx) {
+//          case 2:
+//            console.log('能力模型')
+//            break
+//          case 1:
+//            this._getLogs()
+//            break
+//        }
+//        this.loaded()
         this.$apply()
       },
       async payAttention() {
@@ -137,12 +205,20 @@
 
     components = {
       Radar,
-      Toast
+      Toast,
+      FindDetail,
+      Underline
     }
 
     computed = {
       attention() {
         return this.userInfo.is_friend
+      }
+    }
+
+    events = {
+      good() {
+
       }
     }
   }
@@ -154,9 +230,11 @@
 
   page
     background: $color-white
+    height: 100vh
 
   .guide-center
     background: $color-white
+    height: 100%
 
     .header
       height: 27.333333333vw
@@ -256,8 +334,6 @@
           color: $color-text
         .tab-underline
           background: $color-assist-pink
-
-
 
 
 </style>
