@@ -287,9 +287,8 @@
     methods = {
 //      点击评论的icon
       isComment(id) {
-        console.log(id)
         if (this.comment) {
-
+          this.$emit('comment', id)
         } else {
           wepy.navigateTo({
             url: '/pages/find-particulars/find-particulars?id=' + id

@@ -6,18 +6,31 @@
                     :comment.sync="true"></FindDetail>
       </repeat>
     </view>
+    <view class="input-box" wx:if="{{send}}">
+      <input type="text" focus="{{focus}}" class="comment-input" @input="isSend"
+             cursor-spacing="8.5" placeholder="{{place}}"
+             placeholder-class="place-style"/>
+      <text class="com-send {{comment === '' ? '' : 'com-send-active'}}"
+            @tap="sendComment({{findDetail[0].id}})">发送
+      </text>
+    </view>
     <view class="find-comment">
       <view class="comment-title">评论{{num}}</view>
-      <view class="comment-item">
+      <view class="comment-item" wx:for="{{findDetail[0].user_live_log_comments}}" wx:key="{{index}}">
         <view class="header-box">
-          <image class="com-header"></image>
+          <image class="com-header" src="{{item.user_data.image_url}}"></image>
         </view>
         <view class="com-container">
           <view class="nickname">Miu_Chan</view>
           <view class="com-content">哈哈，同意娇姐姐～</view>
-          <view class="time">11月10日 11:20
+          <view class="time {{item.send ? 'time-active':''}}">11月10日 11:20
             <image class="comment-icon" wx:if="{{imageUrl}}"
                    src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
+          </view>
+          <view class="input-box" wx:if="{{item.send}}">
+            <input type="text" class="comment-input" cursor-spacing="8.5"
+                   placeholder-class="place-style"/>
+            <text class="com-send">发送</text>
           </view>
           <view class="comment-item">
             <view class="header-box">
@@ -26,9 +39,14 @@
             <view class="com-container">
               <view class="nickname">美导周：</view>
               <view class="com-content">哈哈，同意娇姐姐～</view>
-              <view class="time">11月10日 11:20
+              <view class="time {{item.send ? 'time-active':''}}">11月10日 11:20
                 <image class="comment-icon" wx:if="{{imageUrl}}"
                        src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
+              </view>
+              <view class="input-box" wx:if="{{item.send}}">
+                <input type="text" class="comment-input" cursor-spacing="8.5"
+                       placeholder-class="place-style"/>
+                <text class="com-send">发送</text>
               </view>
             </view>
           </view>
@@ -56,7 +74,11 @@
     data = {
       imageUrl: URIS.image,
       findDetail: [],
-      num: 1
+      num: 1,
+      place: '请输入评论…',
+      send: false,
+      focus: true,
+      comment: ''
     }
 
     async onLoad(option) {
@@ -64,23 +86,58 @@
         this.findDetail[0] = await this.load(option.id)
         console.log(this.findDetail)
       }
-//      this.findDetail[0] = await this.load(22)
+      this.findDetail[0] = await this.load(22)
       this.$apply()
       console.log(this.findDetail)
     }
 
     async load(id) {
-      let res = this.infoRes(await logs.findDetail(id))
+      let res = this._infoRes(await logs.findDetail(id))
       this.loaded()
       return res
     }
 
-    infoRes(res) {
+    _infoRes(res) {
       if (res.error === ERR_OK) {
         return res.data
       }
     }
 
+    async _comments(id, content, commentUserId = '') {
+      let data = {
+        user_live_log_id: id,
+        content: content,
+        comment_user_id: commentUserId
+      }
+      let res = await logs.findComment(data)
+      this.loaded()
+      if (res.error === ERR_OK) {
+        this.$invoke('Toast', 'show', '评论成功')
+        this.comment = ''
+        this.send = false
+        this.findDetail[0].user_live_log_comments.push(res.data)
+        this.$apply()
+      }
+    }
+
+    methods = {
+      isSend(e) {
+        this.comment = e.detail.value
+        this.$apply()
+      },
+      sendComment(id) {
+        this._comments(id, this.comment)
+      }
+    }
+    events = {
+      comment() {
+        this.send = true
+        setTimeout(() => {
+          this.focus = true
+          this.$apply()
+        }, 20)
+      }
+    }
     components = {
       Toast: Toast,
       FindDetail: FindDetail
@@ -118,7 +175,7 @@
         width: @height
         background: $color-split-line
       .com-container
-        width: 84.2667vw
+        width: 83vw
         margin-left: 10px
         .com-container
           width: 77.6vw
@@ -136,6 +193,8 @@
           border-bottom: 0.5px solid $color-split-line
           padding-bottom: 15px
           position: relative
+        .time-comment
+          border: none
         .comment-icon
           position: absolute
           bottom: 15.3px
@@ -143,4 +202,33 @@
           height: 18px
           width: @height
 
+  .input-box
+    position: absolute
+    width: 100vw
+    box-sizing: border-box
+    left: 0
+    background: $color-white
+    height: 53.35px
+    border-top: 0.5px solid $color-split-line
+    .comment-input
+      box-sizing: border-box
+      transform: translateY(8.5px)
+      border-radius: 4px
+      height: 36.35px
+      background: $color-background
+      margin: 0 14.5px
+      width: 77.5667%
+      font-size: $font-size-medium
+      color: $color-text
+      padding-left: 10px
+    .com-send
+      font-size: $font-size-medium-x
+      col-center()
+      right: 20.5px
+      color: $color-assist-pink
+      opacity: .5
+    .com-send-active
+      opacity: 1
+    .place-style
+      color: $color-placeholder
 </style>
