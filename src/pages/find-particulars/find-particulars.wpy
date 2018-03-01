@@ -15,7 +15,7 @@
       </text>
     </view>
     <view class="find-comment">
-      <view class="comment-title">评论{{num}}</view>
+      <view class="comment-title">评论{{findDetail[0].comment_count}}</view>
       <view class="comment-item"
             wx:for="{{findDetail[0].user_live_log_comments}}"
             wx:key="{{index}}">
@@ -37,7 +37,7 @@
                    placeholder-class="place-style"/>
             <text class="com-send"
                   class="com-send {{comment === '' ? '' : 'com-send-active'}}"
-                  @tap="childComment({{item.user_live_log_id}})">发送
+                  @tap="childComment({{item.user_id}})">发送
             </text>
           </view>
           <!--<view class="comment-item">-->
@@ -125,6 +125,7 @@
           this.$invoke('Toast', 'show', '评论成功')
           this.comment = ''
           this.send = false
+          this.findDetail[0].comment_count++
           this.findDetail[0].user_live_log_comments.push(res.data)
           this.$apply()
         }
@@ -137,6 +138,7 @@
         this.childIndex = index
       },
       childComment(userId) {
+        console.log(userId)
         this._comments(this.findDetail[0].id, this.comment, userId)
         this.findDetail[0].user_live_log_comments[this.childIndex].send = false
       },
