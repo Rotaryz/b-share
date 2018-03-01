@@ -61,7 +61,7 @@
     config = {
 
       pages: [
-//        'pages/invitPerson/invitPerson',
+        'pages/invitPerson/invitPerson',
         'pages/invitShop/invitShop',
         'pages/name-authentication/name-authentication',
         'pages/loading/loading',
@@ -75,27 +75,7 @@
         navigationBarBackgroundColor: '#fff',
         navigationBarTitleText: '共享美导',
         navigationBarTextStyle: 'black'
-      },
-//      tabBar: {
-//        color: '#BEBEBE',
-//        selectedColor: '#706B82',
-//        backgroundColor: '#fff',
-//        borderStyle: 'black',
-//        list: [
-//          {
-//            pagePath: 'pages/loading/loading',
-//            text: '美导',
-//            iconPath: './icon/icon-tab_square1@2x.png',
-//            selectedIconPath: './icon/icon-tab_square2@2x.png'
-//          },
-//          {
-//            pagePath: 'pages/loading/loading',
-//            text: '发现',
-//            iconPath: './icon/icon-tab_recommend1@2x.png',
-//            selectedIconPath: './icon/icon-tab_recommend2@2x.png'
-//          }
-//        ]
-//      }
+      }
     }
 
     globalData = {

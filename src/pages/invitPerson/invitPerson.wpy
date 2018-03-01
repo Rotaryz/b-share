@@ -34,8 +34,11 @@
         <text>通过后你获得红包</text>
       </view>
 
-      <view wx:if="{{fillout}}" class="invit-click" @tap="goshop">
+      <view wx:if="{{fillout}}" class="invit-click">
         <image  src="{{imageUri + '/../../../common/image/iocn-invite_click@2x.png'}}"></image>
+        <button open-type="share" style="background: transparent;width:80%;height:59px;border:none;">
+
+        </button>
         <text>邀请我的美导好友</text>
       </view>
       <view wx:if="{{fillout}}" class="invit-my">
@@ -107,6 +110,13 @@
       },
       async promtClose(e) {
         this.prompt = !this.prompt
+      },
+      // 分享
+      onShareAppMessage() {
+        return {
+          title: '共享美导',
+          path: '/pages/invitPerson-write/invitPerson'
+        }
       }
     }
   }
