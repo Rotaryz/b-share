@@ -72,11 +72,16 @@
     }
 
     async load() {
-      let Json
+      let Json, limit
       if (this.rankList.length === 0) {
         Json = await Beauticians.getRanks()
       } else {
-        Json = await Beauticians.getRanks(1, this.rankList.length)
+        if (this.noMore) {
+          limit = 100
+        } else {
+          limit = this.rankList.length
+        }
+        Json = await Beauticians.getRanks(1, limit)
       }
       this.loaded()
       if (Json.error !== ERR_OK) {

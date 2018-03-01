@@ -36,7 +36,9 @@
       </view>
     </view>
     <view class="tab-container">
-      <scroll-view class="Service-log" hidden="{{tabIdx===1}}"></scroll-view>
+      <scroll-view class="Service-log" hidden="{{tabIdx===1}}">
+
+      </scroll-view>
       <view class="ability-model" hidden="{{tabIdx===0}}">
         <Radar :configArr.sync="configArr"></Radar>
       </view>
@@ -55,6 +57,7 @@
   import Beauticians from 'api/beauticians'
   import Tips from 'common/js/tips'
   import Toast from '@/base/toast/toast'
+  import Logs from 'api/logs'
 
   export default class guideCenter extends wepy.page {
     mixins = [base]
@@ -77,6 +80,7 @@
 
     onLoad(option) {
       this.userId = option.id
+      this.tabIdx = option.idx ? option.idx : 1
       this.$apply()
     }
 
@@ -85,14 +89,21 @@
     }
 
     async load() {
-      let Json = await Beauticians.getInformation(this.userId)
+      this._getUserInfo()
       this.loaded()
+    }
+
+    async _getUserInfo() {
+      let Json = await Beauticians.getInformation(this.userId)
       if (Json.error !== ERR_OK) {
+        this.loaded()
         return
       }
       this.userInfo = Json.data
       this.$apply()
     }
+
+    async
 
     methods = {
       changeTab(idx) {
@@ -106,7 +117,7 @@
           Tips.success(Json.message)
           this.userInfo.is_friend = 1
         } else {
-          this.$invoke('Toast', 'show', Json.message)
+          Tips.toast(Json.message, 'none')
         }
         this.$apply()
       },

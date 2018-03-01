@@ -8,13 +8,13 @@
       <view class="title">提现金额</view>
       <view class="input-box">
         <view class="txt">￥</view>
-        <input type="digit" class="moneyInput"/>
+        <input type="digit" class="moneyInput" value="{{money}}" bindinput="moneyChange"/>
       </view>
       <view class="foot">
         <view class="left">提现到微信零钱(满50元才可提现)</view>
-        <view class="right">全部提现</view>
+        <view class="right" @tap="allIn">全部提现</view>
       </view>
-      <view class="btn">提现</view>
+      <view class="btn {{checkMoney ? '' : 'dis'}}" @tap="withDrawMoney">提现</view>
       <view class="withdraw-txt">1-5个工作日到账</view>
     </view>
   </view>
@@ -26,6 +26,7 @@
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
   import Info from 'api/info'
+  import Tips from 'common/js/tips'
 
   export default class withdraw extends wepy.page {
     mixins = [base]
@@ -36,7 +37,8 @@
 
     data = {
       imageUrl: URIS.image,
-      canUse: 0
+      canUse: 0,
+      money: ''
     }
 
     async onShow() {
@@ -52,6 +54,30 @@
       let res = Json.data
       this.canUse = res.use
       this.$apply()
+    }
+
+    methods = {
+      allIn() {
+        this.money = this.canUse
+        this.$apply()
+      },
+      moneyChange(e) {
+        this.money = e.detail.value
+        this.$apply()
+      },
+      withDrawMoney() {
+        if (!this.checkMoney) {
+          return
+        }
+        Tips.toast('功能暂未开放', 'none')
+      }
+    }
+
+    computed = {
+      checkMoney() {
+        let reg = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/
+        return reg.test(this.money) && this.money >= 50
+      }
     }
   }
 </script>
