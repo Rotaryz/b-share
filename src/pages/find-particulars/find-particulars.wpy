@@ -8,8 +8,9 @@
     </view>
     <view class="input-box" wx:if="{{send}}">
       <input type="text" focus="{{focus}}" class="comment-input" @input="isSend"
-             cursor-spacing="8.5" placeholder="{{place}}"
-             placeholder-class="place-style"/>
+             cursor-spacing="8.5" placeholder="{{place}}" value="{{comment}}"
+             placeholder-class="place-style" @blur="blur(-1)"
+             @confirm="sendComment({{findDetail[0].id}})"/>
       <text class="com-send {{comment === '' ? '' : 'com-send-active'}}"
             @tap="sendComment({{findDetail[0].id}})">发送
       </text>
@@ -27,41 +28,45 @@
           <view class="nickname">{{item.user_data.name}}</view>
           <view class="com-content">{{item.content}}</view>
           <view class="time {{item.send ? 'time-active':''}}">{{item.differ_time}}
-            <image class="comment-icon" wx:if="{{imageUrl && !item.current_user}}"
+            <image class="comment-icon"
+                   wx:if="{{imageUrl}}"
                    src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"
                    @tap="showInput({{index}})"></image>
           </view>
           <view class="input-box" wx:if="{{item.send}}">
             <input type="text" class="comment-input" cursor-spacing="8.5"
-                   @input="isSend"
+                   value="{{comment}}" focus="{{focus}}" @blur="blur({{index}})"
+                   @input="isSend" @confirm="childComment({{item.user_id}})"
+                   placeholder="{{place}}"
                    placeholder-class="place-style"/>
             <text class="com-send"
                   class="com-send {{comment === '' ? '' : 'com-send-active'}}"
-                  @tap="childComment({{item.user_id}})">发送
+                  @tap="childComment({{item.user_id}},{{item.id}})">发送
             </text>
           </view>
-          <!--<view class="comment-item">-->
-          <!--<view class="header-box">-->
-          <!--<image class="com-header"></image>-->
-          <!--</view>-->
-          <!--<view class="com-container">-->
-          <!--<view class="nickname">美导周：</view>-->
-          <!--<view class="com-content">哈哈，同意娇姐姐～</view>-->
-          <!--<view class="time {{item.send ? 'time-active':''}}">11月10日 11:20-->
-          <!--<image class="comment-icon" wx:if="{{imageUrl}}"-->
-          <!--src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>-->
-          <!--</view>-->
-          <!--<view class="input-box" wx:if="{{item.send}}">-->
-          <!--<input type="text" class="comment-input" cursor-spacing="8.5"-->
-          <!--placeholder-class="place-style"/>-->
-          <!--<text class="com-send">发送</text>-->
-          <!--</view>-->
-          <!--</view>-->
-          <!--</view>-->
+          <view class="comment-item" wx:for="{{item.comments}}" wx:key="{{index}}">
+            <view class="header-box">
+              <image class="com-header" src="{{!item.user_data.image_url && item.user_data.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !item.user_data.image_url && item.user_data.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : item.user_data.image_url}}"></image>
+            </view>
+            <view class="com-container">
+              <view class="nickname">{{item.user_data.name}}</view>
+              <view class="com-content">{{item.content}}</view>
+              <view class="time {{item.send ? 'time-active':''}}">{{item.differ_time}}
+                <image class="comment-icon" wx:if="{{imageUrl}}"
+                       src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
+              </view>
+              <view class="input-box" wx:if="{{item.send}}">
+                <input type="text" class="comment-input" cursor-spacing="8.5"
+                       placeholder-class="place-style"/>
+                <text class="com-send">发送</text>
+              </view>
+            </view>
+          </view>
         </view>
       </view>
     </view>
     <Toast></Toast>
+    <PopUpWindows></PopUpWindows>
   </view>
 </template>
 
@@ -73,6 +78,7 @@
   import FindDetail from '@/base/find-detail/find-detail'
   import Toast from '@/base/toast/toast'
   import logs from 'api/logs'
+  import PopUpWindows from '@/base/pop-up-windows/pop-up-windows'
   export default class findParticulars extends wepy.page {
     mixins = [base]
 
@@ -87,11 +93,11 @@
       send: false,
       focus: true,
       comment: '',
-      childIndex: 0
+      childIndex: 0,
+      id: 0
     }
 
     async onLoad(option) {
-      console.log(option)
       if (option.comment) {
         this.send = true
         setTimeout(() => {
@@ -100,16 +106,18 @@
         }, 20)
       }
       if (option.id) {
+        this.id = option.id
         this.findDetail[0] = await this.load(option.id)
       }
-      this.findDetail[0] = await this.load(22)
-      console.log(this.findDetail[0])
+//      测试
+      this.findDetail[0] = await this.load(26)
       this.$apply()
     }
 
     async load(id) {
       let res = this._infoRes(await logs.findDetail(id))
       this.loaded()
+      console.log(res)
       return res
     }
 
@@ -119,34 +127,59 @@
       }
     }
 
-    async _comments(id, content, commentUserId = '') {
+    async _comments(id, content, commentUserId = '', commentId = 0) {
+      console.log('dsg')
       if (this.comment !== '') {
         let data = {
           user_live_log_id: id,
           content: content,
-          comment_user_id: commentUserId
+          comment_user_id: commentUserId,
+          comment_id: commentId
         }
+        console.log(data)
         let res = await logs.findComment(data)
+        console.log(res.data)
         this.loaded()
         if (res.error === ERR_OK) {
           this.$invoke('Toast', 'show', '评论成功')
           this.comment = ''
           this.send = false
-          this.findDetail[0].comment_count++
-          this.findDetail[0].user_live_log_comments.push(res.data)
+//          this.findDetail[0] = await this.load(this.id)
+//          测试
+          this.findDetail[0] = await this.load(26)
           this.$apply()
+          if (!commentId) {
+            wepy.createSelectorQuery().select('.findParticulars').boundingClientRect((rect) => {
+              wepy.pageScrollTo({
+                scrollTop: rect.height,
+                duration: 300
+              })
+            }).exec()
+          }
         }
       }
     }
 
     methods = {
+      blur(index) {
+        console.log(index)
+        if (index !== '-1') {
+          this.findDetail[0].user_live_log_comments[index].send = false
+          return
+        }
+        this.send = false
+      },
       showInput(index) {
+        this.comment = ''
         this.findDetail[0].user_live_log_comments[index].send = true
         this.childIndex = index
+        setTimeout(() => {
+          this.focus = true
+          this.$apply()
+        }, 20)
       },
-      childComment(userId) {
-        console.log(userId)
-        this._comments(this.findDetail[0].id, this.comment, userId)
+      childComment(userId, commentId) {
+        this._comments(this.findDetail[0].id, this.comment, userId, commentId)
         this.findDetail[0].user_live_log_comments[this.childIndex].send = false
       },
       isSend(e) {
@@ -167,11 +200,26 @@
       },
       good(res, index) {
         this.findDetail[index] = res
+      },
+      async sure() {
+        let res = await logs.delFind(this.findDetail[0].id)
+        this.loaded()
+        console.log(res)
+        if (res.error === ERR_OK) {
+          wepy.switchTab({
+            url: '/pages/find/find'
+          })
+          this.$parent.updateGlobalData('logId', this.findDetail[0].id)
+        }
+      },
+      delFind(id) {
+        this.$invoke('PopUpWindows', 'show', '是否确定删除服务日志？')
       }
     }
     components = {
       Toast: Toast,
-      FindDetail: FindDetail
+      FindDetail: FindDetail,
+      PopUpWindows: PopUpWindows
     }
   }
 </script>
@@ -179,7 +227,8 @@
 <style lang="stylus">
   @import '../../common/stylus/variable'
   @import '../../common/stylus/mixin'
-  page
+  .findParticulars
+    width: 100vw
     overflow-x: hidden
 
   .find-par-box
@@ -215,7 +264,7 @@
           width: 77.6vw
         .comment-item
           .header-box
-            height: 4.267vw
+            height: 4.6vw
             width: @height
         .nickname
           color: $color-text-tr
@@ -238,15 +287,17 @@
           right: 18px
           height: 18px
           width: @height
+    .input-box
+      transform: translateX(-16.8%)
 
   .input-box
-    position: absolute
+    position: relative
     width: 100vw
     box-sizing: border-box
-    left: 0
     background: $color-white
     height: 53.35px
     border-top: 0.5px solid $color-split-line
+    border-bottom: 0.5px solid $color-split-line
     .comment-input
       box-sizing: border-box
       transform: translateY(8.5px)

@@ -1,6 +1,6 @@
 <template>
   <view class="find">
-    <cover-view class="nav">
+    <cover-view class="nav" style="bottom:{{bottom}}">
       <cover-view wx:for="{{nav}}" wx:key="{{index}}"
                   class="item {{navIndex === index ? 'item-active' : ''}}"
                   @tap="checkNav({{index}})">
@@ -9,11 +9,11 @@
       </cover-view>
       <cover-view class="find-line"></cover-view>
     </cover-view>
-    <view class="loading {{isLoad ? 'load-active' : ''}}">
-      <image class="load-img" wx:if="{{imageUrl}}"
-             src="{{imageUrl + '/defaults/share/page/icon-loading@2x.png'}}"></image>
-      <view class="load-refresh">刷新中…</view>
-    </view>
+    <!--<view class="loading {{isLoad ? 'load-active' : ''}}">-->
+    <!--<image class="load-img" wx:if="{{imageUrl}}"-->
+    <!--src="{{imageUrl + '/defaults/share/page/icon-loading@2x.png'}}"></image>-->
+    <!--<view class="load-refresh">刷新中…</view>-->
+    <!--</view>-->
     <Blank></Blank>
     <view class="list-box {{!isLoad ? 'find-box-active' : 'find-big-box'}}">
       <view class="find-item guidance" wx:if="{{!isChecked}}">
@@ -34,7 +34,7 @@
         </view>
       </view>
       <view>
-        <repeat wx:if="{{findList.length > 0}}" for="{{findList}}" key="index"
+        <repeat wx:if="{{findList.length}}" for="{{findList}}" key="index"
                 index="index" item="item">
           <FindDetail :find.sync="item" :listNum.sync="index"></FindDetail>
         </repeat>
@@ -46,7 +46,7 @@
              src="{{imageUrl + '/defaults/share/page/icon-write@2x.png'}}"></image>
     </view>
     <Toast></Toast>
-    <PopUpWindows :content.sync="content"></PopUpWindows>
+    <PopUpWindows></PopUpWindows>
   </view>
 </template>
 
@@ -71,7 +71,9 @@
 
     config = {
       navigationBarTitleText: '共享美导',
-      onReachBottomDistance: 30
+      onReachBottomDistance: 30,
+      enablePullDownRefresh: true,
+      backgroundTextStyle: 'dark'
     }
     data = {
       imageUrl: URIS.image,
@@ -86,24 +88,48 @@
       startTop: 0,
       endTop: 0,
       isPull: false,
-      option: '',
+      option: 1,
       loadMore: true,
       content: '',
-      delIndex: {}
+      delIndex: {},
+      bottom: 0
+    }
+
+    async onPullDownRefresh() {
+      this.findList = await this.load(this.option)
+      setTimeout(() => {
+        wepy.stopPullDownRefresh()
+        this.bottom = 0
+        this.$apply()
+      }, 50)
+      this.$apply()
     }
 
     async onLoad() {
       this.findList = await this.load()
       this.showBlank(this.findList)
       this.$apply()
-      wepy.startPullDownRefresh()
     }
 
     onShow() {
       if (this.$parent.globalData.status && this.$parent.globalData.status === 2) {
-        this.$invoke('PopUpWindows', 'show')
-        this.content = '内容不会保存，退出编辑？'
+        this.$invoke('PopUpWindows', 'show', '内容不会保存，退出编辑？')
+        this.content = true
       }
+      if (this.$parent.globalData.logId) {
+        let id = this.$parent.globalData.logId
+        for (let i = 0; i < this.findList.length; i++) {
+          if (this.findList[i].id === id) {
+            this.findList.splice(i, 1)
+            this.$parent.updateGlobalData('logId', null)
+            this.$apply()
+            break
+          }
+        }
+      }
+      wx.connectSocket({
+        url: 'http://192.168.4.98:3000'
+      })
     }
 
     showBlank(res) {
@@ -117,8 +143,8 @@
     }
 
     async onReachBottom() {
+      this.bottom = 0
       this.page++
-
       if (this.loadMore) {
         let res = await this.load(this.option, this.page)
         this.loadMore = res.length !== 0
@@ -135,13 +161,15 @@
         this.isChecked = findList.is_checked
       }
       let res = this.infoRes(findList)
-      res.map((item) => {
-        if (item.user_live_log_details.length === 0 && item.content.length > 50) {
-          item.content = item.content.slice(0, 50)
-          item.showDetail = true
-          return item
-        }
-      })
+      if (res && res.length !== 0) {
+        res.map((item) => {
+          if (item.user_live_log_details.length === 0 && item.content.length > 50) {
+            item.content = item.content.slice(0, 50)
+            item.showDetail = true
+            return item
+          }
+        })
+      }
       this.loaded()
       return res
     }
@@ -152,46 +180,10 @@
       }
     }
 
-//    onPullDownRefresh() {
-//      let res = wepy.startPullDownRefresh()
-//      console.log(res)
-//    }
-
     methods = {
       delStick() {
         this.isChecked = true
         wepy.setStorageSync('isChecked', this.isChecked)
-      },
-      async start(e) {
-        this.startTop = e.changedTouches[0].clientY
-//        wepy.createSelectorQuery().select('.find').fields({
-//          dataset: true,
-//          size: true,
-//          scrollOffset: true,
-//          properties: ['scrollX', 'scrollY']
-//        }, (res) => {
-//          console.log(res)
-//          this.scrollTop = res.scrollTop
-//        }).exec()
-      },
-      move(e) {
-        console.log(this.scrollTop)
-//        if (!this.isPull) {
-//          if (this.scrollTop < 10) {
-//            this.endTop = e.changedTouches[0].clientY
-//            if (this.endTop - this.startTop > 20) {
-//              this.isLoad = true
-//            } else {
-//              this.isLoad = false
-//            }
-//          }
-//        }
-      },
-      end() {
-//        if (this.endTop - this.startTop > 20) {
-//          this.isLoad = true
-//          this.isPull = true
-//        }
       },
       async checkNav(index) {
         this.navIndex = index * 1
@@ -213,18 +205,17 @@
         this.findList[index] = res
       },
       async delFind(id) {
-        this.$invoke('PopUpWindows', 'show')
-        this.content = '是否确定删除服务日志？'
+        this.$invoke('PopUpWindows', 'show', '是否确定删除服务日志？')
+        this.content = false
         for (let i = 0; i < this.findList.length; i++) {
           if (this.findList[i].id === id) {
             Object.assign(this.delIndex, {id: id, index: i})
-            console.log(this.delIndex)
             break
           }
         }
       },
       async sure() {
-        if (this.content === '是否确定删除服务日志？') {
+        if (this.content) {
           let res = await logs.delFind(this.delIndex.id)
           this.loaded()
           if (res.error === ERR_OK) {
@@ -234,9 +225,11 @@
         }
       },
       cancel() {
-        wepy.navigateTo({
-          url: '/pages/compile/compile?status=1'
-        })
+        if (this.content) {
+          wepy.navigateTo({
+            url: '/pages/compile/compile?status=1'
+          })
+        }
       }
     }
     watch = {
@@ -266,9 +259,13 @@
     min-height: 100vh
     overflow-y: auto
     background: $color-white
+    position: relative
     .loading
+      position: fixed
+      top: 45px
+      width: 100%
       margin-top: 0px
-      height: 0px
+      height: 30px
       background: $color-background
       display: flex
       justify-content: center
@@ -312,17 +309,17 @@
     justify-content: space-between
     padding: 0 15px
     box-sizing: border-box
-    position: absolute
-    top: 0
+    position: fixed
+    top: 0px
     left: 0
     width: 100%
     z-index: 1000
     .find-line
-      height: 1px
+      height: 0.5px
       background: $color-split-line
       width: 100%
       position: absolute
-      bottom: 0px
+      bottom: 0
       left: 0
     .item
       color: $color-text-tr

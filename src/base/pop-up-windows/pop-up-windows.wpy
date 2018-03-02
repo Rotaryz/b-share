@@ -23,16 +23,10 @@
       navigationBarTitleText: ''
     }
 
-    props = {
-      content: {
-        type: String,
-        default: '内容不会保存，退出编辑？'
-      }
-    }
-
     data = {
       imageUrl: URIS.image,
-      showWindow: false
+      showWindow: false,
+      content: '内容不会保存，退出编辑？'
     }
 
     infoRes(res) {
@@ -50,7 +44,8 @@
         this.showWindow = false
         this.$emit('sure')
       },
-      show() {
+      show(content) {
+        this.content = content
         this.showWindow = true
       }
     }
