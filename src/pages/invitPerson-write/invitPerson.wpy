@@ -93,7 +93,6 @@
     </view>
   </view>
   <!-- 提示over -->
-
 </template>
 <script>
   import wepy from 'wepy'
@@ -194,15 +193,13 @@
         this.verifiFun()
         this.$apply()
       },
-      //      点击获取验证码
+      // 点击获取验证码
       async setCode() {
         let regPhone = REGPHONE
         if (this.phoneNum === '') {
-//          this.showTip(true, '请输入手机号码')
           this.$invoke('Toast', 'show', '请输入手机号码')
           return false
         } else if (!regPhone.test(this.phoneNum)) {
-//          this.showTip(true, '请输入正确的手机号码')
           this.$invoke('Toast', 'show', '请输入正确的手机号码')
           return false
         }
@@ -215,12 +212,12 @@
         if (this.tapCode) {
           let codeData = await user.messageBind(data)
           this.time = '发送中…'
-//          this.$invoke('Toast', 'show', codeData.message)
+          // this.$invoke('Toast', 'show', codeData.message)
           this.loaded()
           if (codeData.error !== ERR_OK) {
             this.time = '获取验证码'
             this.$invoke('Toast', 'show', codeData.message)
-//            this.rightTip(codeData.message, false)
+          // this.rightTip(codeData.message, false)
           } else {
             this.isSet = false
             this.$invoke('Toast', 'show', codeData.message)
@@ -322,7 +319,7 @@
         this.prompt = !this.prompt
       }
     }
-    verifiFun () { // 检验
+    async verifiFun() { // 检验
       if (this.isPhone && this.isVer && this.isPassword) {
         this.submitNormal = true
       } else {
