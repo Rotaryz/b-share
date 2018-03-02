@@ -6,130 +6,142 @@
       </view>
       <scroll-view scroll-x="true" class="tab-h" scroll-left="{{scrollLeft}}">
         <view class="tab-item {{currentTab==0?'active':''}}"  data-current="0" bindtap="swichNav">
-          <text class="rmb-color"><text><text class="rmb-color-min">￥</text>88.88</text></text>
+          <text class="rmb-color"><text><text class="rmb-color-min">￥</text>{{myInvit.myMoney}}</text></text>
           <text class="number">获得的红包</text>
         </view>
         <view class="tab-item {{currentTab==1?'active':''}}" data-current="1" bindtap="swichNav">
-          <text class="number"><text>2</text>人</text>
+          <text class="number"><text>{{myInvit.myPerson}}</text>人</text>
           <text class="number">成功邀请</text>
         </view>
         <view class="tab-item {{currentTab==2?'active':''}}" data-current="2" bindtap="swichNav">
-          <text class="number"><text>0</text>个</text>
+          <text class="number"><text>{{myInvit.myMoneys}}</text>个</text>
           <text class="number">红包在路上</text>
         </view>
       </scroll-view>
       <swiper class="tab-content" current="{{currentTab}}" duration="300" bindchange="switchTab" style="height:{{winHeight}}rpx " >
-        <swiper-item wx:for="{{expertList}}">
-          <scroll-view scroll-y="true" class="scoll-h"  wx:if="{{expertList[index].length>0}}">
-            <block wx:for="{{expertList[index]}}" wx:key="*this">
+        <swiper-item wx:for="{{expertList}}" >
+          <scroll-view scroll-y="true" class="scoll-h"  wx:if="{{expertList[index].data.length>0}}">
+            <block wx:for="{{expertList[index].data}}" wx:key="*this">
               <view class="item-ans">
                 <view class="avatar" wx:if="{{currentTab==1}}">
-                  <image class="img" src="http://ookzqad11.bkt.clouddn.com/avatar.png"></image>
+                  <image class="img" src="{{item.data.image_url}}"></image>
                 </view>
                 <view class="expertInfo">
-                  <view class="name">{{item.names}}</view>
-                  <view class="tag">{{item.times}}</view>
+                  <view class="name">{{item.data.name}}</view>
+                  <view class="tag">{{item.data.created_at}}</view>
                 </view>
-                <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>{{item.moneys}}</view>
-                <view class="askBtn-2" wx:if="{{currentTab==1}}">{{item.msg}}</view>
-                <view class="askBtn-2" wx:if="{{currentTab==2}}">{{item.msg}}</view>
+                <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>{{item.data.reward}}</view>
+                <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
                 <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
               </view>
             </block>
           </scroll-view>
-          <scroll-view  wx:else="{{expertList[index].length<0}}" style="text-align: center">
-            <block>
-              <image style="width:{{noPacketW}}rpx;height:{{noPacketW}}rpx" class="no-packet" src="/../../../common/image/pic-invite_empty@2x.png"></image>
+          <scroll-view  wx:else style="text-align: center">
+            <block wx:if="{{currentTab==0}}">
+              <image class="no-packet" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@2x.png'}}"></image>
+            </block>
+            <block wx:elif="{{currentTab==1}}">
+              <image class="no-packet" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@2x.png'}}"></image>
+            </block>
+            <block wx:else="{{currentTab==2}}">
+              <image class="no-packet" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@2x.png'}}"></image>
             </block>
           </scroll-view>
         </swiper-item>
       </swiper>
+      <Toast></Toast>
     </view>
 </template>
 <script>
     import wepy from 'wepy'
-    export default class Myrecord extends wepy.page {
+    import Toast from '@/base/toast/toast'
+    import base from 'common/mixins/base'
+    import URIS from 'common/js/config'
+    import {ERR_OK} from 'api/base'
+    import Beauticians from 'api/beauticians'
+    export default class invitRecord extends wepy.page {
       config = {
         navigationBarTitleText: '邀请记录',
         navigationBarBackgroundColor: '#fff',
         backgroundColor: '#ccc'
-      }  // 只在Page实例中存在的配置数据，对应于原生的page.json文件
+      }
+      mixins = [base]
+      components = {
+        Toast: Toast
+      }
       data = {
+        imageUrl: URIS.image,
+        myInvit: {
+          myMoney: 0,
+          myPerson: 0,
+          myMoneys: 0
+        },
         winHeight: 0, // 窗口高度
         currentTab: 0, // 预设当前项的值
         noPacketW: 0,
         scrollLeft: 0, // tab标题的滚动条位置
-        expertList: [
-          [
-//          { // 假数据
-//            names: '邀请奖励红包1',
-//            times: '2018-2-26 11:45:5',
-//            moneys: '8.88'
-//          },
-//          { // 假数据
-//            names: '邀请奖励红包1',
-//            times: '2018-2-26 11:45:5',
-//            moneys: '8.88'
-//          },
-//          { // 假数据
-//            names: '邀请奖励红包1',
-//            times: '2018-2-26 11:45:5',
-//            moneys: '8.88'
-//          },
-//          { // 假数据
-//            names: '邀请奖励红包1',
-//            times: '2018-2-26 11:45:5',
-//            moneys: '8.88'
-//          },
-//          { // 假数据
-//            names: '邀请奖励红包1',
-//            times: '2018-2-26 11:45:5',
-//            moneys: '8.88'
-//          },
-//          { // 假数据
-//            names: '邀请奖励红包1',
-//            times: '2018-2-26 11:45:5',
-//            moneys: '8.88'
-//          },
-//          { // 假数据
-//            names: '邀请奖励红包1',
-//            times: '2018-2-26 11:45:5',
-//            moneys: '8.88'
-//          },
-//          { // 假数据
-//            names: '邀请奖励红包1',
-//            times: '2018-2-26 11:45:5',
-//            moneys: '8.88'
-//          },
-//          { // 假数据
-//            names: '邀请奖励红包1',
-//            times: '2018-2-26 11:45:5',
-//            moneys: '8.88'
-//          }
-          ],
-          [{ // 假数据
-            names: '邀请奖励红包2',
-            times: '2018-2-26 11:45:5',
-            msg: '成功入驻了共享美导'
-          },
-          { // 假数据
-            names: '邀请奖励红包2',
-            times: '2018-2-26 11:45:5',
-            msg: '成功入驻了共享美导'
-          }],
-          [{ // 假数据
-            names: '邀请奖励红包3',
-            times: '2018-2-26 11:45:5',
-            msg: '还未成功邀请入驻'
-          },
-          { // 假数据
-            names: '邀请奖励红包3',
-            times: '2018-2-26 11:45:5',
-            msg: '还未成功邀请入驻'
-          }]
-        ],
-
+        expertList: [],
         fillout: true
+      }
+      async onLoad(option) {
+        await this.load()
+        await this.tabheight(option)
+      }
+      async load() {
+        this.setInvitFun()
+        this.setRewardList()
+        this.invitRegisterList()
+        this.setWaitRewardList()
+        console.log(this.expertList)
+      }
+      async setInvitFun() {
+        let Json = await Beauticians.invitDetail()
+        this.loaded()
+        if (Json.error !== ERR_OK) {
+          this.$invoke('Toast', 'show', Json.message)
+          return
+        }
+        this.myInvit.myMoney = Json.data.registerRewards
+        this.myInvit.myPerson = Json.data.invitedCount
+        this.myInvit.myMoneys = Json.data.waitCheckeCount
+        this.$apply()
+      }
+      // 获得的红包
+      async setRewardList() {
+        let Json = await Beauticians.invitRewardList() // page,limit
+        console.log(Json)
+        this.loaded()
+        if (Json.error !== ERR_OK) {
+          this.$invoke('Toast', 'show', Json.message)
+          return
+        }
+        this.expertList[0] = Json
+        this.$apply()
+      }
+      // 成功邀请的记录
+      async invitRegisterList() {
+        let Json = await Beauticians.invitRegisterList() // page,limit
+        console.log(Json)
+        this.loaded()
+        if (Json.error !== ERR_OK) {
+          this.$invoke('Toast', 'show', Json.message)
+          return
+        }
+        this.expertList[1] = Json
+        this.$apply()
+      }
+      // 红包在路上
+      async setWaitRewardList() {
+        let Json = await Beauticians.invitWaitRewardList() // page,limit
+        console.log(Json)
+        this.loaded()
+        if (Json.error !== ERR_OK) {
+          this.$invoke('Toast', 'show', Json.message)
+          return
+        }
+        this.expertList[2] = Json
+        this.$apply()
       }
       methods = {
         // 滚动切换标签样式
@@ -139,7 +151,7 @@
         },
         // 点击标题切换当前页时改变样式
         swichNav (e) {
-          var cur = e.currentTarget.dataset.current
+          let cur = e.currentTarget.dataset.current
           if (this.currentTab == cur) {
             return false
           } else {
@@ -147,21 +159,15 @@
           }
         }
       }
-      // 判断当前滚动超过一屏时，设置tab标题滚动条。
-      onLoad(options) {
-        var that = this
-        that.currentTab = options.id || 0
+      async tabheight(options) {
+        this.currentTab = options.id || 0
         //  高度自适应
-        wepy.getSystemInfo({
-          success: function(res) {
-            var clientHeight = res.windowHeight,
-              clientWidth = res.windowWidth,
-              rpxR = 750 / clientWidth
-            var calc = clientHeight * rpxR - 140
-            that.winHeight = calc
-            that.noPacketW = clientWidth / 2
-          }
-        })
+        const res = await wepy.getSystemInfo()
+        let clientHeight = res.windowHeight
+        let clientWidth = res.windowWidth
+        let rpxR = 750 / clientWidth
+        let calc = clientHeight * rpxR - 140
+        this.winHeight = calc
       }
       checkCor() {
         if (this.currentTab > 4) {
@@ -310,5 +316,7 @@
 
   .no-packet
     margin: 50px auto
+    width: 115px
+    height: 150px
 
 </style>
