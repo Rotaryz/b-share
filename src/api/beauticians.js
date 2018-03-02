@@ -67,6 +67,15 @@ export default class beauticians extends base {
   }
 
   /**
+   * 查找问题
+   * @returns {Promise.<*>}
+   */
+  static async findQus() {
+    const url = `${this.baseUrl}/api/beauticians/question/find-quiz`
+    return await this.get(url)
+  }
+
+  /**
    * 邀请详情
    * @params data
    * @returns {Promise.<*>}

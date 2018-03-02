@@ -67,6 +67,7 @@
         'pages/ability/ability',
         'pages/my-profile/my-profile',
         'pages/my-wellet/my-wellet',
+        'pages/my-app/my-app',
         'pages/withdraw/withdraw',
         'pages/login/login',
         'pages/compile/compile',
