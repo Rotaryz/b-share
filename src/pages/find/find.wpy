@@ -34,7 +34,7 @@
         </view>
       </view>
       <view>
-        <repeat wx:if="{{findList.length > 0}}" for="{{findList}}" key="index"
+        <repeat wx:if="{{findList.length}}" for="{{findList}}" key="index"
                 index="index" item="item">
           <FindDetail :find.sync="item" :listNum.sync="index"></FindDetail>
         </repeat>
@@ -46,7 +46,7 @@
              src="{{imageUrl + '/defaults/share/page/icon-write@2x.png'}}"></image>
     </view>
     <Toast></Toast>
-    <PopUpWindows :content.sync="content"></PopUpWindows>
+    <PopUpWindows></PopUpWindows>
   </view>
 </template>
 
@@ -111,8 +111,8 @@
 
     onShow() {
       if (this.$parent.globalData.status && this.$parent.globalData.status === 2) {
-        this.$invoke('PopUpWindows', 'show')
-        this.content = '内容不会保存，退出编辑？'
+        this.$invoke('PopUpWindows', 'show', '内容不会保存，退出编辑？')
+        this.content = true
       }
     }
 
@@ -191,8 +191,8 @@
         this.findList[index] = res
       },
       async delFind(id) {
-        this.$invoke('PopUpWindows', 'show')
-        this.content = '是否确定删除服务日志？'
+        this.$invoke('PopUpWindows', 'show', '是否确定删除服务日志？')
+        this.content = false
         for (let i = 0; i < this.findList.length; i++) {
           if (this.findList[i].id === id) {
             Object.assign(this.delIndex, {id: id, index: i})
@@ -202,7 +202,7 @@
         }
       },
       async sure() {
-        if (this.content === '是否确定删除服务日志？') {
+        if (this.content) {
           let res = await logs.delFind(this.delIndex.id)
           this.loaded()
           if (res.error === ERR_OK) {
@@ -212,9 +212,11 @@
         }
       },
       cancel() {
-        wepy.navigateTo({
-          url: '/pages/compile/compile?status=1'
-        })
+        if (this.content) {
+          wepy.navigateTo({
+            url: '/pages/compile/compile?status=1'
+          })
+        }
       }
     }
     watch = {
