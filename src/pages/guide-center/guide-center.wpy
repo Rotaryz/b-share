@@ -54,6 +54,7 @@
       </view>
     </view>
     <Toast></Toast>
+    <DelBox></DelBox>
   </view>
 </template>
 
@@ -69,6 +70,7 @@
   import Logs from 'api/logs'
   import FindDetail from '@/base/find-detail/find-detail'
   import Underline from '@/base/underline-block/underline-block'
+  import DelBox from '@/base/pop-up-windows/pop-up-windows'
 
   export default class guideCenter extends wepy.page {
     mixins = [base]
@@ -89,7 +91,8 @@
       attention: 0,
       logs: [],
       page: 1,
-      noMore: false
+      noMore: false,
+      delId: ''
     }
 
     onLoad(option) {
@@ -211,7 +214,8 @@
       Radar,
       Toast,
       FindDetail,
-      Underline
+      Underline,
+      DelBox
     }
 
     computed = {
@@ -221,8 +225,25 @@
     }
 
     events = {
-      good() {
+      good(item, idx) {
 
+      },
+      delFind(id) {
+        this.delId = id
+        this.$apply()
+        this.$invoke('DelBox', 'show', '是否确定删除服务日志')
+      },
+      async sure() {
+        let Json = await Logs.delFind(this.delId)
+        this.loaded()
+        if (Json.error === ERR_OK) {
+          this.logs = this.logs.filter((item) => {
+            return item.id !== this.delId
+          })
+          this.$apply()
+        } else {
+          Tips.toast(Json.message, 'none')
+        }
       }
     }
   }
