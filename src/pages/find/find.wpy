@@ -99,6 +99,8 @@
       this.findList = await this.load(this.option)
       setTimeout(() => {
         wepy.stopPullDownRefresh()
+        this.bottom = 0
+        this.$apply()
       }, 50)
       this.$apply()
     }
@@ -114,6 +116,20 @@
         this.$invoke('PopUpWindows', 'show', '内容不会保存，退出编辑？')
         this.content = true
       }
+      if (this.$parent.globalData.logId) {
+        let id = this.$parent.globalData.logId
+        for (let i = 0; i < this.findList.length; i++) {
+          if (this.findList[i].id === id) {
+            this.findList.splice(i, 1)
+            this.$parent.updateGlobalData('logId', null)
+            this.$apply()
+            break
+          }
+        }
+      }
+      wx.connectSocket({
+        url: 'http://192.168.4.98:3000'
+      })
     }
 
     showBlank(res) {
@@ -129,7 +145,6 @@
     async onReachBottom() {
       this.bottom = 0
       this.page++
-      console.log(this.option)
       if (this.loadMore) {
         let res = await this.load(this.option, this.page)
         this.loadMore = res.length !== 0
@@ -141,7 +156,6 @@
     async load(option = 1, page = 1) {
       let data = {option: option, page: page}
       let findList = await logs.findList(data)
-      console.log(findList)
       let isChecked = wepy.getStorageSync('isChecked')
       if (!isChecked) {
         this.isChecked = findList.is_checked
@@ -196,7 +210,6 @@
         for (let i = 0; i < this.findList.length; i++) {
           if (this.findList[i].id === id) {
             Object.assign(this.delIndex, {id: id, index: i})
-            console.log(this.delIndex)
             break
           }
         }
