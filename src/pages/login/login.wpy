@@ -209,7 +209,7 @@
             this.$invoke('Toast', 'show', '登录成功')
             setTimeout(async () => {
               await wepy.switchTab({
-                url: '/pages/index/index'
+                url: '/pages/find/find'
               })
             }, 1000)
           } else {

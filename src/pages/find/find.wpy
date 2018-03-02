@@ -15,7 +15,8 @@
     <!--<view class="load-refresh">刷新中…</view>-->
     <!--</view>-->
     <Blank></Blank>
-    <view class="list-box {{!isLoad ? 'find-box-active' : 'find-big-box'}}">
+    <view class="list-box {{!isLoad ? 'find-box-active' : 'find-big-box'}}"
+          @tap="goAnswer">
       <view class="find-item guidance" wx:if="{{!isChecked}}">
         <view class="find-box">
           <view class="cainter">
@@ -26,10 +27,8 @@
             <view class="words">完成实名认证后，领取更多现金红包！</view>
             <image src="" class="img-one-item"></image>
           </view>
-          <view class="information">
-            <view class="time">
-              <text class="del" @tap="delStick">删除</text>
-            </view>
+          <view class="information" @tap="delStick">
+            删除
           </view>
         </view>
       </view>
@@ -92,7 +91,8 @@
       loadMore: true,
       content: '',
       delIndex: {},
-      bottom: 0
+      bottom: 0,
+      check: false
     }
 
     async onPullDownRefresh() {
@@ -111,10 +111,14 @@
       this.$apply()
     }
 
-    onShow() {
+    async onShow() {
       if (this.$parent.globalData.status && this.$parent.globalData.status === 2) {
         this.$invoke('PopUpWindows', 'show', '内容不会保存，退出编辑？')
         this.content = true
+      } else if (this.$parent.globalData.status && this.$parent.globalData.status === 1) {
+//        刷新列表
+        wepy.startPullDownRefresh()
+        await this.onPullDownRefresh()
       }
       if (this.$parent.globalData.logId) {
         let id = this.$parent.globalData.logId
@@ -127,9 +131,13 @@
           }
         }
       }
-      wx.connectSocket({
-        url: 'http://192.168.4.98:3000'
-      })
+      this.$apply()
+//      wepy.connectSocket({
+//        url: 'wss://192.168.4.98:3000'
+//      })
+//      wepy.onSocketOpen((res) => {
+//        console.log('WebSocket连接已打开！')
+//      })
     }
 
     showBlank(res) {
@@ -181,9 +189,12 @@
     }
 
     methods = {
+      goAnswer() {
+        this.$navigate('/pages/answer-index/answer-index')
+      },
       delStick() {
-        this.isChecked = true
-        wepy.setStorageSync('isChecked', this.isChecked)
+        this.check = true
+        this.$invoke('PopUpWindows', 'show', '是否确定删除该系统信息？')
       },
       async checkNav(index) {
         this.navIndex = index * 1
@@ -207,6 +218,7 @@
       async delFind(id) {
         this.$invoke('PopUpWindows', 'show', '是否确定删除服务日志？')
         this.content = false
+        this.check = false
         for (let i = 0; i < this.findList.length; i++) {
           if (this.findList[i].id === id) {
             Object.assign(this.delIndex, {id: id, index: i})
@@ -215,20 +227,26 @@
         }
       },
       async sure() {
-        if (this.content) {
+        if (!this.content) {
           let res = await logs.delFind(this.delIndex.id)
           this.loaded()
           if (res.error === ERR_OK) {
             this.findList.splice(this.delIndex.index, 1)
             this.$apply()
           }
+        } else if (this.check) {
+          this.isChecked = true
+          wepy.setStorageSync('isChecked', this.isChecked)
         }
+
+        this.$parent.updateGlobalData('status', 1)
       },
       cancel() {
         if (this.content) {
           wepy.navigateTo({
             url: '/pages/compile/compile?status=1'
           })
+          this.check = false
         }
       }
     }
@@ -294,6 +312,12 @@
       background: $color-background
     .words
       white-space: nowrap
+    .header
+      background: $color-split-line
+    .information
+      display: block
+      padding-left: 0px
+      color: $color-del
 
   .find-big-box
     margin-top: 0px
@@ -327,10 +351,10 @@
       height: 100%
       line-height: 45px
       .item-line
-        height: 2px
+        height: 3px
         width: 24px
         row-center()
-        bottom: 0px
+        bottom: -1px
         z-index: 500
         background: transparent
     .item-active
@@ -346,4 +370,7 @@
       width: 67px
       height: @width
 
+  cover-view
+    &:active
+      background: $color-white
 </style>

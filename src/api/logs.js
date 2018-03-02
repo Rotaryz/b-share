@@ -72,4 +72,13 @@ export default class find extends base {
     const url = `${this.baseUrl}/api/logs/user-logs/${id}`
     return await this.post(url)
   }
+  /**
+   * 获取所有子评论
+   * @param
+   * @returns {Promise.<*>}
+   */
+  static async comments(id) {
+    const url = `${this.baseUrl}/api/logs/comments/${id}`
+    return await this.get(url)
+  }
 }
