@@ -45,6 +45,9 @@
         this.$emit('sure')
       },
       show(content) {
+        if (typeof content === 'object') {
+          content = ''
+        }
         this.content = content
         this.showWindow = true
       }

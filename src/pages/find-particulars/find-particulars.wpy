@@ -29,7 +29,7 @@
           <view class="com-content">{{item.content}}</view>
           <view class="time {{item.send ? 'time-active':''}}">{{item.differ_time}}
             <image class="comment-icon"
-                   wx:if="{{imageUrl}}"
+                   wx:if="{{imageUrl && !item.current_user}}"
                    src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"
                    @tap="showInput({{index}})"></image>
           </view>
@@ -44,23 +44,44 @@
                   @tap="childComment({{item.user_id}},{{item.id}})">发送
             </text>
           </view>
-          <view class="comment-item" wx:for="{{item.comments}}" wx:key="{{index}}">
+          <view class="comment-item" wx:for="{{item.comments}}"
+                wx:key="{{index}}">
             <view class="header-box">
-              <image class="com-header" src="{{!item.user_data.image_url && item.user_data.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !item.user_data.image_url && item.user_data.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : item.user_data.image_url}}"></image>
+              <image class="com-header"
+                     src="{{!item.user_data.image_url && item.user_data.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !item.user_data.image_url && item.user_data.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : item.user_data.image_url}}"></image>
             </view>
             <view class="com-container">
-              <view class="nickname">{{item.user_data.name}}</view>
-              <view class="com-content">{{item.content}}</view>
-              <view class="time {{item.send ? 'time-active':''}}">{{item.differ_time}}
-                <image class="comment-icon" wx:if="{{imageUrl}}"
-                       src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
+              <view class="nickname">{{item.user_data.name}}
+                <text class="com-content">回复</text>
+                {{item.comment_user_data.name}}
+                <text class="com-content">{{item.content}}</text>
+              </view>
+
+              <view class="time {{item.send ? 'time-active':''}}">
+                {{item.differ_time}}
+                <image class="comment-icon"
+                       wx:if="{{imageUrl && !item.current_user}}"
+                       src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"
+                       @tap="lastInput({{index}},{{item.comment_id}})"></image>
               </view>
               <view class="input-box" wx:if="{{item.send}}">
                 <input type="text" class="comment-input" cursor-spacing="8.5"
+                       value="{{comment}}" focus="{{focus}}" @input="isSend"
+                       @blur="lastblur({{index}},{{item.comment_id}})"
                        placeholder-class="place-style"/>
-                <text class="com-send">发送</text>
+                <text
+                  class="com-send {{comment === '' ? '' : 'com-send-active'}}"
+                  @tap="childComment({{item.user_id}},{{item.comment_id}})">发送
+                </text>
               </view>
             </view>
+          </view>
+          <view class="com-showmore" wx:if="{{item.comment_count > 3}}"
+                @tap="showMoreCom({{item.id}})">
+            {{item.more ? item.more : '查看更多评论'}}
+            <image class="more-icon {{item.more ? 'up-more' : ''}}"
+                   wx:if="{{imageUrl}}"
+                   src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
           </view>
         </view>
       </view>
@@ -94,30 +115,31 @@
       focus: true,
       comment: '',
       childIndex: 0,
-      id: 0
+      id: 0,
+      more: '查看更多评论'
     }
 
     async onLoad(option) {
-      if (option.comment) {
-        this.send = true
-        setTimeout(() => {
-          this.focus = true
-          this.$apply()
-        }, 20)
-      }
       if (option.id) {
         this.id = option.id
         this.findDetail[0] = await this.load(option.id)
+        if (option.comment) {
+          this.send = true
+          setTimeout(() => {
+            this.focus = true
+            this.$apply()
+          }, 20)
+        }
       }
 //      测试
-      this.findDetail[0] = await this.load(26)
+//      this.findDetail[0] = await this.load(1)
       this.$apply()
     }
 
     async load(id) {
       let res = this._infoRes(await logs.findDetail(id))
-      this.loaded()
       console.log(res)
+      this.loaded()
       return res
     }
 
@@ -128,7 +150,6 @@
     }
 
     async _comments(id, content, commentUserId = '', commentId = 0) {
-      console.log('dsg')
       if (this.comment !== '') {
         let data = {
           user_live_log_id: id,
@@ -136,17 +157,15 @@
           comment_user_id: commentUserId,
           comment_id: commentId
         }
-        console.log(data)
         let res = await logs.findComment(data)
-        console.log(res.data)
         this.loaded()
         if (res.error === ERR_OK) {
           this.$invoke('Toast', 'show', '评论成功')
           this.comment = ''
           this.send = false
-//          this.findDetail[0] = await this.load(this.id)
+          this.findDetail[0] = await this.load(this.id)
 //          测试
-          this.findDetail[0] = await this.load(26)
+//          this.findDetail[0] = await this.load(1)
           this.$apply()
           if (!commentId) {
             wepy.createSelectorQuery().select('.findParticulars').boundingClientRect((rect) => {
@@ -160,14 +179,60 @@
       }
     }
 
-    methods = {
-      blur(index) {
-        console.log(index)
-        if (index !== '-1') {
-          this.findDetail[0].user_live_log_comments[index].send = false
-          return
+    showIndex(id) {
+      let length = this.findDetail[0].user_live_log_comments.length
+      for (let i = 0; i < length; i++) {
+        if (id === this.findDetail[0].user_live_log_comments[i].id) {
+          return i
         }
-        this.send = false
+      }
+    }
+
+    methods = {
+      async showMoreCom(id) {
+        let index = this.showIndex(id)
+        if (!this.findDetail[0].user_live_log_comments[index].more) {
+          let res = this._infoRes(await logs.comments(id))
+          this.loaded()
+          this.findDetail[0].user_live_log_comments[index].comments = res
+          this.findDetail[0].user_live_log_comments[index].more = '收起'
+          this.$apply()
+        } else {
+          this.findDetail[0].user_live_log_comments[index].comments = this.findDetail[0].user_live_log_comments[index].comments.slice(0, 3)
+          delete this.findDetail[0].user_live_log_comments[index].more
+        }
+      },
+      blur(index) {
+        setTimeout(() => {
+          if (index !== '-1') {
+            this.findDetail[0].user_live_log_comments[index].send = false
+            return
+          }
+          this.send = false
+          this.$apply()
+        }, 200)
+      },
+      lastblur(index, id) {
+        console.log(index, id)
+        for (let i = 0; i < length; i++) {
+          if (id === this.findDetail[0].user_live_log_comments[i].id) {
+            this.comment = ''
+            this.send = false
+            this.findDetail[0].user_live_log_comments[i].comments[index].send = false
+            break
+          }
+        }
+      },
+      lastInput(index, id) {
+        let length = this.findDetail[0].user_live_log_comments.length
+        for (let i = 0; i < length; i++) {
+          if (id === this.findDetail[0].user_live_log_comments[i].id) {
+            this.comment = ''
+            this.send = false
+            this.findDetail[0].user_live_log_comments[i].comments[index].send = true
+            break
+          }
+        }
       },
       showInput(index) {
         this.comment = ''
@@ -187,6 +252,7 @@
         this.$apply()
       },
       sendComment(id) {
+        console.log(id)
         this._comments(id, this.comment)
       }
     }
@@ -262,6 +328,13 @@
         margin-left: 10px
         .com-container
           width: 77.6vw
+          .input-box
+            transform: translateX(-21%)
+          .com-content
+            color: $color-text
+            margin-left: 5px
+          .nickname
+            line-height: 1
         .comment-item
           .header-box
             height: 4.6vw
@@ -288,7 +361,23 @@
           height: 18px
           width: @height
     .input-box
-      transform: translateX(-16.8%)
+      transform: translateX(-16%)
+    .com-showmore
+      font-size: $font-size-medium
+      justify-content: center
+      display: flex
+      padding: 16px 0 15px
+      background: $color-white
+      transform: translateY(-1px) translateX(-16.8vw)
+      width: 101vw
+      border-bottom: 0.5px solid $color-split-line
+      .more-icon
+        height: 12px
+        width: @height
+        transform: rotate(90deg)
+        margin-left: 2.5px
+      .up-more
+        transform: rotate(270deg)
 
   .input-box
     position: relative

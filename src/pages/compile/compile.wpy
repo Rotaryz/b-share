@@ -240,9 +240,7 @@
           this.$invoke('Toast', 'show', '发表成功')
           this.$parent.updateGlobalData('status', 1)
           setTimeout(() => {
-            wepy.switchTab({
-              url: '/pages/find/find'
-            })
+           this.$back(1)
           }, 500)
         }
       }
