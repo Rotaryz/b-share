@@ -68,9 +68,13 @@ export default class find extends base {
    * @param
    * @returns {Promise.<*>}
    */
-  static async getServerLog(id) {
+  static async getServerLog(id, page = 1, limit = 10) {
+    let data = {
+      page,
+      limit
+    }
     const url = `${this.baseUrl}/api/logs/user-logs/${id}`
-    return await this.post(url)
+    return await this.get(url, data)
   }
   /**
    * 获取所有子评论

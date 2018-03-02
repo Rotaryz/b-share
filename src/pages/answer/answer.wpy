@@ -1,35 +1,53 @@
 <template>
   <view class="answer">
-    <view class="container">
-      <view class="container-BC-box">
-        <image class="container-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-answer_bg-top@3x.png'}}"></image>
-        <view class="time-box">
-          <image class="time-img left" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time1@3x.png'}}" style="transform:rotate({{leftTranslate}}deg);"></image>
-          <image class="time-img right" wx:if="{{imageUrl && time > 5}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time2@3x.png'}}" style="transform: rotate({{rightTranslate}}deg);"></image>
-          <image class="white-right" wx:if="{{imageUrl && time <= 5}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time3@3x+.png'}}"></image>
-          <view class="time-num">{{time}}</view>
+    <view class="container-box">
+      <view class="container">
+        <view class="container-BC-box">
+          <image class="container-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-answer_bg-top@3x.png'}}"></image>
+          <view class="time-box">
+            <image class="time-img left" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time1@3x.png'}}" style="transform:rotate({{leftTranslate}}deg);"></image>
+            <image class="time-img right" wx:if="{{imageUrl && time > 5}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time2@3x.png'}}" style="transform: rotate({{rightTranslate}}deg);"></image>
+            <image class="white-right" wx:if="{{imageUrl && time <= 5}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time3@3x+.png'}}"></image>
+            <view class="time-num">{{time}}</view>
+          </view>
+        </view>
+        <view class="content">
+          <view class="title">1/10 皮肤的功能有什么作用？</view>
+          <view class="img-box">
+            <view class="img-bc">
+              <image class="topic-img" mode="aspectFit" src="./test.png"></image>
+            </view>
+          </view>
+          <view class="options">
+            <view class="option-item">
+              <view class="item dis">A、调节作用、分泌与排泄、呼吸作用、吸收跟代谢作用、免疫作用</view>
+            </view>
+            <view class="option-item">
+              <view class="item right dis">B、保护作用、调节作用</view>
+            </view>
+            <view class="option-item">
+              <view class="item">C、调节作用、分泌与排泄、呼吸作用、吸收跟代谢作用</view>
+            </view>
+            <view class="option-item">
+              <view class="item error dis">D、免疫作用、吸收跟代谢作用</view>
+            </view>
+          </view>
         </view>
       </view>
-      <view class="content">
-        <view class="title">1/10 皮肤的功能有什么作用？</view>
-        <view class="img-box">
-          <view class="img-bc">
-            <image class="topic-img" mode="aspectFit" src="./test.png"></image>
-          </view>
+    </view>
+
+    <view class="result-container" wx:if="{{false}}">
+      <view class="result-BC">
+        <view class="result-title">
+          <image class="title-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-answer_head@2x.png'}}"></image>
+          <view class="title-txt">答题结束咯</view>
         </view>
-        <view class="options">
-          <view class="option-item">
-            <view class="item">A、调节作用、分泌与排泄、呼吸作用、吸收跟代谢作用、免疫作用</view>
-          </view>
-          <view class="option-item">
-            <view class="item">B、保护作用、调节作用</view>
-          </view>
-          <view class="option-item">
-            <view class="item">C、调节作用、分泌与排泄、呼吸作用、吸收跟代谢作用</view>
-          </view>
-          <view class="option-item">
-            <view class="item">D、免疫作用、吸收跟代谢作用</view>
-          </view>
+        <view class="result-top">
+
+        </view>
+        <view class="result-down">
+          <view class="item red">分享战绩</view>
+          <view class="item white">我的钱包</view>
         </view>
       </view>
     </view>
@@ -75,9 +93,6 @@
 //
     onUnload() {
       this._clearAll()
-      this.rightTranslate = 0
-      this.leftTranslate = 0
-      this.$apply()
     }
 
     async load(option) {
@@ -96,8 +111,8 @@
     _beginCountdown() {
       clearTimeout(this.beginTimer)
       this.beginTimer = setTimeout(() => {
-        this._timeRun()
         this._rotateRun()
+        this._timeRun()
       }, 1000)
     }
 
@@ -108,7 +123,6 @@
         this.$apply()
         if (this.time <= 0) {
           clearInterval(this.timeTimer)
-          clearInterval(this.rotateTimer)
         }
       }, 1000)
     }
@@ -120,6 +134,9 @@
         if (this.time <= 5) {
           this.leftTranslate += 1.8
         }
+        if (this.leftTranslate >= 180) {
+          clearInterval(this.rotateTimer)
+        }
         this.$apply()
       }, 50)
     }
@@ -128,6 +145,10 @@
       clearInterval(this.timeTimer)
       clearInterval(this.rotateTimer)
       clearTimeout(this.beginTimer)
+      this.rightTranslate = 0
+      this.leftTranslate = 0
+      this.time = 10
+      this.$apply()
     }
 
     methods = {
@@ -148,113 +169,197 @@
     .answer
       width: 100%
       height: 100%
-      padding: 5px 15px 15px
-      box-sizing: border-box
-      .container
+      .container-box
         width: 100%
         height: 100%
-        display: flex
-        flex-direction: column
-        align-items: center
-        .container-BC-box
-          height: 9.466666666666vw
+        padding: 5px 15px 15px
+        box-sizing: border-box
+        .container
           width: 100%
-          position: relative
-          .container-BC
-            width: 23.466666666666vw
-            height: 9.466666666666vw
-            position: absolute
-            left: 50%
-            bottom: -1px
-            transform: translate(-50%)
-        .content
-          flex: 1
-          width: 100%
-          box-sizing: border-box
-          border-radius: 4px
-          box-shadow: 0 11px 22px 0 rgba(177,177,177,0.20)
-          border: 1px solid #eaeaea
-          background: $color-white
-          padding: 40px 17.5px 0
+          height: 100%
           display: flex
           flex-direction: column
-
-          .title
-            font-size: $font-size-medium-x
-            color: $color-text
-            line-height: 24px
-          .img-box
+          align-items: center
+          .container-BC-box
+            height: 9.466666666666vw
             width: 100%
+            position: relative
+            .container-BC
+              width: 23.466666666666vw
+              height: 9.466666666666vw
+              position: absolute
+              left: 50%
+              bottom: -1px
+              transform: translate(-50%)
+          .content
             flex: 1
-            padding: 20px 0
+            width: 100%
+            box-sizing: border-box
+            border-radius: 4px
+            box-shadow: 0 11px 22px 0 rgba(177,177,177,0.20)
+            border: 1px solid #eaeaea
+            background: $color-white
+            padding: 40px 17.5px 0
             display: flex
-            align-items: center
-            .img-bc
+            flex-direction: column
+
+            .title
+              font-size: $font-size-medium-x
+              color: $color-text
+              line-height: 24px
+            .img-box
               width: 100%
-              height: 0
-              padding-top: 43.54838709677419%
-              border-radius: 4px
-              position: relative
-              .topic-img
-                width: 100%
-                height: 100%
-                border-radius: 4px
-                position: absolute
-                left: 0
-                top: 0
-          .options
-            .option-item
-              width: 100%
-              height: 13.333333333vw
-              margin-bottom: 10px
+              flex: 1
+              padding: 20px 0
               display: flex
-              justify-content: center
               align-items: center
-              .item
+              .img-bc
+                width: 100%
+                height: 0
+                padding-top: 43.54838709677419%
+                border-radius: 4px
+                position: relative
+                .topic-img
+                  width: 100%
+                  height: 100%
+                  border-radius: 4px
+                  position: absolute
+                  left: 0
+                  top: 0
+            .options
+              .option-item
                 width: 100%
                 height: 13.333333333vw
-                line-height: 13.333333333vw
-                text-indent: 8vw
-                border-radius: 6.6666666665vw
-                background: $color-background
-                font-size: $font-size-medium
-                overflow: hidden
+                margin-bottom: 10px
+                display: flex
+                justify-content: center
+                align-items: center
+                .item
+                  width: 100%
+                  height: 13.333333333vw
+                  line-height: 13.333333333vw
+                  text-indent: 8vw
+                  border-radius: 6.6666666665vw
+                  background: $color-background
+                  font-size: $font-size-medium
+                  overflow: hidden
+                  &:active
+                    width: 94%
+                    height: 12vw
+                    line-height: 12vw
+                    border-radius: 6vw
+                .item.right
+                  background: $color-assist-green
+                .item.error
+                  background: $color-assist-orange
+                .item.dis
+                  disabled: true
+                  &:active
+                    width: 100%
+                    height: 13.333333333vw
+                    line-height: 13.333333333vw
+                    border-radius: 6.6666666665vw
 
-        .time-box
-          width: 14.1333333333vw
-          height: 14.1333333333vw
-          position: absolute
-          left: 50%
-          top: 2.6666666666vw
-          transform: translate(-50%)
-          border-radius: 50%
-          border: 1px solid $color-white
-          box-sizing: border-box
-          .time-img
-            width: 50%
-            height: 100%
-            position: absolute
-            top: 1px
-          .left
-            left: 0
-            transform-origin: 100% 50%
-          .right
-            left: 50%
-            transform-origin: 0 50%
-          .white-right
-            width: 7.06666666665vw
+
+          .time-box
+            width: 14.1333333333vw
             height: 14.1333333333vw
             position: absolute
-            top: 0
             left: 50%
-            transform-origin: 0 50%
-          .time-num
+            top: 2.6666666666vw
+            transform: translate(-50%)
+            border-radius: 50%
+            border: 1px solid $color-white
+            box-sizing: border-box
+            .time-img
+              width: 50%
+              height: 100%
+              position: absolute
+              top: 1px
+            .left
+              left: 0
+              transform-origin: 100% 50%
+            .right
+              left: 50%
+              transform-origin: 0 50%
+            .white-right
+              width: 7.06666666665vw
+              height: 14.1333333333vw
+              position: absolute
+              top: 0
+              left: 50%
+              transform-origin: 0 50%
+            .time-num
+              position: absolute
+              left: 50%
+              top: 50%
+              transform: translate(-50%, -50%)
+              font-size: $font-size-large-xx
+              color: $color-text
+              font-family: PingFangSC-Regular
+
+      .result-container
+        width: 100%
+        height: 100%
+        padding: 14vw 15px 15px
+        box-sizing: border-box
+        background-image: linear-gradient(0deg, rgba(154,146,255,0.98) 6%, #F743B7 50%, #FF92B4 100%)
+        .result-BC
+          width: 100%
+          height: 100%
+          background: $color-white
+          border: 1px solid $color-col-line
+          border-shadow: 0 11px 22px 0 rgba(177,177,177,0.20)
+          border-radius: 4px
+          position: relative
+          .result-title
+            width: 45.6vw
+            height: 9.4666666666vw
             position: absolute
             left: 50%
-            top: 50%
-            transform: translate(-50%, -50%)
-            font-size: $font-size-large-xx
-            color: $color-text
+            top: -5.5vw
+            transform: translate(-50%)
+            .title-BC
+              width: 100%
+              height: 100%
+            .title-txt
+              width: 100%
+              height: 8.5333333vw
+              line-height: 8.5333333vw
+              text-align: center
+              font-size: $font-size-medium-x
+              font-family: PingFangSC-Medium
+              color: $color-white
+              position: absolute
+              left: 0
+              top: 0
+        .result-top
+          height: 73%
+        .result-down
+          height: 27%
+          box-sizing: border-box
+          border-top: 0.5px solid #EBEEF1
+          display: flex
+          flex-direction: column
+          justify-content: center
+          align-items: center
+          .item
+            width: 73.0666666vw
+            height: 12vw
+            border-radius: 6vw
+            box-sizing: border-box
+            text-align: center
+            line-height: 12vw
             font-family: PingFangSC-Regular
+            font-size: $font-size-medium-x
+          .item.red
+            color: $color-white
+            nomal-icon()
+            &:active
+              hover-icon()
+          .item.white
+            margin-top: 4vw
+            border: 1px solid $color-assist-pink
+            color: $color-assist-pink
 
 </style>
