@@ -74,4 +74,53 @@ export default class beauticians extends base {
     const url = `${this.baseUrl}/api/beauticians/question/find-quiz`
     return await this.get(url)
   }
+
+  /**
+   * 邀请详情
+   * @params data
+   * @returns {Promise.<*>}
+   */
+  static async invitDetail() {
+    const url = `${this.baseUrl}/api/beauticians/invite/detail`
+    return await this.get(url)
+  }
+  /**
+   * 获得的红包
+   * @params data
+   * @returns {Promise.<*>}
+   */
+  static async invitRewardList(page = 1, limit = 10) {
+    let data = {
+      page,
+      limit
+    }
+    const url = `${this.baseUrl}/api/beauticians/invite/reward-list`
+    return await this.get(url, data)
+  }
+  /**
+   * 成功邀请记录
+   * @params data
+   * @returns {Promise.<*>}
+   */
+  static async invitRegisterList(page = 1, limit = 10) {
+    let data = {
+      page,
+      limit
+    }
+    const url = `${this.baseUrl}/api/beauticians/invite/invited-register-list`
+    return await this.get(url, data)
+  }
+  /**
+   * 红包在路上
+   * @params data
+   * @returns {Promise.<*>}
+   */
+  static async invitWaitRewardList(page = 1, limit = 10) {
+    let data = {
+      page,
+      limit
+    }
+    const url = `${this.baseUrl}/api/beauticians/invite/wait-reward-list`
+    return await this.get(url, data)
+  }
 }
