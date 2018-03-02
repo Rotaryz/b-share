@@ -39,10 +39,14 @@
     </view>
     <view class="tab-container">
       <view class="Service-log" hidden="{{tabIdx===2}}">
-        <repeat wx:if="{{logs.length > 0}}" for="{{logs}}" key="index"
+        <repeat wx:if="{{logs.length}}" for="{{logs}}" key="index"
                 index="index" item="item">
-          <FindDetail :find.sync="item" :listNum.sync="index" :mine="false"></FindDetail>
+          <FindDetail :find.sync="item" :listNum.sync="index" :mine="yes"></FindDetail>
         </repeat>
+        <view class="noThing-box" wx:if="{{!logs.length}}">
+          <image class="noThing-img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-nothing@2x.png'}}"></image>
+          <view class="noThing-txt">暂无内容</view>
+        </view>
         <Underline></Underline>
       </view>
       <view class="ability-model" hidden="{{tabIdx===1}}">
@@ -334,6 +338,20 @@
           color: $color-text
         .tab-underline
           background: $color-assist-pink
+
+    .tab-container
+      .noThing-box
+        display: flex
+        flex-direction: column
+        align-items: center
+        padding-top: 35vw
+        .noThing-img
+          width: 76.5px
+          height: 92px
+        .noThing-txt
+          font-size: $font-size-medium
+          color: $color-text-tr
+          margin-top: 7px
 
 
 </style>

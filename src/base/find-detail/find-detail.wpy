@@ -267,8 +267,8 @@
         default: false
       },
       mine: {
-        type: Boolean,
-        default: true
+        type: String,
+        default: 'no'
       }
     }
     data = {
@@ -291,7 +291,7 @@
 
     methods = {
       goMine(id) {
-        if (this.mine) {
+        if (this.mine === 'no') {
           wepy.navigateTo({
             url: `/pages/guide-center/guide-center?id=${id}&idx=1`
           })

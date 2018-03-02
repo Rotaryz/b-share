@@ -65,4 +65,13 @@ export default class beauticians extends base {
     const url = `${this.baseUrl}/api/beauticians/question/begin-fight`
     return await this.get(url, data)
   }
+
+  /**
+   * 查找问题
+   * @returns {Promise.<*>}
+   */
+  static async findQus() {
+    const url = `${this.baseUrl}/api/beauticians/question/find-quiz`
+    return await this.get(url)
+  }
 }

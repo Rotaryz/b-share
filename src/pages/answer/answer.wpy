@@ -19,16 +19,16 @@
         </view>
         <view class="options">
           <view class="option-item">
-            <view class="item">A、调节作用、分泌与排泄、呼吸作用、吸收跟代谢作用、免疫作用</view>
+            <view class="item dis">A、调节作用、分泌与排泄、呼吸作用、吸收跟代谢作用、免疫作用</view>
           </view>
           <view class="option-item">
-            <view class="item">B、保护作用、调节作用</view>
+            <view class="item right dis">B、保护作用、调节作用</view>
           </view>
           <view class="option-item">
             <view class="item">C、调节作用、分泌与排泄、呼吸作用、吸收跟代谢作用</view>
           </view>
           <view class="option-item">
-            <view class="item">D、免疫作用、吸收跟代谢作用</view>
+            <view class="item error dis">D、免疫作用、吸收跟代谢作用</view>
           </view>
         </view>
       </view>
@@ -75,9 +75,6 @@
 //
     onUnload() {
       this._clearAll()
-      this.rightTranslate = 0
-      this.leftTranslate = 0
-      this.$apply()
     }
 
     async load(option) {
@@ -96,8 +93,8 @@
     _beginCountdown() {
       clearTimeout(this.beginTimer)
       this.beginTimer = setTimeout(() => {
-        this._timeRun()
         this._rotateRun()
+        this._timeRun()
       }, 1000)
     }
 
@@ -108,7 +105,6 @@
         this.$apply()
         if (this.time <= 0) {
           clearInterval(this.timeTimer)
-          clearInterval(this.rotateTimer)
         }
       }, 1000)
     }
@@ -120,6 +116,9 @@
         if (this.time <= 5) {
           this.leftTranslate += 1.8
         }
+        if (this.leftTranslate >= 180) {
+          clearInterval(this.rotateTimer)
+        }
         this.$apply()
       }, 50)
     }
@@ -128,6 +127,10 @@
       clearInterval(this.timeTimer)
       clearInterval(this.rotateTimer)
       clearTimeout(this.beginTimer)
+      this.rightTranslate = 0
+      this.leftTranslate = 0
+      this.time = 10
+      this.$apply()
     }
 
     methods = {
@@ -219,6 +222,23 @@
                 background: $color-background
                 font-size: $font-size-medium
                 overflow: hidden
+                &:active
+                  width: 94%
+                  height: 12vw
+                  line-height: 12vw
+                  border-radius: 6vw
+              .item.right
+                background: $color-assist-green
+              .item.error
+                background: $color-assist-orange
+              .item.dis
+                disabled: true
+                &:active
+                  width: 100%
+                  height: 13.333333333vw
+                  line-height: 13.333333333vw
+                  border-radius: 6.6666666665vw
+
 
         .time-box
           width: 14.1333333333vw
