@@ -15,9 +15,8 @@
     <!--<view class="load-refresh">刷新中…</view>-->
     <!--</view>-->
     <Blank></Blank>
-    <view class="list-box {{!isLoad ? 'find-box-active' : 'find-big-box'}}"
-          @tap="goAnswer">
-      <view class="find-item guidance" wx:if="{{!isChecked}}">
+    <view class="list-box {{!isLoad ? 'find-box-active' : 'find-big-box'}}">
+      <view class="find-item guidance" wx:if="{{!isChecked}}" @tap="goAnswer">
         <view class="find-box">
           <view class="cainter">
             <view class="user">
@@ -27,7 +26,7 @@
             <view class="words">完成实名认证后，领取更多现金红包！</view>
             <image src="" class="img-one-item"></image>
           </view>
-          <view class="information" @tap="delStick">
+          <view class="information" @tap.stop="delStick">
             删除
           </view>
         </view>
@@ -133,7 +132,7 @@
       }
       this.$apply()
 //      wepy.connectSocket({
-//        url: 'wss://192.168.4.98:3000'
+//        url: 'wss://ws.jerryf.cn'
 //      })
 //      wepy.onSocketOpen((res) => {
 //        console.log('WebSocket连接已打开！')
@@ -227,6 +226,7 @@
         }
       },
       async sure() {
+        console.log()
         if (!this.content) {
           let res = await logs.delFind(this.delIndex.id)
           this.loaded()
@@ -234,12 +234,14 @@
             this.findList.splice(this.delIndex.index, 1)
             this.$apply()
           }
-        } else if (this.check) {
+          this.$parent.updateGlobalData('status', 1)
+        }
+        if (this.check) {
           this.isChecked = true
+          this.$apply()
+          this.$parent.updateGlobalData('status', 0)
           wepy.setStorageSync('isChecked', this.isChecked)
         }
-
-        this.$parent.updateGlobalData('status', 1)
       },
       cancel() {
         if (this.content) {

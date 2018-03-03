@@ -364,7 +364,7 @@
       height: 29.6vw
       width: @height
       margin: 1.6vw 0 0 1.6vw
-      border: 0.5px dashed $color-split-line
+      border: 0.5px dotted $color-split-line
       position: relative
       box-sizing: border-box
       .add-image

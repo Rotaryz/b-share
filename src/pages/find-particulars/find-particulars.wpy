@@ -53,7 +53,7 @@
             <view class="com-container">
               <view class="nickname">{{item.user_data.name}}
                 <text class="com-content">回复</text>
-                {{item.comment_user_data.name}}
+                <text class="nackname">{{item.comment_user_data.name}}</text>
                 <text class="com-content">{{item.content}}</text>
               </view>
 
@@ -275,6 +275,7 @@
           wepy.switchTab({
             url: '/pages/find/find'
           })
+          this.$parent.updateGlobalData('status', 0)
           this.$parent.updateGlobalData('logId', this.findDetail[0].id)
         }
       },
@@ -332,9 +333,11 @@
             transform: translateX(-21%)
           .com-content
             color: $color-text
-            margin-left: 5px
+            margin-left: 3px
           .nickname
             line-height: 1
+            .nackname
+              margin-left: 3px
         .comment-item
           .header-box
             height: 4.6vw
@@ -342,6 +345,7 @@
         .nickname
           color: $color-text-tr
           margin-bottom: 5px
+          font-family: $font-family-regular
         .time
           margin-top: 10px
           color: $color-text-tr

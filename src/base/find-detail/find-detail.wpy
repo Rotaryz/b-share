@@ -62,7 +62,7 @@
             </text>
           </view>
           <view class="words" @tap="showDetail({{find.id}})">{{find.content}}</view>
-          <video src="{{find.user_live_log_details[0].file_url}}"
+          <video src="{{find.user_live_log_details[0].file_url}}" objectFit="cover"
                  class="find-video"></video>
         </view>
         <view class="address" wx:if="{{find.address}}"
@@ -431,7 +431,7 @@
           color: $color-del
           margin-left: 12px
         .find-num, .time
-          min-width: 30px
+
           margin-left: 3px
           color: $color-text-tr
         .share

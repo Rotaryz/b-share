@@ -18,7 +18,12 @@ export default class http {
       Tips.loading()
     }
     const res = await wepy.request(param)
-    if (this.isSuccess(res)) {
+    if (this.isLoseEfficacy(res)) {
+      wepy.redirectTo({
+        url: '/pages/login/login'
+      })
+      throw res.data
+    } else if (this.isSuccess(res)) {
       const result = res.data
       return result
     } else {
@@ -59,6 +64,14 @@ export default class http {
     return false
   }
 
+  static isLoseEfficacy(res) {
+    const wxCode = res.statusCode
+    if (wxCode === 200) {
+      const json = res.data
+      return json.code === 10000
+    }
+    return false
+  }
   /**
    * 异常
    */
