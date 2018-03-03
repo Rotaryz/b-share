@@ -6,7 +6,7 @@
       <image class="invit-text-img" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_word_shop@2x.png'}}"></image>
     </view>
     <view class="invit-text-white">
-      <image wx:if="{{!fillout && imageUrl}}" class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg_white@2x.png'}}"></image>
+      <image wx:if="{{imageUrl}}" class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg_white@2x.png'}}"></image>
       <view class="invit-li-img">
         <view class="li-img">
           <image  wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-invite_ shop@2x.png'}}"></image>
@@ -31,12 +31,8 @@
         <text>美业门店实名认证</text>
         <text>通过后你获得红包</text>
       </view>
-      <view wx:if="{{!fillout}}" class="invit-form">
+      <view class="invit-form">
         <view class="invit-form-title">填写入驻信息</view>
-        <view class="invit-form-v">
-          <text>公司</text>
-          <input style="width: 65%" type="text" @input="putCompany" value="{{company}}"/>
-        </view>
         <view class="invit-form-v">
           <input id="phones" class="phone {{phoneStatus ? '' : 'error'}}" type="number" placeholder-class="placeholder"
                  placeholder="手机" value="{{phoneNum}}" focus="{{phoneFocus}}"
@@ -48,11 +44,8 @@
           </view>
         </view>
         <view class="invit-form-v">
-          <input type="text" value="{{verificationCode}}" placeholder="验证码" maxlength="6" @input="putVerificationCode">
-          <!--<text class="invit-form-v-getcode">获取验证码</text>-->
-          <text class="invit-form-v-getcode codes {{isSet ? 'set-code' : ''}}" @tap="setCode">{{
-            time}}
-          </text>
+          <input type="text" value="{{verificationCode}}" placeholder="验证码" maxlength="6" @input="putVerificationCode" />
+          <text class="invit-form-v-getcode codes {{isSet ? 'set-code' : ''}}" @tap="setCode">{{time}}</text>
         </view>
         <view class="invit-form-v">
           <input type="{{ciphertext ? 'text' : 'password'}}"
@@ -64,15 +57,15 @@
                    src="{{ciphertext ? imageUrl + '/defaults/share/page/icon-display@2x.png' : imageUrl + '/defaults/share/page/icon-hide@2x.png'}}"></image>
           </view>
         </view>
-        <!--<view class="invit-form-v">-->
-          <!--<picker mode="selector" class="invit-form-v-picker"-->
-                  <!--range="{{industryArray}}" range-key="{{'name'}}" value="{{index}}" @change="bindPickerChange">-->
-            <!--<text>{{industry}}</text>-->
-          <!--</picker>-->
-          <!--<view class="eye">-->
-            <!--<image class="close" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/iocn-invite_enter@2x.png'}}"></image>-->
-          <!--</view>-->
-        <!--</view>-->
+        <view class="invit-form-v">
+          <picker mode="selector" class="invit-form-v-picker"
+                  range="{{industryArray}}" range-key="{{'name'}}" value="{{index}}" @change="bindPickerChange">
+            <text>{{industry}}</text>
+          </picker>
+          <view class="eye">
+            <image class="close" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/iocn-invite_enter@2x.png'}}"></image>
+          </view>
+        </view>
         <view wx:if="{{!submitNormal}}"><text style="color: red;font-size: 14px">{{msg}}</text></view>
         <view class="invit-form-v-submit" @tap="submitForm">
           <image wx:if="{{!submitNormal && imageUrl}}" src="{{imageUrl + '/defaults/share/page/btn-login_disable@2x.png'}}"></image>
@@ -112,23 +105,22 @@
   let REGPASS = /^[a-zA-Z0-9]{6,18}$/
   let REGPHONE = /^1[3|4|5|7|8][0-9]{9}$/
   let CODE = /^[0-9]{6}$/
-  export default class invitshops extends wepy.page {
+  export default class invitPerson extends wepy.page {
     mixins = [base]
     config = {
-      navigationBarTitleText: '邀请门店赚钱'
+      navigationBarTitleText: '邀请美业赚钱'
     }
     components = {
       Toast: Toast
     }
     data = {
       imageUrl: URIS.image,
-      industry: '职业',
+      industry: '行业',
       industryId: '',
       time: '获取验证码',
       tapCode: true,
       isSet: false,
       prompt: false,
-      fillout: false,
       passtext: '密码',
       index: 0,
       industryArray: [],
@@ -138,6 +130,7 @@
       phoneNum: '', // 手机号
       password: '', // 密码
       verificationCode: '', // 验证码
+      invited_by: '', // 邀请者ID
       occupation: '',
       phoneStatus: true,
       showClose: false,
@@ -151,12 +144,14 @@
       msg: '',
       msgShow: false
     }
-    async onLoad() {
+    async onLoad(options) {
+      this.invited_by = options.invited_by || 0
       await this.load()
+      this.$apply()
     }
     async load() {
       let res = this.infoRes(await industries.industries())
-      console.log(res)
+//      console.log(res)
       this.loaded()
       this.industryArray = res
       this.$apply()
@@ -198,15 +193,13 @@
         this.verifiFun()
         this.$apply()
       },
-      //      点击获取验证码
+      // 点击获取验证码
       async setCode() {
         let regPhone = REGPHONE
         if (this.phoneNum === '') {
-//          this.showTip(true, '请输入手机号码')
           this.$invoke('Toast', 'show', '请输入手机号码')
           return false
         } else if (!regPhone.test(this.phoneNum)) {
-//          this.showTip(true, '请输入正确的手机号码')
           this.$invoke('Toast', 'show', '请输入正确的手机号码')
           return false
         }
@@ -219,12 +212,12 @@
         if (this.tapCode) {
           let codeData = await user.messageBind(data)
           this.time = '发送中…'
-//          this.$invoke('Toast', 'show', codeData.message)
+          // this.$invoke('Toast', 'show', codeData.message)
           this.loaded()
           if (codeData.error !== ERR_OK) {
             this.time = '获取验证码'
             this.$invoke('Toast', 'show', codeData.message)
-//            this.rightTip(codeData.message, false)
+            // this.rightTip(codeData.message, false)
           } else {
             this.isSet = false
             this.$invoke('Toast', 'show', codeData.message)
@@ -291,21 +284,21 @@
       async submitForm () {
         if (this.submitNormal) {
           let data = await wepy.login()
-          console.log(data)
-          let res = await Beauticians.invitRegister({
+          let formData = {
             mobile: this.phoneNum,
             code: this.isVer,
             password: this.password,
-            invited_by: '',
+            invited_by: this.invited_by,
             wx_code: data.code,
-            role: 0,
+            role: 1,
             industry_id: this.industryId
-          })
+          }
+          console.log(formData)
+          let res = await Beauticians.invitRegister(formData)
           this.loaded()
           if (res.error === ERR_OK) {
             wepy.setStorageSync('token', res.data.access_token)
             this.$invoke('Toast', 'show', '注册成功')
-            // this.rightTip('注册成功')
             setTimeout(async () => {
               await wepy.switchTab({// 跳转到发现页面
                 url: '/pages/index/index'
@@ -326,7 +319,7 @@
         this.prompt = !this.prompt
       }
     }
-    verifiFun () { // 检验
+    async verifiFun() { // 检验
       if (this.isPhone && this.isVer && this.isPassword) {
         this.submitNormal = true
       } else {
@@ -386,4 +379,3 @@
           width: 100%
           height: 100%
 </style>
-

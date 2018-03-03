@@ -80,7 +80,7 @@
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
   import Beauticians from 'api/beauticians'
-
+  import Info from 'api/info'
   export default class invit extends wepy.page {
     mixins = [base]
     config = {
@@ -96,12 +96,14 @@
         myPerson: 0,
         myMoneys: 0
       },
+      userId: '',
       prompt: false,
       fillout: true,
       modalInfo: '活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则....',
       lookInvit: '/pages/invit-record/invit-record'
     }
     async onLoad(option) {
+      await this.getUser()
       await this.load(option)
     }
     async load(option) {
@@ -135,9 +137,18 @@
       onShareAppMessage() {
         return {
           title: '共享美导',
-          path: '/pages/invitPerson-write/invitPerson'
+          path: '/pages/invitPerson-write/invitPerson?id=' + this.userId
         }
       }
+    }
+    async getUser() {
+      let Json = await Info.getUserInfo()
+      this.loaded()
+      if (Json.error !== ERR_OK) {
+        return
+      }
+      this.userId = Json.data.id
+      this.$apply()
     }
   }
 </script>
