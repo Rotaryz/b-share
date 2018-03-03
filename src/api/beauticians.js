@@ -44,6 +44,15 @@ export default class beauticians extends base {
   }
 
   /**
+   * 答题判断下一步操作
+   * @returns {Promise.<*>}
+   */
+  static async checkAnswerNext() {
+    const url = `${this.baseUrl}/api/beauticians/question/check-first-answer`
+    return await this.get(url)
+  }
+
+  /**
    * 选择专业类型
    * @returns {Promise.<*>}
    */

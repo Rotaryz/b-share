@@ -40,17 +40,34 @@
       checked: ''
     }
 
-    async onLoad() {
+    async onShow() {
       await this.load()
     }
 
     async load() {
-      let Json = await Beauticians.getMajors()
-      this.loaded()
-      if (Json.error !== ERR_OK) {
+      let Json1 = await Beauticians.checkAnswerNext()
+      if (Json1.error !== ERR_OK) {
+        this.loaded()
         return
       }
-      this.majorArr = Json.data
+      let Json2 = await Beauticians.getMajors()
+      if (Json2.error !== ERR_OK) {
+        this.loaded()
+        return
+      }
+      this.majorArr = Json2.data
+      const next = Json1.data.nextDo
+      switch (next) {
+        case 'beginFight':
+          break
+        case 'findQuiz':
+          this.$navigate('/pages/answer/answer?next=findQuiz')
+          break
+        case 'getResult':
+          this.$navigate('/pages/answer/answer?next=getResult')
+          break
+      }
+      this.loaded()
       this.$apply()
     }
 
@@ -64,7 +81,7 @@
         if (!this.checked) {
           return
         }
-        let url = '/pages/answer/answer?categoryId=' + this.checked + '&categoryName=' + this.checkedName
+        let url = '/pages/answer/answer?categoryId=' + this.checked + '&categoryName=' + this.checkedName + '&next=beginFight'
         this.$navigate(url)
       }
     }
