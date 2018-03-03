@@ -91,7 +91,8 @@
       content: '',
       delIndex: {},
       bottom: 0,
-      check: false
+      check: false,
+      userLiveLogIid: []
     }
 
     async onPullDownRefresh() {
@@ -99,6 +100,7 @@
       setTimeout(() => {
         wepy.stopPullDownRefresh()
         this.bottom = 0
+        this.$parent.updateGlobalData('status', 0)
         this.$apply()
       }, 50)
       this.$apply()
@@ -108,9 +110,36 @@
       this.findList = await this.load()
       this.showBlank(this.findList)
       this.$apply()
+//      this.$invoke('PopUpWindows', 'show', '内容不会保存，退出编辑？', false)
+      let id = wepy.getStorageSync('user_info').id
+//      wepy.connectSocket({
+//        url: 'wss://ws.jerryf.cn/socket.io/?EIO=3&transport=websocket'
+//      })
+//
+//      wepy.onSocketOpen((res) => {
+//      })
+//      wepy.onSocketMessage((res) => {
+//        let data = res.data.slice(1)
+//        data = JSON.parse(data)
+//        console.log(data)
+//      })
+//      console.log(typeof  io)
+//      const news = io('wss://ws.jerryf.cn/socket.io/?EIO=3&transport=websocket')
+//      news.on(`channel-remind:newMessage:${id}`, (data)=> {
+//        console.log('======news data: ', data)
+//      })
+      let socket = this.$parent.globalData.socket
+      console.log(socket.io)
+      socket.io.on(`channel-remind:newMessage:7`, function(data){
+        console.log(data)
+      })
     }
 
     async onShow() {
+      setTimeout(() => {
+        this.bottom = 0
+        this.$apply()
+      }, 50)
       if (this.$parent.globalData.status && this.$parent.globalData.status === 2) {
         this.$invoke('PopUpWindows', 'show', '内容不会保存，退出编辑？')
         this.content = true
@@ -131,12 +160,6 @@
         }
       }
       this.$apply()
-//      wepy.connectSocket({
-//        url: 'wss://ws.jerryf.cn'
-//      })
-//      wepy.onSocketOpen((res) => {
-//        console.log('WebSocket连接已打开！')
-//      })
     }
 
     showBlank(res) {
@@ -189,7 +212,11 @@
 
     methods = {
       goAnswer() {
-        this.$navigate('/pages/answer-index/answer-index')
+        if (wepy.getStorageSync('user_info').role) {
+          this.$navigate('/pages/name-authentication/name-authentication')
+        } else {
+          this.$navigate('/pages/answer-index/answer-index')
+        }
       },
       delStick() {
         this.check = true
@@ -226,7 +253,6 @@
         }
       },
       async sure() {
-        console.log()
         if (!this.content) {
           let res = await logs.delFind(this.delIndex.id)
           this.loaded()
@@ -241,6 +267,8 @@
           this.$apply()
           this.$parent.updateGlobalData('status', 0)
           wepy.setStorageSync('isChecked', this.isChecked)
+        } else {
+          this.$parent.updateGlobalData('status', 0)
         }
       },
       cancel() {

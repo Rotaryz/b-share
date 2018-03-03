@@ -1,25 +1,25 @@
 <template>
   <view class="find-deatil">
-    <view class="text find-item"
+    <view class="text find-item" @tap="showDetail({{find.id}})"
           wx:if="{{find.user_live_log_details.length === 0}}">
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header" @tap="goMine({{find.user_id}})"
+            <image class="header" @tap.stop="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname" @tap="goMine({{find.user_id}})">
+            <text class="nickname" @tap.stop="goMine({{find.user_id}})">
               {{find.user_data.name}}
             </text>
           </view>
-          <view class="words" @tap="showDetail({{find.id}})">
+          <view class="words">
             {{find.content}}
             <text class="text-more" wx:if="{{find.showDetail}}"
-                  @tap="showDetail({{find.id}})">查看详情
+                  @tap.stop="showDetail({{find.id}})">查看详情
             </text>
           </view>
         </view>
         <view class="address" wx:if="{{find.address}}"
-              @tap="openLocation({{find}})">
+              @tap.stop="openLocation({{find}})">
           <image class="add-icon" wx:if="{{imageUrl}}"
                  src="{{imageUrl + '/defaults/share/page/icon-find_site03@2x.png'}}"></image>
           {{find.address}}
@@ -27,11 +27,11 @@
         <view class="information">
           <view class="time">{{find.differ_time}}
             <text class="del" wx:if="{{find.current_user}}"
-                  @tap="delFind({{find.id}})">删除
+                  @tap.stop="delFind({{find.id}})">删除
             </text>
           </view>
           <view class="share">
-            <view class="share-item comment" @tap="isComment({{find.id}})">
+            <view class="share-item comment" @tap.stop="isComment({{find.id}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
               <view class="find-num">
@@ -39,7 +39,7 @@
               </view>
             </view>
             <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} "
-                  @tap="good({{find.id}},{{listNum}})">
+                  @tap.stop="good({{find.id}},{{listNum}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
               <view class="find-num">
@@ -50,23 +50,24 @@
         </view>
       </view>
     </view>
-    <view class="find-item video"
+    <view class="find-item video" @tap="showDetail({{find.id}})"
           wx:if="{{find.user_live_log_details[0].type === 2}}">
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header" @tap="goMine({{find.user_id}})"
+            <image class="header" @tap.stop="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname" @tap="goMine({{find.user_id}})">
+            <text class="nickname" @tap.stop="goMine({{find.user_id}})">
               {{find.user_data.name}}
             </text>
           </view>
-          <view class="words" @tap="showDetail({{find.id}})">{{find.content}}</view>
-          <video src="{{find.user_live_log_details[0].file_url}}" objectFit="cover"
+          <view class="words">{{find.content}}</view>
+          <video src="{{find.user_live_log_details[0].file_url}}"
+                 objectFit="cover"
                  class="find-video"></video>
         </view>
         <view class="address" wx:if="{{find.address}}"
-              @tap="openLocation({{find}})">
+              @tap.stop="openLocation({{find}})">
           <image class="add-icon" wx:if="{{imageUrl}}"
                  src="{{imageUrl + '/defaults/share/page/icon-find_site03@2x.png'}}"></image>
           {{find.address}}
@@ -74,11 +75,11 @@
         <view class="information">
           <view class="time">{{find.differ_time}}
             <text class="del" wx:if="{{find.current_user}}"
-                  @tap="delFind({{find.id}})">删除
+                  @tap.stop="delFind({{find.id}})">删除
             </text>
           </view>
           <view class="share">
-            <view class="share-item comment" @tap="isComment({{find.id}})">
+            <view class="share-item comment" @tap.stop="isComment({{find.id}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
               <view class="find-num">
@@ -86,7 +87,7 @@
               </view>
             </view>
             <view class="share-item {{find.is_like ? 'thumbs-up' : ''}}"
-                  @tap="good({{find.id}},{{listNum}})">
+                  @tap.stop="good({{find.id}},{{listNum}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
               <view class="find-num">
@@ -97,26 +98,26 @@
         </view>
       </view>
     </view>
-    <view class="find-item img-one"
+    <view class="find-item img-one" @tap="showDetail({{find.id}})"
           wx:if="{{find.user_live_log_details[0].type === 1 && find.user_live_log_details.length === 1}}">
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header" @tap="goMine({{find.user_id}})"
+            <image class="header" @tap.stop="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname" @tap="goMine({{find.user_id}})">
+            <text class="nickname" @tap.stop="goMine({{find.user_id}})">
               {{find.user_data.name}}
             </text>
           </view>
-          <view class="words" @tap="showDetail({{find.id}})">{{find.content}}</view>
-          <view @tap="showBigImg({{find}})">
+          <view class="words">{{find.content}}</view>
+          <view @tap.stop="showBigImg({{find}})" class="one-box">
             <image src="{{find.user_live_log_details[0].file_url}}"
                    @tap="setIndex(0)" class="img-one-item"
                    mode="widthFix"></image>
           </view>
         </view>
         <view class="address" wx:if="{{find.address}}"
-              @tap="openLocation({{find}})">
+              @tap.stop="openLocation({{find}})">
           <image class="add-icon" wx:if="{{imageUrl}}"
                  src="{{imageUrl + '/defaults/share/page/icon-find_site03@2x.png'}}"></image>
           {{find.address}}
@@ -124,11 +125,11 @@
         <view class="information">
           <view class="time">{{find.differ_time}}
             <text class="del" wx:if="{{find.current_user}}"
-                  @tap="delFind({{find.id}})">删除
+                  @tap.stop="delFind({{find.id}})">删除
             </text>
           </view>
           <view class="share">
-            <view class="share-item comment" @tap="isComment({{find.id}})">
+            <view class="share-item comment" @tap.stop="isComment({{find.id}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
               <view class="find-num">
@@ -136,7 +137,7 @@
               </view>
             </view>
             <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} "
-                  @tap="good({{find.id}},{{listNum}})">
+                  @tap.stop="good({{find.id}},{{listNum}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
               <view class="find-num">
@@ -147,19 +148,19 @@
         </view>
       </view>
     </view>
-    <view class="find-item img-two"
+    <view class="find-item img-two" @tap="showDetail({{find.id}})"
           wx:if="{{find.user_live_log_details[0].type === 1 && find.user_live_log_details.length === 2}}">
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header" @tap="goMine({{find.user_id}})"
+            <image class="header" @tap.stop="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname" @tap="goMine({{find.user_id}})">
+            <text class="nickname" @tap.stop="goMine({{find.user_id}})">
               {{find.user_data.name}}
             </text>
           </view>
-          <view class="words" @tap="showDetail({{find.id}})">{{find.content}}</view>
-          <view class="img-item-two" @tap="showBigImg({{find}})">
+          <view class="words">{{find.content}}</view>
+          <view class="img-item-two" @tap.stop="showBigImg({{find}})">
             <image class="two-item" mode="aspectFill"
                    wx:for="{{find.user_live_log_details}}"
                    @tap="setIndex({{index}})"
@@ -167,7 +168,7 @@
           </view>
         </view>
         <view class="address" wx:if="{{find.address}}"
-              @tap="openLocation({{find}})">
+              @tap.stop="openLocation({{find}})">
           <image class="add-icon" wx:if="{{imageUrl}}"
                  src="{{imageUrl + '/defaults/share/page/icon-find_site03@2x.png'}}"></image>
           {{find.address}}
@@ -175,11 +176,11 @@
         <view class="information">
           <view class="time">{{find.differ_time}}
             <text class="del" wx:if="{{find.current_user}}"
-                  @tap="delFind({{find.id}})">删除
+                  @tap.stop="delFind({{find.id}})">删除
             </text>
           </view>
           <view class="share">
-            <view class="share-item comment" @tap="isComment({{find.id}})">
+            <view class="share-item comment" @tap.stop="isComment({{find.id}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
               <view class="find-num">
@@ -187,7 +188,7 @@
               </view>
             </view>
             <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} "
-                  @tap="good({{find.id}},{{listNum}})">
+                  @tap.stop="good({{find.id}},{{listNum}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
               <view class="find-num">
@@ -198,26 +199,26 @@
         </view>
       </view>
     </view>
-    <view class="find-item img-more"
+    <view class="find-item img-more" @tap="showDetail({{find.id}})"
           wx:if="{{find.user_live_log_details[0].type === 1 && find.user_live_log_details.length > 2}}">
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header" @tap="goMine({{find.user_id}})"
+            <image class="header" @tap.stop="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname" @tap="goMine({{find.user_id}})">
+            <text class="nickname" @tap.stop="goMine({{find.user_id}})">
               {{find.user_data.name}}
             </text>
           </view>
-          <view class="words" @tap="showDetail({{find.id}})">{{find.content}}</view>
-          <view class="img-item-two" @tap="showBigImg({{find}})">
+          <view class="words">{{find.content}}</view>
+          <view class="img-item-two" @tap.stop="showBigImg({{find}})">
             <image class="two-item" @tap="setIndex({{index}})" mode="aspectFill"
                    wx:for="{{find.user_live_log_details}}"
                    wx:key="{{indexs}}" src="{{item.file_url}}"></image>
           </view>
         </view>
         <view class="address" wx:if="{{find.address}}"
-              @tap="openLocation({{find}})">
+              @tap.stop="openLocation({{find}})">
           <image class="add-icon" wx:if="{{imageUrl}}"
                  src="{{imageUrl + '/defaults/share/page/icon-find_site03@2x.png'}}"></image>
           {{find.address}}
@@ -225,11 +226,11 @@
         <view class="information">
           <view class="time">{{find.differ_time}}
             <text class="del" wx:if="{{find.current_user}}"
-                  @tap="delFind({{find.id}})">删除
+                  @tap.stop="delFind({{find.id}})">删除
             </text>
           </view>
           <view class="share">
-            <view class="share-item comment" @tap="isComment({{find.id}})">
+            <view class="share-item comment" @tap.stop="isComment({{find.id}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"></image>
               <view class="find-num">
@@ -237,7 +238,7 @@
               </view>
             </view>
             <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} "
-                  @tap="good({{find.id}},{{listNum}})">
+                  @tap.stop="good({{find.id}},{{listNum}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
               <view class="find-num">
@@ -319,9 +320,11 @@
         }
       },
       showDetail(id) {
-        wepy.navigateTo({
-          url: '/pages/find-particulars/find-particulars?id=' + id
-        })
+        if (!this.comment) {
+          wepy.navigateTo({
+            url: '/pages/find-particulars/find-particulars?id=' + id
+          })
+        }
       },
       async good(id, index) {
         let like = 0
@@ -399,7 +402,7 @@
           height: 34px
           width: 34px
         .nickname
-          transform :translateY(-25%)
+          transform: translateY(-25%)
           font-family: $font-family-regular
           color: $color-text
           font-size: $font-size-medium-x
@@ -461,6 +464,8 @@
       border: 0.5px solid $color-background
       width: 34.134vw
       height: 46.4vw
+    .one-box
+      display: inline-block
 
   .img-two
     .img-item-two

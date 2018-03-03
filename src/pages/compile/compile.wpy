@@ -2,7 +2,8 @@
   <view class="compile">
 
        <textarea class="words-text" placeholder="记录你的点点滴滴…"
-                 placeholder-class="com-words" focus value="{{words}}"
+                 placeholder-class="com-words" focus="{{focus}}"
+                 value="{{words}}"
                  show-confirm-bar="{{false}}" @focus="bindfocus"
                  @blur="showTop" @input="getWords"></textarea>
     <view class="com-box" style="height: {{comHeight}}px">
@@ -20,7 +21,7 @@
         <view class="img-add" wx:if="{{imgUrl.length > 0 && imgUrl.length < 9}}"
               @tap="choiceImage">
           <image class="add-image" wx:if="{{imageUrl}}"
-                 src="{{imageUrl + '/defaults/share/page/icon-diary_add@2x.png'}}"></image>
+                 src="{{imageUrl + '/defaults/share/page/pic-find_add@2x.png'}}"></image>
         </view>
       </view>
       <view class="com-video" wx:if="{{videoUrl !== ''}}">
@@ -37,9 +38,10 @@
       </view>
     </view>
     <view class="com-tab" style="bottom: {{height}}px">
-      <view class="com-addrss" @tap="getAddress">
+      <view class="com-addrss {{address === '你在哪里' ? '':'com-addrss-active'}}"
+            @tap="getAddress">
         <image class="com-add-icons" wx:if="{{imageUrl}}"
-               src="{{imageUrl + '/defaults/share/page/icon-find_site01@2x.png'}}"></image>
+               src="{{address === '你在哪里' ? imageUrl + '/defaults/share/page/icon-find_site01@2x.png' : imageUrl + '/defaults/share/page/icon-find_site02@2x.png'}}"></image>
         <text class="add-title">{{address}}</text>
       </view>
       <view class="com-tab-item" @tap="choiceImage">
@@ -93,7 +95,8 @@
       showSend: false,
       address: '你在哪里',
       longitude: 0,
-      latitude: 0
+      latitude: 0,
+      focus: true
     }
 
     async onShow() {
@@ -134,16 +137,22 @@
       this.$apply()
     }
 
+    _focus() {
+      setTimeout(() => {
+        this.focus = true
+        this.height = this.screenHeight * 0.445
+        this.comHeight = this.screenHeight * 0.179
+        this.$apply()
+      }, 30)
+    }
+
     methods = {
       bindfocus() {
-        setTimeout(() => {
-          this.height = this.screenHeight * 0.445
-          this.comHeight = this.screenHeight * 0.179
-          this.$apply()
-        }, 30)
+        this._focus()
       },
       showTop() {
         setTimeout(() => {
+          this.focus = false
           this.height = 1
           this.comHeight = this.screenHeight * 0.55
           this.$apply()
@@ -157,6 +166,7 @@
       async choiceImage() {
         if (this.fileType !== 2 && this.fileType !== -1 && this.imgUrl.length !== 9) {
           let res = await wepy.chooseImage()
+          this._focus()
           if (!res) {
             return
           }
@@ -177,6 +187,7 @@
       async choiceVideo() {
         if (this.fileType !== 1 && this.fileType !== -1) {
           let res = await wepy.chooseVideo()
+          this._focus()
           if (!res) {
             return
           }
@@ -193,7 +204,7 @@
       delImage(index) {
         index = index * 1
         this.imgUrl.splice(index, 1)
-        this.imageId.splice(index, 1)
+        this.fileId.splice(index, 1)
         this.imgUrl.length === 0 ? this.fileType = 0 : this.fileType = 1
         this.checkSend()
       },
@@ -240,7 +251,7 @@
           this.$invoke('Toast', 'show', '发表成功')
           this.$parent.updateGlobalData('status', 1)
           setTimeout(() => {
-           this.$back(1)
+            this.$back(1)
           }, 500)
         }
       }
@@ -301,6 +312,8 @@
       .com-add-icons
         width: 16px
         height: @width
+    .com-addrss-active
+      color: $color-text
     .com-tab-item
       height: 100%
       flex: 2.5
@@ -364,11 +377,9 @@
       height: 29.6vw
       width: @height
       margin: 1.6vw 0 0 1.6vw
-      border: 0.5px dotted $color-split-line
       position: relative
-      box-sizing: border-box
       .add-image
-        height: 30.9%
+        height: 99%
         width: @height
         all-center()
 

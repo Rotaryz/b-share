@@ -7,6 +7,7 @@
   import 'wepy-async-function'
   import wxUtils from 'common/js/wxUtils'
   import URIS from 'common/js/config'
+  import io from './socket/index'
   export default class extends wepy.app {
     constructor() {
       super()
@@ -15,6 +16,9 @@
     }
 
     onLaunch(options) {
+      const socket = io('wss://ws.jerryf.cn')
+      console.log(socket)
+      this.updateGlobalData('socket', socket)
       // 校验SDK
 //      wxUtils.checkSDK()
 //      const storageDate = wepy.getStorageSync('collectDate')
@@ -60,8 +64,8 @@
 
     config = {
       pages: [
-        'pages/index/index',
         'pages/find/find',
+        'pages/index/index',
         'pages/mine/mine',
         'pages/guide-center/guide-center',
         'pages/ability/ability',
