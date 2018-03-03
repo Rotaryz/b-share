@@ -1,32 +1,41 @@
 <template>
-  <view class="store-license-body">
-    <view class="store-license-body-title">
-      <view class="store-license-body-block"></view>
-      请上传对应的证书和照片
-    </view>
-    <view class="store-license-body-imgBox">
-      <view class="store-license-imgBC" wx:for="{{images}}" wx:key="{{item}}">
-        <!--<image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/b-image/page/pic-id_fm_slic@2x.png'}}" class="store-license-imgBC-img"></image>-->
-        <image src="{{item.image_url}}" class="store-license-upImg" mode="aspectFit"></image>
-        <view class="store-license-imgBtn" @tap="uploadImg({{index}})">{{item.title}}</view>
+  <view>
+    <view class="store-license-body">
+      <view class="store-license-body-title">
+        <view class="store-license-body-block"></view>
+        请上传对应的证书和照片
+      </view>
+      <view class="store-license-body-imgBox">
+        <view class="store-license-imgBC" wx:for="{{images}}" wx:key="{{item}}">
+          <!--<image wx:if="{{imageUrlHead}}" src="{{imageUrlHead + '/defaults/b-image/page/pic-id_fm_slic@2x.png'}}" class="store-license-imgBC-img"></image>-->
+          <image src="{{item.url}}" class="store-license-upImg" mode="aspectFit"></image>
+          <view class="store-license-imgBtn" @tap="uploadImg({{index}})">{{item.title}}</view>
+        </view>
       </view>
     </view>
-  </view>
-  <view class="authentication-submit" @tap="sunmitBtn">
-    <image wx:if="{{submitImage && imageUrl}}" src="{{imageUrl + '/defaults/share/page/btn-invite_nor@2x.png'}}" style="width: 100%;"/>
-    <image wx:elif="{{!submitImage && imageUrl}}"  src="{{imageUrl + '/defaults/share/page/btn-login_disable@2x.png'}}" style="width: 100%;"/>
-    提交审核
+    <view class="authentication-submit" @tap="sunmitBtn">
+      <image wx:if="{{submitImage && imageUrl}}" src="{{imageUrl + '/defaults/share/page/btn-invite_nor@2x.png'}}" style="width: 100%;"/>
+      <image wx:elif="{{!submitImage && imageUrl}}"  src="{{imageUrl + '/defaults/share/page/btn-login_disable@2x.png'}}" style="width: 100%;"/>
+      提交审核
+    </view>
+    <Toast></Toast>
   </view>
 </template>
 <script>
     import wepy from 'wepy'
-    import Toast from '@/base/toast/toast'
     import base from 'common/mixins/base'
+    import Toast from '@/base/toast/toast'
     import URIS from 'common/js/config'
+    import Upload from 'api/uploads'
+    import Tips from '@/common/js/tips'
+    import {ERR_OK} from 'api/base'
+    import Info from 'api/info'
+
     export default class Myname extends wepy.page {
       mixins = [base]
       config = {
-        navigationBarTitleText: '实名认证'
+        navigationBarTitleText: '实名认证',
+        backgroundColor: '#fff'
       }
       components = {
         Toast: Toast
@@ -40,7 +49,11 @@
           {title: '实体铺照片'},
           {title: '门头照片'},
           {title: '前台照片'}],
+        nothing: true,
         test: ''
+      }
+      async onLoad() {
+        this.load()
       }
       methods = {
         async uploadImg(idx) {
@@ -48,15 +61,78 @@
           if (!res) {
             return
           }
-          // let upRes = await Upload.uploadImages(res.tempFilePaths[0])
-          // this.loaded()
-          this.images[idx].image_url = res.tempFilePaths[0] // upRes.url
-          this.images[idx].image_id = // upRes.id
+          let upRes = await Upload.uploadImages(res.tempFilePaths[0])
+          this.loaded()
+          this.images[idx].url = upRes.url
+          this.images[idx].image_id = upRes.id
+          this.images[idx].sort = idx
           this.$apply()
         },
         async sunmitBtn(e) {
-
+          let res = this._testEmperty()
+          if (!res) {
+            this.$invoke('Toast', 'show', '图片未全部上传')
+            return
+          }
+          let images = this.images.map((item) => {
+            return {
+              id: item.id || 0,
+              image_id: item.image_id,
+              sort: item.sort
+            }
+          })
+          let _image = {
+            images: images
+          }
+          let upRes = await Info.realName(_image)
+          this.loaded()
+          if (upRes.error === ERR_OK) {
+            Tips.success('保存成功')
+            setTimeout(() => {
+              this.$back(1)
+            }, 1000)
+          } else {
+            this.$invoke('Toast', 'show', upRes.message)
+          }
         }
+      }
+      async load() {
+        await this.getRealImage()
+        await this._testEmperty()
+      }
+      async getRealImage() {
+        let res = await Info.realNameList()
+        this.loaded()
+        if (res.error !== ERR_OK) {
+          return
+        }
+        let images = res.data
+        this.images = this._computedImg(this.images, images)
+        console.log(this.images)
+        if (res.data && res.data.length > 0) {
+          this.nothing = false
+        }
+        this.$apply()
+      }
+      _computedImg(arr, Msg) {
+        return arr.map((item, index) => {
+          item = Object.assign({}, item, Msg[index])
+          return item
+        })
+      }
+      _testEmperty() {
+        let arr = []
+        this.images.forEach((item) => {
+          arr.push(item.url)
+        })
+        let v = arr.every((msg) => {
+          return msg
+        })
+        if (v) {
+          this.submitImage = true
+          this.$apply()
+        }
+        return v
       }
       submitImageFun() { // 切换按键背景图
         this.submitImage = true
@@ -65,10 +141,11 @@
 </script>
 <style lang="stylus">
   @import "../../common/stylus/variable"
+  page
+    background: #fff
   .store-license-body
     margin-top: 10px
-    background: $color-white
-
+    border-top:10px solid #f1f1f2;
     .store-license-body-title
       font-size: $font-size-medium
       height: 43px
@@ -86,7 +163,7 @@
     .store-license-body-imgBox
       display: flex
       flex-wrap: wrap
-      padding-left: 12px
+      padding-left: 10px
 
       .store-license-imgBC
         width: 44.8vw

@@ -82,7 +82,8 @@
         'pages/loading/loading',
         'pages/invit-record/invit-record',
         'pages/invitShop-write/invitShop',
-        'pages/invitPerson-write/invitPerson'
+        'pages/invitPerson-write/invitPerson',
+        'pages/activity-rules/activity-rules'
       ],
       window: {
         backgroundColor: '#F9F9F9',
