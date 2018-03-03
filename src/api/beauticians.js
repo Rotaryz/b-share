@@ -44,6 +44,15 @@ export default class beauticians extends base {
   }
 
   /**
+   * 答题判断下一步操作
+   * @returns {Promise.<*>}
+   */
+  static async checkAnswerNext() {
+    const url = `${this.baseUrl}/api/beauticians/question/check-first-answer`
+    return await this.get(url)
+  }
+
+  /**
    * 选择专业类型
    * @returns {Promise.<*>}
    */
@@ -122,14 +131,5 @@ export default class beauticians extends base {
     }
     const url = `${this.baseUrl}/api/beauticians/invite/wait-reward-list`
     return await this.get(url, data)
-  }
-  /**
-   * 邀请注册
-   * @params data
-   * @returns {Promise.<*>}
-   */
-  static async invitRegister(data) {
-    const url = `${this.baseUrl}/api/beauticians/invite/invite-register`
-    return await this.post(url, data)
   }
 }

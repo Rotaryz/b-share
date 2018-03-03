@@ -12,24 +12,15 @@
           </view>
         </view>
         <view class="content">
-          <view class="title">1/10 皮肤的功能有什么作用？</view>
+          <view class="title">{{ansCount}}/{{count}} {{questionTitle}}</view>
           <view class="img-box">
             <view class="img-bc">
-              <image class="topic-img" mode="aspectFit" src="./test.png"></image>
+              <image class="topic-img" mode="aspectFit" src="{{questionImg}}"></image>
             </view>
           </view>
           <view class="options">
-            <view class="option-item">
-              <view class="item dis">A、调节作用、分泌与排泄、呼吸作用、吸收跟代谢作用、免疫作用</view>
-            </view>
-            <view class="option-item">
-              <view class="item right dis">B、保护作用、调节作用</view>
-            </view>
-            <view class="option-item">
-              <view class="item">C、调节作用、分泌与排泄、呼吸作用、吸收跟代谢作用</view>
-            </view>
-            <view class="option-item">
-              <view class="item error dis">D、免疫作用、吸收跟代谢作用</view>
+            <view class="option-item" wx:for="{{questionArr}}" wx:key="{{item}}">
+              <view class="item {{btnDis?'dis':''}} {{answerChecked===item.id ? checkResult?'right':'error' : ''}}" @tap="chioceAnswer({{item.id}})">{{letterArr[index]}}、{{item.answer}}</view>
             </view>
           </view>
         </view>
@@ -60,6 +51,7 @@
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
   import Beauticians from 'api/beauticians'
+  import Util from 'common/libs/util'
 
   export default class answer extends wepy.page {
     mixins = [base]
@@ -77,7 +69,14 @@
       timeTimer: '',
       rotateTimer: '',
       beginTimer: '',
-      letterArr: ['A', 'B', 'C', 'D']
+      letterArr: ['A', 'B', 'C', 'D'],
+      count: 10,
+      ansCount: 1,
+      questionTitle: '',
+      questionImg: '',
+      quesResult: '',
+      questionArr: [],
+      answerChecked: ''
     }
 
     async onLoad(option) {
@@ -96,24 +95,33 @@
     }
 
     async load(option) {
-      let categoryId = option.categoryId
-      let categoryName = option.categoryName
-//      let Json = await Beauticians.beginAnswer(categoryId, categoryName)
-//      this.loaded()
-//      if (Json.error !== ERR_OK) {
-//        return
-//      }
-//      console.log(Json)
+      let nextDo = option.next
+      console.log(nextDo)
+      switch (nextDo) {
+        case 'beginFight':
+          let categoryId = option.categoryId
+          let categoryName = option.categoryName
+          let Json = await Beauticians.beginAnswer(categoryId, categoryName)
+          this.loaded()
+          if (Json.error !== ERR_OK) {
+            return
+          }
+          this.count = Json.data.questionCount
+          break
+        case 'findQuiz':
+          await this._findQuestion()
+          break
+        case 'getResult':
+
+          break
+      }
       this._beginCountdown()
       this.$apply()
     }
 
     _beginCountdown() {
-      clearTimeout(this.beginTimer)
-      this.beginTimer = setTimeout(() => {
-        this._rotateRun()
-        this._timeRun()
-      }, 1000)
+      this._rotateRun()
+      this._timeRun()
     }
 
     _timeRun() {
@@ -144,15 +152,47 @@
     _clearAll() {
       clearInterval(this.timeTimer)
       clearInterval(this.rotateTimer)
-      clearTimeout(this.beginTimer)
       this.rightTranslate = 0
       this.leftTranslate = 0
       this.time = 10
       this.$apply()
     }
 
-    methods = {
+    async _findQuestion() {
+      let Json1 = await Beauticians.findQus()
+      this.loaded()
+      if (Json1.error !== ERR_OK) {
+        return
+      }
+      let res = Json1.data
+      this.questionArr = res.answer
+      this.ansCount = res.questionNumber
+      this.questionTitle = res.question
+      this.questionImg = res.image_url
+      this.quesResult = res.sign
+      this.$apply()
+    }
 
+    _checkedResult() {
+      let checked = Util.sha1('jyzs' + this.answerChecked + 'jyzs') + 'jyzs' + Util.sha1('jyzs' + this.answerChecked + 'jyzs')
+      console.log(checked)
+    }
+
+    methods = {
+      chioceAnswer(id) {
+        this.answerChecked = id
+        this.$apply()
+      }
+    }
+
+    computed = {
+      btnDis() {
+        return this.time === 0 || this.answerChecked
+      },
+      checkResult() {
+        this._checkedResult()
+        return true
+      }
     }
   }
 </script>
@@ -249,8 +289,10 @@
                     line-height: 12vw
                     border-radius: 6vw
                 .item.right
+                  color: $color-white
                   background: $color-assist-green
                 .item.error
+                  color: $color-white
                   background: $color-assist-orange
                 .item.dis
                   disabled: true

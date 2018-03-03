@@ -125,7 +125,7 @@
         switch (num * 1) {
           case 1:
             if (!this.invite) {
-              console.log('邀请美导')
+              this.$navigate('/pages/invitPerson/invitPerson')
             }
             break
           case 2:
@@ -140,7 +140,7 @@
             break
           case 4:
             if (!this.relName) {
-              console.log('完成实名认证')
+              this.$navigate('/pages/name-authentication/name-authentication')
             }
             break
           case 5:
