@@ -13,10 +13,11 @@
         </view>
       </view>
     </view>
-    <view class="authentication-submit" @tap="sunmitBtn">
-      <image wx:if="{{submitImage && imageUrl}}" src="{{imageUrl + '/defaults/share/page/btn-invite_nor@2x.png'}}" style="width: 100%;"/>
-      <image wx:elif="{{!submitImage && imageUrl}}"  src="{{imageUrl + '/defaults/share/page/btn-login_disable@2x.png'}}" style="width: 100%;"/>
-      提交审核
+    <view class="authentication-submit">
+      <button class="submit {{submit ? '' : 'disable'}}"
+              @tap="submitForm({{submitType}})">
+        提交审核
+      </button>
     </view>
     <Toast></Toast>
   </view>
@@ -50,7 +51,9 @@
           {title: '门头照片'},
           {title: '前台照片'}],
         nothing: true,
-        test: ''
+        test: '',
+        submitType: 1,
+        submit: false
       }
       async onLoad() {
         this.load()
@@ -68,7 +71,7 @@
           this.images[idx].sort = idx
           this.$apply()
         },
-        async sunmitBtn(e) {
+        async submitForm() {
           let res = this._testEmperty()
           if (!res) {
             this.$invoke('Toast', 'show', '图片未全部上传')
@@ -89,8 +92,7 @@
           if (upRes.error === ERR_OK) {
             Tips.success('保存成功')
             setTimeout(() => {
-              this.$back(1)
-              wepy.navigateTo({
+              wepy.switchTab({
                 url: '/pages/find/find'
               })
             }, 1000)
@@ -132,30 +134,33 @@
           return msg
         })
         if (v) {
-          this.submitImage = true
+          this.submit = true
           this.$apply()
         }
         return v
       }
       submitImageFun() { // 切换按键背景图
-        this.submitImage = true
+        this.submit = true
       }
     }
 </script>
 <style lang="stylus">
   @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+
   page
     background: #fff
   .store-license-body
     margin-top: 10px
     border-top:10px solid #f1f1f2;
     .store-license-body-title
-      font-size: $font-size-medium
-      height: 43px
+      font-size: $font-size-medium-x
+      height: 32px
       display: flex
       align-items: center
-      color: $color-text-d
-
+      color: $color-text
+      font-family: $font-family-regular
+      margin: 10px 0px
       .store-license-body-block
         width: 5px
         height: 13px
@@ -174,7 +179,7 @@
         position: relative
         margin-right: 15px
         margin-bottom: 15px
-        border: 1px dashed $color-text-d
+        border: 1px dashed $color-row-line
 
         .store-license-imgBC-img
           width: 44.8vw
@@ -184,15 +189,16 @@
           top: 0
 
         .store-license-imgBtn
+          color: $color-text-tr
           width: 90px
-          height: 20px
+          height: 24px
           border: 1px solid $color-col-line
-          font-size: $font-size-small-s
+          font-size: $font-size-small
           position: absolute
           left: 50%
           top: 50%
           transform: translate(-50%, -50%)
-          line-height: 20px
+          line-height: 24px
           text-align: center
           border-radius: 50px
           background: rgba(255, 255, 255, .9)
@@ -207,55 +213,20 @@
 
   .authentication-submit
     width: 80%
-    height: 55px
-    line-height: 45px
-    color: $color-white
-    font-size: $font-size-medium-x
-    text-align: center
     margin: 0px auto
-    position: relative
-    image
-      position: absolute
-      width: 100%
-      height: 100%
-      left: 0px
-      z-index: -1
-
-  // 提示
-  .prompt
-    width:100%
-    height: 100%
-    background-color:rgba(0,0,0,0.15)
-    position: fixed
-    top: 0px
-    left: 0px
-    .prompt-message
-      width: 70%
-      height: 60%
-      position: absolute
-      top: 20%
-      left: 15%
-      z-index: 99
-      .prompt-message-info
-        height: 80%
-        border: 1px solid #ccc
-        background-color: #fff
-        margin-bottom: 9%
-        border-radius: 4px
-        .prompt-message-info-title
-          text-align: center
-          padding: 10px
-          font-size: $font-size-medium-x
-        .prompt-message-info-body
-          font-size: $font-size-medium
-          padding: 10px
-      .prompt-message-close
-        height: 50px
-        width: 50px
-        margin: 0 auto
-        image
-          width: 100%
-          height: 100%
-
+    .submit
+      margin-top: 14px
+      background: $color-theme
+      color: $color-white
+      font-size: $font-size-medium-x
+      height: 45px
+      line-height: 45px
+      width: 90.667%
+      border-radius: 50px
+      nomal-icon()
+    .disable
+      disable-icon()
+    .hover-btn
+      hover-icon()
 
 </style>

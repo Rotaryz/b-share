@@ -2,7 +2,7 @@
 <template>
     <view class="white">
       <view class="invit-my">
-        <view>我的邀请</view>
+        <text>我的邀请</text>
       </view>
       <scroll-view scroll-x="true" class="tab-h" scroll-left="{{scrollLeft}}">
         <view class="tab-item {{currentTab==0?'active':''}}"  data-current="0" bindtap="swichNav">
@@ -181,21 +181,27 @@
 <style lang="stylus">
   @import "../../common/stylus/variable"
   .invit-my
-    font-size: $font-size-large
-    padding: 20px
-    view:nth-child(1)
+    font-size: $font-size-medium-x
+    height: 32px
+    line-height: 32px
+    font-family: $font-family-regular
+    color: $color-text
+    text
       border-left: 5px solid #707FFF
       padding-left: 8px
+      color: $color-text
 
   .number
     display: block
     text-align: center
     margin 5px 0px
-    color: #999999
+    color: $color-text-d
+    font-size: $font-size-small
+    line-height:17px;
     text
-      font-weight: bold
+      font-family: $font-family-regular
       font-size $font-size-large-m
-      color: #333333
+      color: $color-text
 
   .white
     background-color: #fff
@@ -225,7 +231,7 @@
     margin 5px 0px
     font-weight: bold
     font-size: $font-size-large-m
-    color: #FF3388
+    color:$color-assist-pink
     text
       .rmb-color-min
         font-size: $font-size-medium
@@ -253,9 +259,9 @@
   .tab-item.active:after
     content: ""
     display: block
-    height: 5px
+    height: 4px
     width: 35%
-    background: #FF3388
+    background:$color-assist-pink
     margin: 15px auto
     border-radius: 10px
 
@@ -295,7 +301,7 @@
     line-height: 1.5em
 
   .expertInfo .name
-    font-size: 16px
+    font-size: 14px
     color:#000
     margin-bottom: 6px
 
@@ -311,7 +317,7 @@
     height: 60rpx
     line-height: 60rpx
     text-align: center
-    font-size: 14px
+    font-size: 12px
 
   .scoll-h
     height: 100%
