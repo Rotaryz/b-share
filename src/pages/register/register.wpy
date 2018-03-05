@@ -49,7 +49,7 @@
       <view class="lg-ch">
         <picker mode="selector" bindchange="bindPickerChange" value="{{index}}"
                 range="{{industries}}" range-key="{{'name'}}">
-          <view class="inputs placeholder picker">
+          <view class="inputs placeholder picker {{industry !== '行业类型' ? 'picker-active' : ''}}">
             {{industry}}
           </view>
           <view class="eye">
@@ -319,6 +319,7 @@
           this.loaded()
           if (res.error === ERR_OK) {
             wepy.setStorageSync('token', res.data.access_token)
+            wepy.setStorageSync('role', res.data.user_info.role)
             this.$invoke('Toast', 'show', '注册成功')
 //            this.rightTip('注册成功')
             setTimeout(async () => {
@@ -436,6 +437,8 @@
       .placeholder
         color: $color-placeholder
         font-family: $font-family-light
+      .picker-active
+        color: $color-text
     .error-fa
       border-bottom: 0.5px solid $color-assist-f
     .code-box

@@ -6,6 +6,7 @@
   import wepy from 'wepy'
   import 'wepy-async-function'
   import URIS from 'common/js/config'
+  import io from './socket/index'
   export default class extends wepy.app {
     constructor() {
       super()
@@ -14,6 +15,10 @@
     }
 
     onLaunch(options) {
+      console.log(io)
+      const socket = io('wss://ws.jerryf.cn')
+
+      this.updateGlobalData('socket', socket)
       // 校验SDK
 //      wxUtils.checkSDK()
 //      const storageDate = wepy.getStorageSync('collectDate')

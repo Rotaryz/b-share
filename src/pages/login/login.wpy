@@ -206,6 +206,7 @@
           this.loaded()
           if (res.error === ERR_OK) {
             wepy.setStorageSync('token', res.data.access_token)
+            wepy.setStorageSync('user_info', res.data.user_info)
             this.$invoke('Toast', 'show', '登录成功')
             setTimeout(async () => {
               await wepy.switchTab({
