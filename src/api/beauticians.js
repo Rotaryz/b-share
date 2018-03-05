@@ -26,6 +26,18 @@ export default class beauticians extends base {
   }
 
   /**
+   * 能力模型
+   * @returns {Promise.<*>}
+   */
+  static async getScores(id = '') {
+    let data = {
+      user_id: id
+    }
+    const url = `${this.baseUrl}/api/beauticians/beauticians/ability-score`
+    return await this.get(url, data)
+  }
+
+  /**
    * 关注美导
    * @returns {Promise.<*>}
    */
@@ -40,6 +52,15 @@ export default class beauticians extends base {
    */
   static async delFriend(id) {
     const url = `${this.baseUrl}/api/beauticians/beauticians/del-friend/${id}`
+    return await this.get(url)
+  }
+
+  /**
+   * 答题判断下一步操作
+   * @returns {Promise.<*>}
+   */
+  static async checkAnswerNext() {
+    const url = `${this.baseUrl}/api/beauticians/question/check-first-answer`
     return await this.get(url)
   }
 
@@ -72,6 +93,27 @@ export default class beauticians extends base {
    */
   static async findQus() {
     const url = `${this.baseUrl}/api/beauticians/question/find-quiz`
+    return await this.get(url)
+  }
+
+  /**
+   * 回答问题
+   * @returns {Promise.<*>}
+   */
+  static async answerQus(id) {
+    let data = {
+      answer_id: id
+    }
+    const url = `${this.baseUrl}/api/beauticians/question/choose`
+    return await this.get(url, data)
+  }
+
+  /**
+   * 获取结果
+   * @returns {Promise.<*>}
+   */
+  static async getAnsResult() {
+    const url = `${this.baseUrl}/api/beauticians/question/get-result`
     return await this.get(url)
   }
 
@@ -131,5 +173,14 @@ export default class beauticians extends base {
   static async invitRegister(data) {
     const url = `${this.baseUrl}/api/beauticians/invite/invite-register`
     return await this.post(url, data)
+  }
+  /**
+   * 活动规则
+   * @params data
+   * @returns {Promise.<*>}
+   */
+  static async activityDetail(data) {
+    const url = `${this.baseUrl}/api/beauticians/activity/detail`
+    return await this.get(url, data)
   }
 }

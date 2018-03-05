@@ -17,6 +17,7 @@
       </view>
     </view>
     <view class="btn {{checked?'':'dis'}}" @tap="toAnswer">Ready Go!</view>
+    <Toast></Toast>
   </view>
 </template>
 
@@ -26,6 +27,7 @@
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
   import Beauticians from 'api/beauticians'
+  import Toast from '@/base/toast/toast'
 
   export default class answerIndex extends wepy.page {
     mixins = [base]
@@ -37,20 +39,42 @@
     data = {
       imageUrl: URIS.image,
       majorArr: [],
-      checked: ''
+      checked: '',
+      overAnswer: false
     }
 
-    async onLoad() {
+    async onShow() {
       await this.load()
     }
 
     async load() {
-      let Json = await Beauticians.getMajors()
-      this.loaded()
-      if (Json.error !== ERR_OK) {
+      let Json1 = await Beauticians.checkAnswerNext()
+      if (Json1.error !== ERR_OK) {
+        this.loaded()
         return
       }
-      this.majorArr = Json.data
+      let Json2 = await Beauticians.getMajors()
+      if (Json2.error !== ERR_OK) {
+        this.loaded()
+        return
+      }
+      this.majorArr = Json2.data
+      const next = Json1.data.next_do
+      switch (next) {
+        case 'beginFight':
+          this.overAnswer = false
+          break
+        case 'findQuiz':
+          this.$redirect('/pages/answer/answer?next=findQuiz')
+          break
+        case 'getResult':
+          this.$redirect('/pages/answer/answer?next=getResult')
+          break
+        case 'overAnswer':
+          this.overAnswer = true
+          break
+      }
+      this.loaded()
       this.$apply()
     }
 
@@ -64,9 +88,17 @@
         if (!this.checked) {
           return
         }
-        let url = '/pages/answer/answer?categoryId=' + this.checked + '&categoryName=' + this.checkedName
-        this.$navigate(url)
+        if (this.overAnswer) {
+          this.$invoke('Toast', 'show', '您已完成过问答')
+          return
+        }
+        let url = '/pages/answer/answer?categoryId=' + this.checked + '&categoryName=' + this.checkedName + '&next=beginFight'
+        this.$redirect(url)
       }
+    }
+
+    components = {
+      Toast
     }
   }
 </script>

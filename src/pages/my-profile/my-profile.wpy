@@ -26,7 +26,6 @@
         <view class="title">行业类型</view>
           <view class="right">
             <view class="txt gray">{{industry}}</view>
-            <image class="right-icon" src=""></image>
           </view>
       </view>
     </view>
@@ -79,7 +78,6 @@
         <view class="title">行业类型</view>
         <view class="right">
           <view class="txt gray">{{industry}}</view>
-          <image class="right-icon" src=""></image>
         </view>
       </view>
     </view>
@@ -97,7 +95,6 @@
   import {ERR_OK} from 'api/base'
   import Info from 'api/info'
   import Upload from '@/api/uploads'
-  import Industries from '@/api/industries'
   import Tips from 'common/js/tips'
   import Toast from '@/base/toast/toast'
 
@@ -161,7 +158,8 @@
         this.$apply()
       },
       async submitAll() {
-        if (!this.checkAll) {
+        let boolRes = this._checkHint()
+        if (!boolRes) {
           return
         }
         let data = {
@@ -226,12 +224,44 @@
       })
     }
 
+    _checkAndShow(arr) {
+      for (let i = 0, j = arr.length; i < j; i++) {
+        if (!arr[i].value) {
+          this.$invoke('Toast', 'show', arr[i].txt)
+          return false
+        }
+        if (i === j - 1 && arr[i].value) {
+          return true
+        }
+      }
+    }
+
+    _checkHint() {
+      let arr
+      if (this.role === 0) {
+        arr = [
+          {value: this.avatarUrl, txt: '请先上传头像'},
+          {value: this.name, txt: '请输入您的姓名'},
+          {value: this.gender, txt: '请选择您的性别'},
+          {value: this.age, txt: '请选择您的年龄'},
+          {value: this.workYear, txt: '请选择您的工作年限'}
+        ]
+      } else if (this.role === 1) {
+        arr = [
+          {value: this.avatarUrl, txt: '请先上传门店LOGO'},
+          {value: this.name, txt: '请输入门店名字'},
+          {value: this.address, txt: '请输入门店地址'}
+        ]
+      }
+      return this._checkAndShow(arr)
+    }
+
     computed = {
       checkAll() {
         if (this.role === 0) {
-          return this._checkEmpty(this.avatarUrl, this.name, this.mobile, this.gender, this.age, this.workYear, this.industry)
+          return this._checkEmpty(this.avatarUrl, this.name, this.gender, this.age, this.workYear)
         } else if (this.role === 1) {
-          return this._checkEmpty(this.avatarUrl, this.name, this.mobile, this.address, this.industry)
+          return this._checkEmpty(this.avatarUrl, this.name, this.address)
         } else {
           return false
         }
@@ -345,6 +375,7 @@
             margin-right: 14px
           .txt.gray
             color: $color-text-tr
+            margin-right: 0
           .right-icon
             width: 16px
             height: 16px

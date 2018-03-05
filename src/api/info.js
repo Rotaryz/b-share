@@ -42,4 +42,20 @@ export default class info extends base {
     const url = `${this.baseUrl}/api/info/task-progress`
     return await this.get(url)
   }
+  /**
+   * 实名认证列表
+   * @returns {Promise.<*>}
+   */
+  static async realNameList() {
+    const url = `${this.baseUrl}/api/info/real-list`
+    return await this.get(url)
+  }
+  /**
+   * 实名认证
+   * @returns {Promise.<*>}
+   */
+  static async realName(data) {
+    const url = `${this.baseUrl}/api/info/real-name`
+    return await this.post(url, data)
+  }
 }

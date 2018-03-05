@@ -7,10 +7,10 @@
           </navigator>
         </view>
         <view class="invite">
-          <navigator class="item" hover-class="none">
+          <navigator class="item" hover-class="none" url="/pages/invitPerson/invitPerson">
             <image class="item-img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-index_women1.png'}}"></image>
           </navigator>
-          <navigator class="item" hover-class="none">
+          <navigator class="item" hover-class="none" url="/pages/invitShop/invitShop">
             <image class="item-img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-index_shop1@3x.png'}}"></image>
           </navigator>
         </view>

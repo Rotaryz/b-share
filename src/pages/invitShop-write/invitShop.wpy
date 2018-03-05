@@ -1,15 +1,15 @@
 <template>
   <view class="invit">
     <image class="invit-bac" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_shop@2x.png'}}"></image>
-    <image class="invit-bac-btn" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg@2x.png'}}"></image>
+    <image class="invit-bac-btn write"  wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg@2x.png'}}"></image>
     <view class="invit-text">
       <image class="invit-text-img" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_word_shop@2x.png'}}"></image>
     </view>
-    <view class="invit-text-white">
-      <image wx:if="{{imageUrl}}" class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg_white@2x.png'}}"></image>
-      <view class="invit-li-img">
+    <view class="invit-text-white" style="height: 75%">
+      <image wx:if="{{imageUrl}}"  class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg_white2@2x_s.png'}}"></image>
+      <view class="invit-li-img" style="display: none">
         <view class="li-img">
-          <image  wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-invite_ shop@2x.png'}}"></image>
+          <image wx:if="{{imageUrl}}"   src="{{imageUrl + '/defaults/share/page/pic-invite_girl@2x.png'}}"></image>
         </view>
         <view class="li-img">
           <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-invite_ questions@2x.png'}}"></image>
@@ -18,17 +18,17 @@
           <image wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_ money@2x.png'}}"></image>
         </view>
       </view>
-      <view class="invit-arrow">
+      <view class="invit-arrow" style="display: none">
         <view class="view-1">
           <image wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_ arrow@2x.png'}}"></image>
         </view>
         <view class="view-2">
-          <image wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_ arrow@2x.png'}}"></image>
+          <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-invite_ arrow@2x.png'}}"></image>
         </view>
       </view>
-      <view class="invit-li-text">
-        <text>邀请美业门店</text>
-        <text>美业门店实名认证</text>
+      <view class="invit-li-text" style="display: none">
+        <text>邀请美导入驻</text>
+        <text>美导参与问答</text>
         <text>通过后你获得红包</text>
       </view>
       <view class="invit-form">
@@ -61,36 +61,31 @@
           <picker mode="selector" class="invit-form-v-picker"
                   range="{{industryArray}}" range-key="{{'name'}}" value="{{index}}" @change="bindPickerChange">
             <text>{{industry}}</text>
+            <view class="eye">
+              <image class="close" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/iocn-invite_enter@2x.png'}}"></image>
+            </view>
           </picker>
-          <view class="eye">
-            <image class="close" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/iocn-invite_enter@2x.png'}}"></image>
-          </view>
+
         </view>
-        <view wx:if="{{!submitNormal}}"><text style="color: red;font-size: 14px">{{msg}}</text></view>
-        <view class="invit-form-v-submit" @tap="submitForm">
-          <image wx:if="{{!submitNormal && imageUrl}}" src="{{imageUrl + '/defaults/share/page/btn-login_disable@2x.png'}}"></image>
-          <image wx:if="{{submitNormal && imageUrl}}"  src="{{imageUrl + '/defaults/share/page/btn-login_normal@2x.png'}}"></image>
-          <text>提交</text>
+        <view wx:if="{{!submit}}"><text style="color: red;font-size: 14px">{{msg}}</text></view>
+        <view class="invit-form-v-submit">
+          <button class="submit {{submit ? '' : 'disable'}}"
+                  @tap="submitForm({{submitType}})">
+            提交
+          </button>
+          <!--<image wx:if="{{!submitNormal && imageUrl}}" src="{{imageUrl + '/defaults/share/page/btn-login_disable@2x.png'}}"></image>-->
+          <!--<image wx:if="{{submitNormal && imageUrl}}"  src="{{imageUrl + '/defaults/share/page/btn-login_normal@2x.png'}}"></image>-->
+          <!--<text>提交</text>-->
         </view>
       </view>
     </view>
     <Toast></Toast>
   </view>
-  <!-- 提示 -->
-  <view class="right-activity" @tap="promtClose">活动规则</view>
-  <view class="prompt" wx:if="{{prompt}}">
-    <view class="prompt-message">
-      <view class="prompt-message-info">
-        <view class="prompt-message-info-title">活动规则</view>
-        <view class="prompt-message-info-body">{{modalInfo}}</view>
-      </view>
-      <view class="prompt-message-close" @tap="promtClose">
-        <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></image>
-      </view>
-    </view>
+  <!-- 活动规则 -->
+  <view class="right-activity" @tap="promtClose">
+    <image wx:if="{{imageUrl && true}}" src="{{imageUrl + '/defaults/share/page/icon-invite_rule@2x.png'}}"></image>
   </view>
-  <!-- 提示over -->
-
+  <!-- 活动规则 over -->
 </template>
 <script>
   import wepy from 'wepy'
@@ -108,7 +103,7 @@
   export default class invitPerson extends wepy.page {
     mixins = [base]
     config = {
-      navigationBarTitleText: '邀请美业赚钱'
+      navigationBarTitleText: '邀请美导赚钱'
     }
     components = {
       Toast: Toast
@@ -142,7 +137,9 @@
       isVer: false,
       isPassword: false,
       msg: '',
-      msgShow: false
+      msgShow: false,
+      submitType: 1,
+      submit: false
     }
     async onLoad(options) {
       this.invited_by = options.invited_by || 0
@@ -282,7 +279,7 @@
       },
       // 提交
       async submitForm () {
-        if (this.submitNormal) {
+        if (this.submit) {
           let data = await wepy.login()
           let formData = {
             mobile: this.phoneNum,
@@ -293,8 +290,8 @@
             role: 1,
             industry_id: this.industryId
           }
-          console.log(formData)
           let res = await Beauticians.invitRegister(formData)
+          console.log(res)
           this.loaded()
           if (res.error === ERR_OK) {
             wepy.setStorageSync('token', res.data.access_token)
@@ -306,7 +303,6 @@
             }, 1000)
           } else {
             this.$invoke('Toast', 'show', res.message)
-            // this.rightTip(res.message, false)
           }
         }
       },
@@ -316,14 +312,16 @@
         this.$apply()
       },
       async promtClose(e) {
-        this.prompt = !this.prompt
+        wepy.navigateTo({
+          url: '/pages/activity-rules/activity-rules'
+        })
       }
     }
     async verifiFun() { // 检验
       if (this.isPhone && this.isVer && this.isPassword) {
-        this.submitNormal = true
+        this.submit = true
       } else {
-        this.submitNormal = false
+        this.submit = false
       }
     }
   }
