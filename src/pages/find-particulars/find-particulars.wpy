@@ -358,21 +358,24 @@
             color: $color-text
             margin-left: 3px
           .nickname
+            transform :translateY(-4px)
             line-height: 22px
             .nackname
               margin-left: 3px
+          .time
+            transform :translateY(-8px)
         .comment-item
           .header-box
             height: 4.6vw
             width: @height
         .nickname
           color: $color-text-tr
-          margin-bottom: 5px
+          margin-bottom: 8px
           font-family: $font-family-regular
         .time
           margin-top: 10px
           color: $color-text-tr
-          font-size: $font-size-small
+          font-size: $font-size-small-s
           border-bottom: 0.5px solid $color-split-line
           padding-bottom: 15px
           position: relative
@@ -385,7 +388,7 @@
           position: absolute
           bottom: 15.3px
           right: 18px
-          height: 18px
+          height: 16px
           width: @height
     .com-showmore
       font-size: $font-size-medium

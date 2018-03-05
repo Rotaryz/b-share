@@ -110,7 +110,7 @@
       this.findList = await this.load()
       this.showBlank(this.findList)
       this.$apply()
-//      this.$invoke('PopUpWindows', 'show', '内容不会保存，退出编辑？', false)
+      this.$invoke('PopUpWindows', 'show', '内容不会保存，退出编辑？', false)
       let id = wepy.getStorageSync('user_info').id
 //      wepy.connectSocket({
 //        url: 'wss://ws.jerryf.cn/socket.io/?EIO=3&transport=websocket'
@@ -129,8 +129,8 @@
 //        console.log('======news data: ', data)
 //      })
       let socket = this.$parent.globalData.socket
-      console.log(socket.io)
-      socket.io.on(`channel-remind:newMessage:7`, function(data){
+      console.log(socket)
+      socket.io.on(`channel-remind:newMessage:7`, (data) => {
         console.log(data)
       })
     }

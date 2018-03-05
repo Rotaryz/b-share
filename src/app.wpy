@@ -16,8 +16,9 @@
     }
 
     onLaunch(options) {
+      console.log(io)
       const socket = io('wss://ws.jerryf.cn')
-      console.log(socket)
+
       this.updateGlobalData('socket', socket)
       // 校验SDK
 //      wxUtils.checkSDK()
