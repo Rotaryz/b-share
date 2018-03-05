@@ -64,8 +64,8 @@
 
     config = {
       pages: [
-        'pages/index/index', // 美导页面（不需要参数）
         'pages/find/find',  // 发现页面（不需要参数）
+        'pages/index/index', // 美导页面（不需要参数）
         'pages/mine/mine',  // 我的页面（不需要参数）
         'pages/guide-center/guide-center', // 服务日志页面 （不需要参数）
         'pages/ability/ability', // 能力提升页面 （不需要参数）
