@@ -106,14 +106,16 @@
       this.$apply()
     }
 
-    async onLoad() {
+    async onLoad(option) {
       this.findList = await this.load()
       this.showBlank(this.findList)
       this.$apply()
-      this.$invoke('PopUpWindows', 'show', '内容不会保存，退出编辑？', false)
-      let id = wepy.getStorageSync('user_info').id
+      if (option.redPack && option.redPack === '1') {
+        this.$invoke('PopUpWindows', 'show', '', false, option.price)
+      }
+
 //      wepy.connectSocket({
-//        url: 'wss://ws.jerryf.cn/socket.io/?EIO=3&transport=websocket'
+//        url: 'wss://ws.jerryf.cn/scoket.io/?EIO=3&transport=websocket'
 //      })
 //
 //      wepy.onSocketOpen((res) => {
@@ -124,13 +126,14 @@
 //        console.log(data)
 //      })
 //      console.log(typeof  io)
-//      const news = io('wss://ws.jerryf.cn/socket.io/?EIO=3&transport=websocket')
+//      const news = io('wss://ws.jerryf.cn/scoket.io/?EIO=3&transport=websocket')
 //      news.on(`channel-remind:newMessage:${id}`, (data)=> {
 //        console.log('======news data: ', data)
 //      })
+      let id = wepy.getStorageSync('user_info').id
       let socket = this.$parent.globalData.socket
-      console.log(socket)
-      socket.io.on(`channel-remind:newMessage:7`, (data) => {
+      console.log(this.$parent.globalData.socket)
+      socket(`channel-remind:newMessage:7`, function(data){
         console.log(data)
       })
     }
