@@ -5,6 +5,7 @@
 <script>
   import wepy from 'wepy'
   import 'wepy-async-function'
+  import wxUtils from 'common/js/wxUtils'
   import URIS from 'common/js/config'
   export default class extends wepy.app {
     constructor() {
@@ -74,8 +75,8 @@
         'pages/forget/forget',
         'pages/answer-index/answer-index', // 答题进入页面（不需要参数）
         'pages/answer/answer',
-        'pages/activity-rules/activity-rules', // 活动规则（不需要参数）
         'pages/find-particulars/find-particulars', // 日志详情页面（id - 日志id）
+        'pages/activity-rules/activity-rules', // 活动规则（不需要参数）
         'pages/invitPerson/invitPerson', // 邀请美导页面（不需要参数）
         'pages/invitShop/invitShop', // 邀请门店页面（不需要参数）
         'pages/name-authentication/name-authentication', // 门店认证页面（不需要参数）
