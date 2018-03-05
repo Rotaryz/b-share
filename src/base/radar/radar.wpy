@@ -9,7 +9,7 @@
           </cover-view>
           <cover-view class="radar-item-txt">{{item.txt}}</cover-view>
         </cover-view>
-        <cover-view class="center-item">{{70}}</cover-view>
+        <cover-view class="center-item">{{score}}</cover-view>
       </canvas>
     </view>
     <view class="container" wx:if="{{eventIn}}">
@@ -73,7 +73,8 @@
           answer2: '转发和分享自己的服务日志信息' }
       ],
       checked: 0,
-      eventIn: false
+      eventIn: false,
+      score: 0
     }
 
     methods = {
@@ -88,12 +89,13 @@
     onLoad() {
       this.eventIn = this.configArr.eventIn
       this.checked = this.configArr.checked
+      this.score = this.configArr.score
       this.chart = new WxCharts({
         canvasId: 'radarCanvas',
         type: 'radar',
         categories: ['', '', '', '', ''],
         series: [{
-          data: [75, 60, 65, 85, 50],
+          data: this.configArr.data,
           color: '#ff3388'
         }],
         width: 300,
