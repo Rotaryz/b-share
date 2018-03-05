@@ -1,4 +1,5 @@
 @import "./variable"
+@import "./mixin"
 page
   height: 100%
 
@@ -16,7 +17,7 @@ page
   top: 2%
   z-index: 1
   width: 70%
-  height: 12%
+  height: 15%
   left: 15%
   image
     width: 100%
@@ -24,17 +25,18 @@ page
 
 .invit-bac-btn
   width: 100%
-  height: 30%
+  height: 25%
   margin-top: -2%
   margin-bottom: -1%
-
+.invit-bac-btn.write
+  height: 45%
 .invit-text-white
   position: absolute
   top: 50%
   z-index: 1
-  width: 90%
-  height: 60%
-  left: 5%
+  width: 93%
+  height: 55%
+  left: 3%
   image
     width: 100%
     height: 100%
@@ -83,7 +85,7 @@ page
   height: 15%
   width: 80%
   position: absolute
-  top: 30%
+  top: 33%
   left: 10%
   z-index: 1
   font-size: $font-size-small
@@ -157,26 +159,26 @@ page
     font-size: $font-size-medium
     border-bottom: 1px solid #DAE0E4
     display: flex
-    height: 30px
-    line-height: 30px
-    padding-top: 10px
-    color: #CCCCCC
+    height: 39px
+    color: #777
     position: relative
+    align-items: center
     input
-      width: 70%
-      height: 30px
-      line-height: 40px
+      width: 66%
+      height: 39px
     .invit-form-v-picker
       width: 70%
       height: 30px
       line-height: 34px
+      .eye
+        image
+          transform:rotate(90deg);
+          top:40%
     .invit-form-v-getcode
       border-left: 1px solid #ccc
       padding-left: 10px
       height: 16px
-      line-height: 18px
-      margin-top: 9px
-      color: $font-size-medium
+      font-size: $font-size-medium
     .eye
       position:absolute
       height:100%
@@ -194,20 +196,34 @@ page
         width:18px
         height:18px
         right:10px
+    input::-webkit-input-placeholder
+      color: #CCCCCC
 
   .invit-form-v-submit
-    height: 27%
-    width: 80%
-    text-align: center
-    left: 10%
-    position: absolute
-    bottom: -33%
-    text
-      position: absolute
-      top: 23%
-      width: 100%
-      text-align: center
-      font-size: 18px
-      color: #fff
-      font-family: 'PingFangSC-Regular'
-      left: 0px
+    width: 90%
+    margin: 0 auto
+    .submit
+      margin-top: 14px
+      background: $color-theme
+      color: $color-white
+      font-size: $font-size-medium-x
+      height: 45px
+      line-height: 45px
+      width: 90.667%
+      border-radius: 50px
+      nomal-icon()
+    .disable
+      disable-icon()
+    .hover-btn
+      hover-icon()
+
+.right-activity
+  position: absolute
+  top: 35px
+  right: 0px
+  z-index: 5
+  width: 60px
+  height: 26px
+  image
+    width: 100%
+    height: 100%

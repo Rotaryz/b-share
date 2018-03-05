@@ -52,11 +52,11 @@
           <view class="inputs placeholder picker">
             {{industry}}
           </view>
+          <view class="eye">
+            <image class="close" wx:if="{{imageUri}}"
+                   src="{{imageUri + '/defaults/share/page/iocn-invite_enter@2x.png'}}"></image>
+          </view>
         </picker>
-        <view class="eye">
-          <image class="close" wx:if="{{imageUri}}"
-                 src="{{imageUri + '/defaults/share/page/iocn-invite_enter@2x.png'}}"></image>
-        </view>
       </view>
       <button class="submit {{submit ? '' : 'disable'}}"
               @tap="submit({{submitType}})">
@@ -323,7 +323,7 @@
 //            this.rightTip('注册成功')
             setTimeout(async () => {
               await wepy.switchTab({
-                url: '/pages/index/index'
+                url: '/pages/find/find'
               })
             }, 1000)
           } else {

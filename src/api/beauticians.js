@@ -165,4 +165,22 @@ export default class beauticians extends base {
     const url = `${this.baseUrl}/api/beauticians/invite/wait-reward-list`
     return await this.get(url, data)
   }
+  /**
+   * 邀请注册
+   * @params data
+   * @returns {Promise.<*>}
+   */
+  static async invitRegister(data) {
+    const url = `${this.baseUrl}/api/beauticians/invite/invite-register`
+    return await this.post(url, data)
+  }
+  /**
+   * 活动规则
+   * @params data
+   * @returns {Promise.<*>}
+   */
+  static async activityDetail(data) {
+    const url = `${this.baseUrl}/api/beauticians/activity/detail`
+    return await this.get(url, data)
+  }
 }
