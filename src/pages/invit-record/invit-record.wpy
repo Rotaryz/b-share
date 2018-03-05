@@ -180,12 +180,15 @@
 </script>
 <style lang="stylus">
   @import "../../common/stylus/variable"
+  page
+    overflow: hidden
   .invit-my
     font-size: $font-size-medium-x
     height: 32px
     line-height: 32px
     font-family: $font-family-regular
     color: $color-text
+    padding: 10px 10px 0px 10px
     text
       border-left: 5px solid #707FFF
       padding-left: 8px
