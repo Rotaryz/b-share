@@ -16,7 +16,7 @@
 
     onLaunch(options) {
       const socket = io('wss://ws.jerryf.cn')
-      this.updateGlobalData('socket', socket)
+      this.globalData.socket = socket
       // 校验SDK
 //      wxUtils.checkSDK()
 //      const storageDate = wepy.getStorageSync('collectDate')
