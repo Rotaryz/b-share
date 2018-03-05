@@ -74,15 +74,7 @@
         'pages/forget/forget',
         'pages/answer-index/answer-index', // 答题进入页面（不需要参数）
         'pages/answer/answer',
-        'pages/find-particulars/find-particulars',
-        'pages/invitPerson/invitPerson',
-        'pages/invitShop/invitShop',
-        'pages/name-authentication/name-authentication',
-        'pages/loading/loading',
-        'pages/invit-record/invit-record',
-        'pages/invitShop-write/invitShop',
-        'pages/invitPerson-write/invitPerson',
-        'pages/activity-rules/activity-rules',
+        'pages/activity-rules/activity-rules', // 活动规则（不需要参数）
         'pages/find-particulars/find-particulars', // 日志详情页面（id - 日志id）
         'pages/invitPerson/invitPerson', // 邀请美导页面（不需要参数）
         'pages/invitShop/invitShop', // 邀请门店页面（不需要参数）
