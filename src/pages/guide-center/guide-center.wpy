@@ -84,7 +84,9 @@
       tabIdx: 2,
       configArr: {
         eventIn: true,
-        checked: 0
+        checked: 0,
+        data: [0, 0, 0, 0, 0],
+        score: 0
       },
       userId: '',
       userInfo: {},
@@ -117,6 +119,7 @@
     async load() {
       this._getUserInfo()
       this._getLogs()
+      this._getUserScores()
       this.loaded()
     }
 
@@ -127,6 +130,19 @@
         return
       }
       this.userInfo = Json.data
+      this.$apply()
+    }
+
+    async _getUserScores() {
+      let Json = await Beauticians.getScores(this.userId)
+      if (Json.error !== ERR_OK) {
+        this.loaded()
+        return
+      }
+      console.log(Json)
+      let res = Json.data
+      this.configArr.data = [res.zhuanye * 100, res.xiaoshou * 100, res.guanxi * 100, res.peixun * 100, res.cehua * 100]
+      this.configArr.score = res.score
       this.$apply()
     }
 

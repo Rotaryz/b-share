@@ -5,7 +5,6 @@
 <script>
   import wepy from 'wepy'
   import 'wepy-async-function'
-  import wxUtils from 'common/js/wxUtils'
   import URIS from 'common/js/config'
   export default class extends wepy.app {
     constructor() {
@@ -60,29 +59,28 @@
 
     config = {
       pages: [
-        'pages/index/index',
-        'pages/find/find',
-        'pages/mine/mine',
-        'pages/guide-center/guide-center',
-        'pages/ability/ability',
-        'pages/my-profile/my-profile',
-        'pages/my-wellet/my-wellet',
-        'pages/my-app/my-app',
+        'pages/index/index', // 美导页面（不需要参数）
+        'pages/find/find',  // 发现页面（不需要参数）
+        'pages/mine/mine',  // 我的页面（不需要参数）
+        'pages/guide-center/guide-center', // 服务日志页面 （不需要参数）
+        'pages/ability/ability', // 能力提升页面 （不需要参数）
+        'pages/my-profile/my-profile', // 我的资料页面 （不需要参数）
+        'pages/my-wellet/my-wellet', // 我的钱包页面 （不需要参数）
+        'pages/my-app/my-app', // 我的小程序页面 （不需要参数）
         'pages/withdraw/withdraw',
         'pages/login/login',
         'pages/compile/compile',
         'pages/register/register',
         'pages/forget/forget',
-        'pages/answer-index/answer-index',
+        'pages/answer-index/answer-index', // 答题进入页面（不需要参数）
         'pages/answer/answer',
-        'pages/find-particulars/find-particulars',
-        'pages/invitPerson/invitPerson',
-        'pages/invitShop/invitShop',
-        'pages/name-authentication/name-authentication',
-        'pages/loading/loading',
-        'pages/invit-record/invit-record',
-        'pages/invitShop-write/invitShop',
-        'pages/invitPerson-write/invitPerson'
+        'pages/find-particulars/find-particulars', // 日志详情页面（id - 日志id）
+        'pages/invitPerson/invitPerson', // 邀请美导页面（不需要参数）
+        'pages/invitShop/invitShop', // 邀请门店页面（不需要参数）
+        'pages/name-authentication/name-authentication', // 门店认证页面（不需要参数）
+        'pages/invit-record/invit-record', // 邀请红包列表页面（id -0->已奖励红包，1->邀请成功列表，2->已经邀请还未入驻）
+        'pages/invitShop-write/invitShop', // 门店被邀请注册页面（id 邀请者的id）
+        'pages/invitPerson-write/invitPerson' // 美导被邀请注册页面（id 邀请者的id）
       ],
       window: {
         backgroundColor: '#F9F9F9',

@@ -56,15 +56,15 @@
         return
       }
       this.majorArr = Json2.data
-      const next = Json1.data.nextDo
+      const next = Json1.data.next_do
       switch (next) {
         case 'beginFight':
           break
         case 'findQuiz':
-          this.$navigate('/pages/answer/answer?next=findQuiz')
+          this.$redirect('/pages/answer/answer?next=findQuiz')
           break
         case 'getResult':
-          this.$navigate('/pages/answer/answer?next=getResult')
+          this.$redirect('/pages/answer/answer?next=getResult')
           break
       }
       this.loaded()
@@ -82,7 +82,7 @@
           return
         }
         let url = '/pages/answer/answer?categoryId=' + this.checked + '&categoryName=' + this.checkedName + '&next=beginFight'
-        this.$navigate(url)
+        this.$redirect(url)
       }
     }
   }

@@ -26,6 +26,18 @@ export default class beauticians extends base {
   }
 
   /**
+   * 能力模型
+   * @returns {Promise.<*>}
+   */
+  static async getScores(id = '') {
+    let data = {
+      user_id: id
+    }
+    const url = `${this.baseUrl}/api/beauticians/beauticians/ability-score`
+    return await this.get(url, data)
+  }
+
+  /**
    * 关注美导
    * @returns {Promise.<*>}
    */
@@ -81,6 +93,27 @@ export default class beauticians extends base {
    */
   static async findQus() {
     const url = `${this.baseUrl}/api/beauticians/question/find-quiz`
+    return await this.get(url)
+  }
+
+  /**
+   * 回答问题
+   * @returns {Promise.<*>}
+   */
+  static async answerQus(id) {
+    let data = {
+      answer_id: id
+    }
+    const url = `${this.baseUrl}/api/beauticians/question/choose`
+    return await this.get(url, data)
+  }
+
+  /**
+   * 获取结果
+   * @returns {Promise.<*>}
+   */
+  static async getAnsResult() {
+    const url = `${this.baseUrl}/api/beauticians/question/get-result`
     return await this.get(url)
   }
 

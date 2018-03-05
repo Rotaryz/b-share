@@ -1,6 +1,6 @@
 <template>
   <view class="answer">
-    <view class="container-box">
+    <view class="container-box" wx:if="{{!answerOver}}">
       <view class="container">
         <view class="container-BC-box">
           <image class="container-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-answer_bg-top@3x.png'}}"></image>
@@ -27,21 +27,33 @@
       </view>
     </view>
 
-    <view class="result-container" wx:if="{{false}}">
+    <view class="result-container" wx:if="{{answerOver}}">
       <view class="result-BC">
         <view class="result-title">
           <image class="title-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-answer_head@2x.png'}}"></image>
           <view class="title-txt">答题结束咯</view>
         </view>
         <view class="result-top">
-
+          <view class="big-txt">本轮答对<text class="black">{{resRightCount}}</text>题</view>
+          <view class="small-txt" wx:if="{{resRightCount}}">你是专业美导的概率 > {{resBeauticiansPercentage}}</view>
+          <view class="small-txt" wx:if="{{!resRightCount}}">你是专业美导的概率为 0%</view>
+          <view class="img-box">
+            <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-win@2x.png'}}" class="res-img"></image>
+          </view>
+          <view class="big-txt" wx:if="{{resRightCount}}">获得<text class="red-small">￥</text><text class="red-big">{{prizes}}</text>的红包奖励</view>
+          <view class="small-txt" wx:if="{{resRightCount}}">红包已经存在你的钱包</view>
+          <view class="big-txt" wx:if="{{!resRightCount}}">很遗憾，本轮未获得红包奖励</view>
+          <view class="small-txt" wx:if="{{!resRightCount}}">再接再厉！</view>
         </view>
         <view class="result-down">
           <view class="item red">分享战绩</view>
-          <view class="item white">我的钱包</view>
+          <navigator url="/pages/my-wellet/my-wellet" hover-class="none">
+            <view class="item white">我的钱包</view>
+          </navigator>
         </view>
       </view>
     </view>
+    <Toast></Toast>
   </view>
 </template>
 
@@ -52,6 +64,7 @@
   import {ERR_OK} from 'api/base'
   import Beauticians from 'api/beauticians'
   import Util from 'common/libs/util'
+  import Toast from '@/base/toast/toast'
 
   export default class answer extends wepy.page {
     mixins = [base]
@@ -69,6 +82,7 @@
       timeTimer: '',
       rotateTimer: '',
       beginTimer: '',
+      nextTimer: '',
       letterArr: ['A', 'B', 'C', 'D'],
       count: 10,
       ansCount: 1,
@@ -76,7 +90,11 @@
       questionImg: '',
       quesResult: '',
       questionArr: [],
-      answerChecked: ''
+      answerChecked: '',
+      resRightCount: 0,
+      resBeauticiansPercentage: '0%',
+      prizes: '0.00',
+      answerOver: false
     }
 
     async onLoad(option) {
@@ -94,28 +112,35 @@
       this._clearAll()
     }
 
+    onShareAppMessage(res) {
+
+    }
+
     async load(option) {
       let nextDo = option.next
-      console.log(nextDo)
       switch (nextDo) {
         case 'beginFight':
           let categoryId = option.categoryId
           let categoryName = option.categoryName
           let Json = await Beauticians.beginAnswer(categoryId, categoryName)
-          this.loaded()
           if (Json.error !== ERR_OK) {
+            this.$invoke('Toast', 'show', Json.message)
+            this._clearAll()
+            this.loaded()
             return
           }
-          this.count = Json.data.questionCount
+          this.count = Json.data.question_count
+          await this._findQuestion()
           break
         case 'findQuiz':
           await this._findQuestion()
           break
         case 'getResult':
-
+          await this._getAnswerRes()
           break
       }
       this._beginCountdown()
+      this.loaded()
       this.$apply()
     }
 
@@ -130,6 +155,15 @@
         this.time --
         this.$apply()
         if (this.time <= 0) {
+          this.time = 0
+          this._answerQuestion()
+          if (this.ansCount !== this.count) {
+            this._nextQuestion()
+          } else {
+            this._getAnswerRes()
+          }
+          this.loaded()
+          this.$apply()
           clearInterval(this.timeTimer)
         }
       }, 1000)
@@ -155,34 +189,100 @@
       this.rightTranslate = 0
       this.leftTranslate = 0
       this.time = 10
+      this.answerChecked = ''
       this.$apply()
     }
 
+    _pause() {
+      clearInterval(this.timeTimer)
+      clearInterval(this.rotateTimer)
+    }
+
+    // 查找问题
     async _findQuestion() {
       let Json1 = await Beauticians.findQus()
-      this.loaded()
       if (Json1.error !== ERR_OK) {
+        this.loaded()
+        this.$invoke('Toast', 'show', Json1.message)
+        this._clearAll()
         return
       }
       let res = Json1.data
       this.questionArr = res.answer
-      this.ansCount = res.questionNumber
+      this.ansCount = res.question_number
       this.questionTitle = res.question
       this.questionImg = res.image_url
       this.quesResult = res.sign
       this.$apply()
     }
 
+    // 回答问题
+    async _answerQuestion() {
+      let Json = await Beauticians.answerQus(this.answerChecked)
+      if (Json.error !== ERR_OK) {
+        this.loaded()
+        this.$invoke('Toast', 'show', Json.message)
+        this._clearAll()
+      }
+    }
+
+    // 下一题
+    _nextQuestion() {
+      clearTimeout(this.nextTimer)
+      this.nextTimer = setTimeout(() => {
+        this._clearAll()
+        this._findQuestion()
+        this.loaded()
+        this._beginCountdown()
+      }, 1500)
+    }
+
+    // 检查选得结果是否正确
     _checkedResult() {
       let checked = Util.sha1('jyzs' + this.answerChecked + 'jyzs') + 'jyzs' + Util.sha1('jyzs' + this.answerChecked + 'jyzs')
-      console.log(checked)
+      return checked === this.quesResult
+    }
+
+    // 获取答题的结果
+    async _getAnswerRes() {
+      let Json = await Beauticians.getAnsResult()
+      if (Json.error !== ERR_OK) {
+        this.loaded()
+        this.$invoke('Toast', 'show', Json.message)
+        this._clearAll()
+        return
+      }
+      let res = Json.data
+      this.resRightCount = res.right_count
+      this.resBeauticiansPercentage = res.beauticians_percentage
+      this.prizes = res.prizes
+      this.answerOver = true
+      this.$apply()
     }
 
     methods = {
-      chioceAnswer(id) {
+      async chioceAnswer(id) {
+        if (this.answerChecked) {
+          return
+        }
         this.answerChecked = id
+        this._pause()
+        await this._answerQuestion()
+        if (this.ansCount < this.count) {
+          this._nextQuestion()
+        } else {
+          setTimeout(() => {
+            this._getAnswerRes()
+            this.loaded()
+          }, 1000)
+        }
+        this.loaded()
         this.$apply()
       }
+    }
+
+    components = {
+      Toast
     }
 
     computed = {
@@ -190,8 +290,7 @@
         return this.time === 0 || this.answerChecked
       },
       checkResult() {
-        this._checkedResult()
-        return true
+        return this._checkedResult()
       }
     }
   }
@@ -377,6 +476,39 @@
               top: 0
         .result-top
           height: 73%
+          display: flex
+          flex-direction: column
+          align-items: center
+          justify-content: center
+          .big-txt
+            font-size: $font-size-medium-x
+            font-family: PingFangSC-Regular
+            .black
+              font-size: 32px
+              margin: 0 4px
+              font-family: PingFangSC-Semibold
+            .red-small
+              font-size: $font-size-medium-x
+              color: $color-assist-pink
+              margin-left: 4px
+              font-family: PingFangSC-Medium
+            .red-big
+              font-size: 32px
+              color: $color-assist-pink
+              margin-right: 4px
+              font-family: PingFangSC-Semibold
+          .small-txt
+            font-size: $font-size-medium
+            color: $color-text-d
+            font-family: PingFangSC-Regular
+            margin-top: 10px
+          .img-box
+            width: 78.4vw
+            height: 41.866666666666vw
+            margin: 25px 0
+            .res-img
+              width: 100%
+              height: 100%
         .result-down
           height: 27%
           box-sizing: border-box
