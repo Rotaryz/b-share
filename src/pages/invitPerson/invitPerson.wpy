@@ -43,15 +43,15 @@
       </view>
       <view wx:if="{{fillout}}" class="invit-my-li" >
         <view @tap="lookPack" data-current="0">
-          <text class="rmb-color"><text><text class="rmb-color-min">￥</text>{{myInvit.myMoney}}</text></text>
+          <text class="rmb-color"><text><text class="rmb-color-min">￥</text>{{myInvit.myMoney || '0.00'}}</text></text>
           <text class="number">获得的红包</text>
         </view>
         <view @tap="lookPack" data-current="1">
-          <text class="number"><text>{{myInvit.myPerson}}</text>人</text>
+          <text class="number"><text>{{myInvit.myPerson || 0}}</text>人</text>
           <text class="number">成功邀请</text>
         </view>
         <view @tap="lookPack" data-current="2">
-          <text class="number"><text>{{myInvit.myMoneys}}</text>个</text>
+          <text class="number"><text>{{myInvit.myMoneys || 0}}</text>个</text>
           <text class="number">红包在路上</text>
         </view>
       </view>
@@ -130,6 +130,7 @@
       onShareAppMessage() {
         return {
           title: '共享美导',
+          imageUrl: this.imageUrl + '/defaults/share/page/pic-invite_bg_shop@2x.png',
           path: '/pages/invitPerson-write/invitPerson?id=' + this.userId
         }
       }

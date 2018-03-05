@@ -90,6 +90,9 @@
             Tips.success('保存成功')
             setTimeout(() => {
               this.$back(1)
+              wepy.navigateTo({
+                url: '/pages/find/find'
+              })
             }, 1000)
           } else {
             this.$invoke('Toast', 'show', upRes.message)
