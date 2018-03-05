@@ -36,7 +36,6 @@
       return Object.prototype.toString.apply(item) === '[object Array]'
     }
 
-
     isUndefined(item) {
       return typeof item === 'undefined'
     }
