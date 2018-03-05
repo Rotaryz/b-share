@@ -1,11 +1,30 @@
 <template>
   <cover-view class="pop-up-windows" wx:if="{{showWindow}}">
-    <cover-view class="window">
+    <cover-view class="window" wx:if="{{pop}}">
       <cover-view class="tip">{{content}}</cover-view>
+      <cover-view class="pop-line"></cover-view>
       <cover-view class="btn">
-        <cover-view class="btn-item" @tap="cancel">取消</cover-view>
+        <cover-view class="btn-item" @tap="cancel">取消
+          <cover-view class="btn-line"></cover-view>
+        </cover-view>
         <cover-view class="btn-item" @tap="sure">确定</cover-view>
       </cover-view>
+    </cover-view>
+    <cover-view class="red-peck" wx:if="{{!pop}}">
+      <cover-view class="up-header">
+        <cover-view class="up-text">恭喜您！</cover-view>
+        <cover-image class="red-image" wx:if="{{imageUrl}}"
+                     src="{{imageUrl + '/defaults/share/page/pic-window_red@2x.png'}}"></cover-image>
+      </cover-view>
+      <cover-view class="money">
+        <cover-view class="money-icon">¥</cover-view>
+        100
+        <cover-view class="money-icon monry-title">红包</cover-view>
+      </cover-view>
+      <cover-view class="red-text">红包已经存在你的钱包</cover-view>
+      <cover-view class="red-btn">回答认证问题，领取更多红包</cover-view>
+      <cover-image class="red-close" wx:if="{{imageUrl}}"
+                   src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"></cover-image>
     </cover-view>
   </cover-view>
 </template>
@@ -26,7 +45,8 @@
     data = {
       imageUrl: URIS.image,
       showWindow: false,
-      content: '内容不会保存，退出编辑？'
+      content: '内容不会保存，退出编辑？',
+      pop: false
     }
 
     infoRes(res) {
@@ -44,10 +64,12 @@
         this.showWindow = false
         this.$emit('sure')
       },
-      show(content) {
-        if (typeof content === 'object') {
+      show(content, pop) {
+        if (typeof content === 'object' || typeof content === 'object') {
           content = ''
+          pop = true
         }
+        this.pop = pop
         this.content = content
         this.showWindow = true
       }
@@ -76,7 +98,9 @@
         line-height: 124px
         font-size: $font-size-medium
         text-align: center
-        border-bottom: 0.5px solid $color-split-line
+      .pop-line
+        height: 1px
+        background: $color-split-line
       .btn
         display: flex
         height: 40px
@@ -87,8 +111,44 @@
           text-align: center
           font-size: $font-size-medium-x
           color: $color-text-tr
+          position: relative
           &:last-child
             color: $color-assist-pink
-            border-left: 0.5px solid $color-split-line
+          .btn-line
+            top: 0
+            right: 0
+            position: absolute
+            height: 100%
+            background: $color-split-line
+            width: 1px
+
+  .red-peck
+    background: $color-white
+    all-center()
+    height: 86.4vw
+    width: 73.33vw
+    border-radius: 4px
+    .up-header
+      border-top-right-radius :4px
+      border-top-left-radius :4px
+      background: #FFFAED
+      height: 41.828%
+      display: flex
+      flex-direction: column
+      justify-content: center
+      align-items: center
+      .red-image
+        width: 57.82%
+        height: 66.556%
+      .up-text
+        color: #F12A2A
+        font-size: 5.6vw
+        font-family: $font-family-meddle
+    .red-close
+      row-center()
+      height: 30px
+      width: @height
+      bottom: -35px
+      z-index: 500
 
 </style>

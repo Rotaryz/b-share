@@ -6,17 +6,11 @@
                     :comment.sync="true"></FindDetail>
       </repeat>
     </view>
-    <view class="input-box" wx:if="{{send}}">
-      <input type="text" focus="{{focus}}" class="comment-input" @input="isSend"
-             cursor-spacing="8.5" placeholder="{{place}}" value="{{comment}}"
-             placeholder-class="place-style" @blur="blur(-1)"
-             @confirm="sendComment({{findDetail[0].id}})"/>
-      <text class="com-send {{comment === '' ? '' : 'com-send-active'}}"
-            @tap="sendComment({{findDetail[0].id}})">发送
-      </text>
-    </view>
     <view class="find-comment">
-      <view class="comment-title">评论{{findDetail[0].comment_count}}</view>
+      <view class="comment-title">评论
+        <text class="com-num">{{findDetail[0].comment_count}}</text>
+      </view>
+      <view class="blank-text" wx:if="{{!findDetail[0].user_live_log_comments.length}}">暂无评论</view>
       <view class="comment-item"
             wx:for="{{findDetail[0].user_live_log_comments}}"
             wx:key="{{index}}">
@@ -31,19 +25,19 @@
             <image class="comment-icon"
                    wx:if="{{imageUrl && !item.current_user}}"
                    src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"
-                   @tap="showInput({{index}})"></image>
+                   @tap="showInput({{item}})"></image>
           </view>
-          <view class="input-box" wx:if="{{item.send}}">
-            <input type="text" class="comment-input" cursor-spacing="8.5"
-                   value="{{comment}}" focus="{{focus}}" @blur="blur({{index}})"
-                   @input="isSend" @confirm="childComment({{item.user_id}})"
-                   placeholder="{{place}}"
-                   placeholder-class="place-style"/>
-            <text class="com-send"
-                  class="com-send {{comment === '' ? '' : 'com-send-active'}}"
-                  @tap="childComment({{item.user_id}},{{item.id}})">发送
-            </text>
-          </view>
+          <!--<view class="input-box" wx:if="{{item.send}}">-->
+          <!--<input type="text" class="comment-input" cursor-spacing="8.5"-->
+          <!--value="{{comment}}" focus="{{focus}}" @blur="blur({{index}})"-->
+          <!--@input="isSend" @confirm="childComment({{item.user_id}})"-->
+          <!--placeholder="{{place}}"-->
+          <!--placeholder-class="place-style"/>-->
+          <!--<text class="com-send"-->
+          <!--class="com-send {{comment === '' ? '' : 'com-send-active'}}"-->
+          <!--@tap="childComment({{item.user_id}},{{item.id}})">发送-->
+          <!--</text>-->
+          <!--</view>-->
           <view class="comment-item" wx:for="{{item.comments}}"
                 wx:key="{{index}}">
             <view class="header-box">
@@ -51,9 +45,8 @@
                      src="{{!item.user_data.image_url && item.user_data.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !item.user_data.image_url && item.user_data.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : item.user_data.image_url}}"></image>
             </view>
             <view class="com-container">
-              <view class="nickname">{{item.user_data.name}}
-                <text class="com-content">回复</text>
-                {{item.comment_user_data.name}}
+              <view class="nickname">{{item.user_data.name}}<text class="com-content">回复</text>
+                <text class="nackname">{{item.comment_user_data.name}}</text>
                 <text class="com-content">{{item.content}}</text>
               </view>
 
@@ -62,18 +55,18 @@
                 <image class="comment-icon"
                        wx:if="{{imageUrl && !item.current_user}}"
                        src="{{imageUrl + '/defaults/share/page/icon-find_ping@2x.png'}}"
-                       @tap="lastInput({{index}},{{item.comment_id}})"></image>
+                       @tap="lastInput({{item}})"></image>
               </view>
-              <view class="input-box" wx:if="{{item.send}}">
-                <input type="text" class="comment-input" cursor-spacing="8.5"
-                       value="{{comment}}" focus="{{focus}}" @input="isSend"
-                       @blur="lastblur({{index}},{{item.comment_id}})"
-                       placeholder-class="place-style"/>
-                <text
-                  class="com-send {{comment === '' ? '' : 'com-send-active'}}"
-                  @tap="childComment({{item.user_id}},{{item.comment_id}})">发送
-                </text>
-              </view>
+              <!--<view class="input-box" wx:if="{{item.send}}">-->
+              <!--&lt;!&ndash;<input type="text" class="comment-input" cursor-spacing="8.5"&ndash;&gt;-->
+              <!--value="{{comment}}" focus="{{focus}}" @input="isSend"-->
+              <!--@blur="lastblur({{index}},{{item.comment_id}})"-->
+              <!--placeholder-class="place-style"/>-->
+              <!--<text-->
+              <!--class="com-send {{comment === '' ? '' : 'com-send-active'}}"-->
+              <!--@tap="childComment({{item.user_id}},{{item.comment_id}})">发送-->
+              <!--</text>-->
+              <!--</view>-->
             </view>
           </view>
           <view class="com-showmore" wx:if="{{item.comment_count > 3}}"
@@ -84,6 +77,16 @@
                    src="{{imageUrl + '/defaults/share/page/icon-mine_enter@2x.png'}}"></image>
           </view>
         </view>
+      </view>
+      <view class="input-box" style="bottom:{{bottom}}px">
+        <input type="text" focus="{{focus}}" class="comment-input"
+               @input="isSend" @focus="showFocus()"
+               cursor-spacing="8.5" placeholder="{{place}}" value="{{comment}}"
+               placeholder-class="place-style" @blur="blur"
+               @confirm="sendComment({{findDetail[0].id}})"/>
+        <text class="com-send {{comment === '' ? '' : 'com-send-active'}}"
+              @tap="sendComment({{findDetail[0].id}})">发送
+        </text>
       </view>
     </view>
     <Toast></Toast>
@@ -112,11 +115,15 @@
       num: 1,
       place: '请输入评论…',
       send: false,
-      focus: true,
+      focus: false,
       comment: '',
       childIndex: 0,
       id: 0,
-      more: '查看更多评论'
+      more: '查看更多评论',
+      commentId: 0,
+      userId: '',
+      bottom: 0,
+      screenHeight: 0
     }
 
     async onLoad(option) {
@@ -124,11 +131,10 @@
         this.id = option.id
         this.findDetail[0] = await this.load(option.id)
         if (option.comment) {
-          this.send = true
           setTimeout(() => {
             this.focus = true
             this.$apply()
-          }, 20)
+          }, 50)
         }
       }
 //      测试
@@ -147,6 +153,20 @@
       if (res.error === ERR_OK) {
         return res.data
       }
+    }
+
+    _inutpTop() {
+//      setTimeout(async () => {
+//        let res = await wepy.getSystemInfo()
+//        this.screenHeight = res.screenHeight
+//        this.bottom = this.screenHeight * 0.41
+//
+//        this.$apply()
+//      }, 30)
+      setTimeout(() => {
+        this.focus = true
+        this.$apply()
+      },20)
     }
 
     async _comments(id, content, commentUserId = '', commentId = 0) {
@@ -175,6 +195,9 @@
               })
             }).exec()
           }
+          this.focus = false
+          this.commentId = 0
+          this.$apply()
         }
       }
     }
@@ -189,6 +212,9 @@
     }
 
     methods = {
+      async showFocus() {
+//        await this._inutpTop()
+      },
       async showMoreCom(id) {
         let index = this.showIndex(id)
         if (!this.findDetail[0].user_live_log_comments[index].more) {
@@ -202,67 +228,58 @@
           delete this.findDetail[0].user_live_log_comments[index].more
         }
       },
-      blur(index) {
-        setTimeout(() => {
-          if (index !== '-1') {
-            this.findDetail[0].user_live_log_comments[index].send = false
-            return
-          }
-          this.send = false
-          this.$apply()
-        }, 200)
+      blur() {
+        this.focus = false
+        this.bottom = 0
       },
-      lastblur(index, id) {
-        console.log(index, id)
-        for (let i = 0; i < length; i++) {
-          if (id === this.findDetail[0].user_live_log_comments[i].id) {
-            this.comment = ''
-            this.send = false
-            this.findDetail[0].user_live_log_comments[i].comments[index].send = false
-            break
-          }
-        }
-      },
-      lastInput(index, id) {
-        let length = this.findDetail[0].user_live_log_comments.length
-        for (let i = 0; i < length; i++) {
-          if (id === this.findDetail[0].user_live_log_comments[i].id) {
-            this.comment = ''
-            this.send = false
-            this.findDetail[0].user_live_log_comments[i].comments[index].send = true
-            break
-          }
-        }
-      },
-      showInput(index) {
+      async lastInput(res) {
+        await this._inutpTop()
         this.comment = ''
-        this.findDetail[0].user_live_log_comments[index].send = true
-        this.childIndex = index
-        setTimeout(() => {
-          this.focus = true
-          this.$apply()
-        }, 20)
+        this.userId = res.user_id
+        this.commentId = res.comment_id
+        this.$apply()
+//        let length = this.findDetail[0].user_live_log_comments.length
+//        for (let i = 0; i < length; i++) {
+//          if (id === this.findDetail[0].user_live_log_comments[i].id) {
+//            this.comment = ''
+//            this.send = false
+//            this.findDetail[0].user_live_log_comments[i].comments[index].send = true
+//            break
+//          }
+//        }
       },
-      childComment(userId, commentId) {
-        this._comments(this.findDetail[0].id, this.comment, userId, commentId)
-        this.findDetail[0].user_live_log_comments[this.childIndex].send = false
+      async showInput(res) {
+        await this._inutpTop()
+        this.comment = ''
+        this.userId = res.user_id
+        this.commentId = res.id
+        this.$apply()
       },
+//      childComment(userId, commentId) {
+//        this._comments(this.findDetail[0].id, this.comment, userId, commentId)
+//        this.findDetail[0].user_live_log_comments[this.childIndex].send = false
+//      },
       isSend(e) {
         this.comment = e.detail.value
         this.$apply()
       },
       sendComment(id) {
-        console.log(id)
-        this._comments(id, this.comment)
+        console.log(this.commentId)
+        if (this.commentId === 0 && this.userId === '') {
+          this._comments(id, this.comment)
+        } else if (this.userId !== '' && this.commentId === 0) {
+          this._comments(id, this.comment, this.userId)
+        } else if (this.commentId !== 0) {
+          this._comments(id, this.comment, this.userId, this.commentId)
+        }
       }
     }
     events = {
-      comment() {
-        this.send = true
-        setTimeout(() => {
-          this.focus = true
-          this.$apply()
-        }, 20)
+      async comment() {
+        this.bottom = 0
+        await this._inutpTop()
+        this.commentId = 0
+        this.$apply()
       },
       good(res, index) {
         this.findDetail[index] = res
@@ -304,14 +321,23 @@
     transition: translateY(-15px)
 
   .find-comment
+    position: relative
+    min-height: 56vw
     background: $color-white
     margin-top: 10px
     padding-left: 15px
     font-size: $font-size-medium
     box-sizing: border-box
+    padding-bottom: 52px
+    .blank-text
+      all-center()
+      color :$color-text-tr
+      font-size: $font-size-medium
     .comment-title
       font-family: $font-family-regular
       line-height: 44px
+      .com-num
+        margin-left: 2px
     .comment-item
       display: flex
       margin-top: 14px
@@ -328,24 +354,28 @@
         margin-left: 10px
         .com-container
           width: 77.6vw
-          .input-box
-            transform: translateX(-21%)
           .com-content
             color: $color-text
-            margin-left: 5px
+            margin-left: 3px
           .nickname
-            line-height: 1
+            transform :translateY(-4px)
+            line-height: 22px
+            .nackname
+              margin-left: 3px
+          .time
+            transform :translateY(-8px)
         .comment-item
           .header-box
             height: 4.6vw
             width: @height
         .nickname
           color: $color-text-tr
-          margin-bottom: 5px
+          margin-bottom: 8px
+          font-family: $font-family-regular
         .time
           margin-top: 10px
           color: $color-text-tr
-          font-size: $font-size-small
+          font-size: $font-size-small-s
           border-bottom: 0.5px solid $color-split-line
           padding-bottom: 15px
           position: relative
@@ -358,10 +388,8 @@
           position: absolute
           bottom: 15.3px
           right: 18px
-          height: 18px
+          height: 16px
           width: @height
-    .input-box
-      transform: translateX(-16%)
     .com-showmore
       font-size: $font-size-medium
       justify-content: center
@@ -380,7 +408,9 @@
         transform: rotate(270deg)
 
   .input-box
-    position: relative
+    position: fixed
+    bottom: 0
+    left: 0
     width: 100vw
     box-sizing: border-box
     background: $color-white

@@ -15,9 +15,8 @@
     <!--<view class="load-refresh">刷新中…</view>-->
     <!--</view>-->
     <Blank></Blank>
-    <view class="list-box {{!isLoad ? 'find-box-active' : 'find-big-box'}}"
-          @tap="goAnswer">
-      <view class="find-item guidance" wx:if="{{!isChecked}}">
+    <view class="list-box {{!isLoad ? 'find-box-active' : 'find-big-box'}}">
+      <view class="find-item guidance" wx:if="{{!isChecked}}" @tap="goAnswer">
         <view class="find-box">
           <view class="cainter">
             <view class="user">
@@ -27,7 +26,7 @@
             <view class="words">完成实名认证后，领取更多现金红包！</view>
             <image src="" class="img-one-item"></image>
           </view>
-          <view class="information" @tap="delStick">
+          <view class="information" @tap.stop="delStick">
             删除
           </view>
         </view>
@@ -92,7 +91,8 @@
       content: '',
       delIndex: {},
       bottom: 0,
-      check: false
+      check: false,
+      userLiveLogIid: []
     }
 
     async onPullDownRefresh() {
@@ -100,6 +100,7 @@
       setTimeout(() => {
         wepy.stopPullDownRefresh()
         this.bottom = 0
+        this.$parent.updateGlobalData('status', 0)
         this.$apply()
       }, 50)
       this.$apply()
@@ -109,9 +110,36 @@
       this.findList = await this.load()
       this.showBlank(this.findList)
       this.$apply()
+      this.$invoke('PopUpWindows', 'show', '内容不会保存，退出编辑？', false)
+      let id = wepy.getStorageSync('user_info').id
+//      wepy.connectSocket({
+//        url: 'wss://ws.jerryf.cn/socket.io/?EIO=3&transport=websocket'
+//      })
+//
+//      wepy.onSocketOpen((res) => {
+//      })
+//      wepy.onSocketMessage((res) => {
+//        let data = res.data.slice(1)
+//        data = JSON.parse(data)
+//        console.log(data)
+//      })
+//      console.log(typeof  io)
+//      const news = io('wss://ws.jerryf.cn/socket.io/?EIO=3&transport=websocket')
+//      news.on(`channel-remind:newMessage:${id}`, (data)=> {
+//        console.log('======news data: ', data)
+//      })
+      let socket = this.$parent.globalData.socket
+      console.log(socket)
+      socket.io.on(`channel-remind:newMessage:7`, (data) => {
+        console.log(data)
+      })
     }
 
     async onShow() {
+      setTimeout(() => {
+        this.bottom = 0
+        this.$apply()
+      }, 50)
       if (this.$parent.globalData.status && this.$parent.globalData.status === 2) {
         this.$invoke('PopUpWindows', 'show', '内容不会保存，退出编辑？')
         this.content = true
@@ -132,12 +160,6 @@
         }
       }
       this.$apply()
-//      wepy.connectSocket({
-//        url: 'wss://192.168.4.98:3000'
-//      })
-//      wepy.onSocketOpen((res) => {
-//        console.log('WebSocket连接已打开！')
-//      })
     }
 
     showBlank(res) {
@@ -190,7 +212,11 @@
 
     methods = {
       goAnswer() {
-        this.$navigate('/pages/answer-index/answer-index')
+        if (wepy.getStorageSync('user_info').role) {
+          this.$navigate('/pages/name-authentication/name-authentication')
+        } else {
+          this.$navigate('/pages/answer-index/answer-index')
+        }
       },
       delStick() {
         this.check = true
@@ -234,12 +260,16 @@
             this.findList.splice(this.delIndex.index, 1)
             this.$apply()
           }
-        } else if (this.check) {
-          this.isChecked = true
-          wepy.setStorageSync('isChecked', this.isChecked)
+          this.$parent.updateGlobalData('status', 1)
         }
-
-        this.$parent.updateGlobalData('status', 1)
+        if (this.check) {
+          this.isChecked = true
+          this.$apply()
+          this.$parent.updateGlobalData('status', 0)
+          wepy.setStorageSync('isChecked', this.isChecked)
+        } else {
+          this.$parent.updateGlobalData('status', 0)
+        }
       },
       cancel() {
         if (this.content) {
