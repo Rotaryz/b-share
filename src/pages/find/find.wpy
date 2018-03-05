@@ -133,12 +133,17 @@
       let id = wepy.getStorageSync('user_info').id
       let socket = this.$parent.globalData.socket
       console.log(this.$parent.globalData.socket)
-      socket(`channel-remind:newMessage:7`, function(data){
-        console.log(data)
+      socket.on(`channel-remind:newMessage:${id}`, function (msg) {
+        wx.showTabBarRedDot({index: 1})
+        this.userLiveLogIid.push(msg.user_live_log_id)
+//        console.log(msg)
       })
     }
 
     async onShow() {
+      if (this.userLiveLogIid.length) {
+
+      }
       setTimeout(() => {
         this.bottom = 0
         this.$apply()
