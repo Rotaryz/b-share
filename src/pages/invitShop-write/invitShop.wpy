@@ -69,7 +69,7 @@
         </view>
         <view wx:if="{{!submit}}"><text style="color: red;font-size: 14px">{{msg}}</text></view>
         <view class="invit-form-v-submit">
-          <button class="submit {{submit ? '' : 'disable'}}"
+          <button class="submit {{submit ? 'can-use' : 'disable'}}"
                   @tap="submitForm({{submitType}})">
             提交
           </button>

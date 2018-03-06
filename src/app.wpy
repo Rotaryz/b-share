@@ -87,7 +87,8 @@
         'pages/name-authentication/name-authentication', // 门店认证页面（不需要参数）
         'pages/invit-record/invit-record', // 邀请红包列表页面（id -0->已奖励红包，1->邀请成功列表，2->已经邀请还未入驻）
         'pages/invitShop-write/invitShop', // 门店被邀请注册页面（id 邀请者的id）
-        'pages/invitPerson-write/invitPerson' // 美导被邀请注册页面（id 邀请者的id）
+        'pages/invitPerson-write/invitPerson', // 美导被邀请注册页面（id 邀请者的id）
+        'pages/loading/loading' // 测试
       ],
       window: {
         backgroundColor: '#F9F9F9',

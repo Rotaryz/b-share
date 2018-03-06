@@ -96,7 +96,22 @@ page
     font-size: $font-size-large-m
     color: $color-white
     font-family: $font-family-regular
-
+  .submit
+    background: $color-theme
+    color: $color-white
+    font-size: $font-size-medium-x
+    height: 45px
+    line-height: 45px
+    width: 90.667%
+    border-radius: 50px
+    &::after
+      border: 1px solid rgba(0, 0, 0, 0)
+  .can-use
+    nomal-icon()
+  .disable
+    disable-icon()
+  .hover-btn
+    hover-icon()
 .invit-my
   position: absolute
   top: 64%
@@ -237,6 +252,9 @@ page
       line-height: 45px
       width: 90.667%
       border-radius: 50px
+      &::after
+        border: 1px solid rgba(0, 0, 0, 0)
+    .can-use
       nomal-icon()
     .disable
       disable-icon()
