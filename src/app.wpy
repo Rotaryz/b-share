@@ -5,7 +5,6 @@
 <script>
   import wepy from 'wepy'
   import 'wepy-async-function'
-  import wxUtils from 'common/js/wxUtils'
   import URIS from 'common/js/config'
   import io from './scoket/index'
   export default class extends wepy.app {
@@ -17,7 +16,8 @@
 
     onLaunch(options) {
       const socket = io('wss://ws.jerryf.cn')
-      this.globalData.socket = socket
+
+      this.updateGlobalData('socket', socket)
       // 校验SDK
 //      wxUtils.checkSDK()
 //      const storageDate = wepy.getStorageSync('collectDate')
@@ -71,6 +71,14 @@
         'pages/my-profile/my-profile', // 我的资料页面 （不需要参数）
         'pages/my-wellet/my-wellet', // 我的钱包页面 （不需要参数）
         'pages/my-app/my-app', // 我的小程序页面 （不需要参数）
+        'pages/index/index',
+        'pages/find/find',
+        'pages/mine/mine',
+        'pages/guide-center/guide-center',
+        'pages/ability/ability',
+        'pages/my-profile/my-profile',
+        'pages/my-wellet/my-wellet',
+        'pages/my-app/my-app',
         'pages/withdraw/withdraw',
         'pages/login/login',
         'pages/compile/compile',

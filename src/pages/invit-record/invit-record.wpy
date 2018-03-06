@@ -19,7 +19,7 @@
         </view>
       </scroll-view>
       <swiper class="tab-content" current="{{currentTab}}" duration="300" bindchange="switchTab" style="height:{{winHeight}}rpx " >
-        <swiper-item wx:for="{{expertList}}" wx:key="*this">
+        <swiper-item wx:for="{{expertList}}" wx:key="unique">
           <scroll-view scroll-y="true" class="scoll-h"  wx:if="{{expertList[index].data.length>0}}">
             <block wx:for="{{expertList[index].data}}" wx:key="*this">
               <view class="item-ans">
@@ -201,7 +201,6 @@
 </script>
 <style lang="stylus">
   @import "../../common/stylus/variable"
-
   page
     overflow: hidden
   .invit-my
@@ -348,7 +347,7 @@
 
   .no-packet
     margin: 50px auto
-    width: 150px
+    width: 115px
     height: 150px
 
 </style>
