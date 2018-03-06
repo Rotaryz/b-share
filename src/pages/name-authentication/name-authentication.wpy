@@ -152,7 +152,7 @@
     background: #fff
   .store-license-body
     margin-top: 10px
-    border-top:10px solid #f1f1f2;
+    border-top:10px solid $color-background;
     .store-license-body-title
       font-size: $font-size-medium-x
       height: 32px
@@ -164,7 +164,7 @@
       .store-license-body-block
         width: 5px
         height: 13px
-        background: #707FFF
+        background: $color-assist-bule
         margin-right: 7px
         margin-left: 10px
 

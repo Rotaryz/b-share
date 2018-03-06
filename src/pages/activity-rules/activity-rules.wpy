@@ -3,7 +3,7 @@
     <view class="activity">
       <view class="activity-time">
         <view class="activity-title"><text>活动时间</text></view>
-        <view class="activity-time-title"><text>{{from_date}} 至 {{to_date}}</text></view>
+        <view class="activity-time-title"><text>{{activityData.from_date  || 2018}} 至 {{activityData.to_date || 2018}}</text></view>
       </view>
 
       <view class="activity-rules">
@@ -11,7 +11,7 @@
         <view class="activity-rules-title">
           <text>● 只有完成问答或实名认证的用户，才有资格邀请好友。</text>
           <text>● 好友只有通过 “邀请”页面注册成功，才获得注册奖励。</text>
-          <text>● 每个账号（手机号，微信号）{{join_times == -1?'不限': '最多只有' +join_times +'个'}}邀请资格</text>
+          <text>● 每个账号（手机号，微信号）{{activityData.join_times == -1?'不限': '最多只有' +(activityData.join_times || 0) +'个'}}邀请资格</text>
         </view>
         <view>
           <view class="table-1">
@@ -21,15 +21,15 @@
             </view>
             <view class="tr">
               <view class="td td-1">邀请者自己完成认证</view>
-              <view class="td td-2">{{detail.invite_count.self_be_checked}}</view>
+              <view class="td td-2">{{activityData.detail.invite_count.self_be_checked || 0}}</view>
             </view>
             <view class="tr">
-              <view class="td td-1">被邀请者中有{{detail.invite_count.other_invited[0].be_checked}}人完成认证</view>
-              <view class="td td-2">{{detail.invite_count.other_invited[0].invite_count}}</view>
+              <view class="td td-1">被邀请者中有{{activityData.detail.invite_count.other_invited[0].be_checked}}人完成认证</view>
+              <view class="td td-2">{{activityData.detail.invite_count.other_invited[0].invite_count || 0}}</view>
             </view>
             <view class="tr">
-              <view class="td td-1">被邀请者中有{{detail.invite_count.other_invited[1].be_checked}}人完成认证</view>
-              <view class="td td-2">{{detail.invite_count.other_invited[1].invite_count}}</view>
+              <view class="td td-1">被邀请者中有{{activityData.detail.invite_count.other_invited[1].be_checked}}人完成认证</view>
+              <view class="td td-2">{{activityData.detail.invite_count.other_invited[1].invite_count || 0}}</view>
             </view>
           </view>
         </view>
@@ -51,13 +51,13 @@
             </view>
             <view class="tr">
               <view class="td td-1">注册成功</view>
-              <view class="td td-2"><text>￥</text>{{detail.prizes.register.be_invite}}</view>
-              <view class="td td-3"><text>￥</text>{{detail.prizes.register.invite_by_self}}</view>
+              <view class="td td-2"><text>￥</text>{{activityData.detail.prizes.register.be_invite || 0}}</view>
+              <view class="td td-3"><text>￥</text>{{activityData.detail.prizes.register.invite_by_self || 0}}</view>
             </view>
             <view class="tr">
               <view class="td td-1">完成认证</view>
-              <view class="td td-2"><text>￥</text>{{detail.prizes.be_checked.be_invite}}</view>
-              <view class="td td-3"><text>￥</text>{{detail.prizes.be_checked.invite_by_self}}</view>
+              <view class="td td-2"><text>￥</text>{{activityData.detail.prizes.be_checked.be_invite || 0}}</view>
+              <view class="td td-3"><text>￥</text>{{activityData.detail.prizes.be_checked.invite_by_self || 0}}</view>
             </view>
           </view>
         </view>
@@ -82,40 +82,43 @@
         this.getActivityDetail()
       }
       data = {
-        id: 1,
-        name: '邀请美导',
-        type: 'beautician',
-        join_times: -1,
-        from_date: '2018-02-23',
-        to_date: '2018-02-23',
-        image_url: 'http://img.jerryf.cn/static_files/uploads/merchantImages/2018/01/20/15/1516433191lioPNhcc.jpg',
-        detail: {
-          description: '活动描述',
-          invite_count: {
-            maximum: 10,
-            self_be_checked: 2,
-            other_invited: [
-              {
-                be_checked: 1,
-                invite_count: 5
-              },
-              {
-                be_checked: 3,
-                invite_count: 10
-              }
-            ]
-          },
-          prizes: {
-            register: {
-              be_invite: 1,
-              invite_by_self: 5
+        activityData: {
+          id: 0,
+          name: '邀请美导',
+          type: '',
+          join_times: -1,
+          from_date: '',
+          to_date: '',
+          image_url: '', // http://img.jerryf.cn/static_files/uploads/merchantImages/2018/01/20/15/1516433191lioPNhcc.jpg
+          detail: {
+            description: '活动描述',
+            invite_count: {
+              maximum: 0,
+              self_be_checked: 0,
+              other_invited: [
+                {
+                  be_checked: 0,
+                  invite_count: 0
+                },
+                {
+                  be_checked: 0,
+                  invite_count: 0
+                }
+              ]
             },
-            be_checked: {
-              be_invite: 15,
-              invite_by_self: 5
+            prizes: {
+              register: {
+                be_invite: 0,
+                invite_by_self: 0
+              },
+              be_checked: {
+                be_invite: 0,
+                invite_by_self: 0
+              }
             }
           }
         }
+
       }
 
       async getActivityDetail() {
@@ -123,12 +126,13 @@
           type: 'beautician'
         }
         let Json = await Beauticians.activityDetail(data)
-        console.log(Json)
+        // console.log(Json)
         this.loaded()
         if (Json.error !== ERR_OK) {
           this.$invoke('Toast', 'show', Json.message)
           return
         }
+        this.activityData = Json.data
         this.$apply()
       }
     }
