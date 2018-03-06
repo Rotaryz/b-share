@@ -134,7 +134,7 @@
           setTimeout(() => {
             this.focus = true
             this.$apply()
-          }, 50)
+          }, 500)
         }
       }
 //      测试
@@ -166,7 +166,7 @@
       setTimeout(() => {
         this.focus = true
         this.$apply()
-      },20)
+      }, 20)
     }
 
     async _comments(id, content, commentUserId = '', commentId = 0) {
