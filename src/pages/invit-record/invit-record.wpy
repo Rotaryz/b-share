@@ -347,7 +347,7 @@
 
   .no-packet
     margin: 50px auto
-    width: 115px
+    width: 150px
     height: 150px
 
 </style>

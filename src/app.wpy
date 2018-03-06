@@ -63,14 +63,14 @@
 
     config = {
       pages: [
-        'pages/find/find',  // 发现页面（不需要参数）
-        'pages/index/index', // 美导页面（不需要参数）
-        'pages/mine/mine',  // 我的页面（不需要参数）
-        'pages/guide-center/guide-center', // 服务日志页面 （不需要参数）
-        'pages/ability/ability', // 能力提升页面 （不需要参数）
-        'pages/my-profile/my-profile', // 我的资料页面 （不需要参数）
-        'pages/my-wellet/my-wellet', // 我的钱包页面 （不需要参数）
-        'pages/my-app/my-app', // 我的小程序页面 （不需要参数）
+//        'pages/find/find',  // 发现页面（不需要参数）
+//        'pages/index/index', // 美导页面（不需要参数）
+//        'pages/mine/mine',  // 我的页面（不需要参数）
+//        'pages/guide-center/guide-center', // 服务日志页面 （不需要参数）
+//        'pages/ability/ability', // 能力提升页面 （不需要参数）
+//        'pages/my-profile/my-profile', // 我的资料页面 （不需要参数）
+//        'pages/my-wellet/my-wellet', // 我的钱包页面 （不需要参数）
+//        'pages/my-app/my-app', // 我的小程序页面 （不需要参数）
         'pages/index/index',
         'pages/find/find',
         'pages/mine/mine',
