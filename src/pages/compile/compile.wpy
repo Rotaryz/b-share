@@ -229,6 +229,7 @@
       },
       async submit() {
         if (!this.showSend) {
+          this.$invoke('Toast', 'show', '内容不能为空')
           return false
         }
         let detail = []
@@ -379,8 +380,7 @@
       margin: 1.6vw 0 0 1.6vw
       position: relative
       .add-image
-        height: 99%
+        height: 98%
         width: @height
-        all-center()
 
 </style>

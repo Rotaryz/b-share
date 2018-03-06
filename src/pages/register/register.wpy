@@ -215,6 +215,7 @@
         this.phoneNum = ''
         this.phoneSusses = ''
         this.phoneFocus = false
+        this.isSet = false
         setTimeout(() => {
           this.phoneFocus = true
           this.$apply()

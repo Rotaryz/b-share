@@ -3,37 +3,37 @@
     <view class="activity">
       <view class="activity-time">
         <view class="activity-title"><text>活动时间</text></view>
-        <view class="activity-time-title"><text>{{from_date}} 至 {{to_date}}</text></view>
+        <view class="activity-time-title"><text>{{activityData.from_date  || 2018}} 至 {{activityData.to_date || 2018}}</text></view>
       </view>
 
       <view class="activity-rules">
         <view class="activity-title"><text>活动规则</text></view>
-        <view class="activity-time-title">
+        <view class="activity-rules-title">
           <text>● 只有完成问答或实名认证的用户，才有资格邀请好友。</text>
           <text>● 好友只有通过 “邀请”页面注册成功，才获得注册奖励。</text>
-          <text>● 每个账号（手机号，微信号）{{join_times == -1?'不限': '最多只有' +join_times +'个'}}邀请资格</text>
+          <text>● 每个账号（手机号，微信号）{{activityData.join_times == -1?'不限': '最多只有' +(activityData.join_times || 0) +'个'}}邀请资格</text>
         </view>
         <view>
           <view class="table-1">
-            <view class="tr tr-title">
-              <view class="td td-1">条件</view>
-              <view class="td td-2">可以邀请个数</view>
+            <view class="tr">
+              <view class="th td-1">条件</view>
+              <view class="th td-2">可以邀请个数</view>
             </view>
             <view class="tr">
               <view class="td td-1">邀请者自己完成认证</view>
-              <view class="td td-2">{{detail.invite_count.self_be_checked}}</view>
+              <view class="td td-2">{{activityData.detail.invite_count.self_be_checked || 0}}</view>
             </view>
             <view class="tr">
-              <view class="td td-1">被邀请者中有{{detail.invite_count.other_invited[0].be_checked}}人完成认证</view>
-              <view class="td td-2">{{detail.invite_count.other_invited[0].invite_count}}</view>
+              <view class="td td-1">被邀请者中有{{activityData.detail.invite_count.other_invited[0].be_checked}}人完成认证</view>
+              <view class="td td-2">{{activityData.detail.invite_count.other_invited[0].invite_count || 0}}</view>
             </view>
             <view class="tr">
-              <view class="td td-1">被邀请者中有{{detail.invite_count.other_invited[1].be_checked}}人完成认证</view>
-              <view class="td td-2">{{detail.invite_count.other_invited[1].invite_count}}</view>
+              <view class="td td-1">被邀请者中有{{activityData.detail.invite_count.other_invited[1].be_checked}}人完成认证</view>
+              <view class="td td-2">{{activityData.detail.invite_count.other_invited[1].invite_count || 0}}</view>
             </view>
           </view>
         </view>
-        <view class="activity-time-title">
+        <view class="activity-rules-withdraw">
           <text>
             提现：满50元红包可提现，每天限提现1次。如有作弊，邀请资格取消，自动断开邀请关系，冻结账户，永不恢复。
           </text>
@@ -44,20 +44,20 @@
         <view class="activity-title"><text>活动奖励</text></view>
         <view>
           <view class="table-2">
-            <view class="tr tr-title">
-              <view class="td">条件</view>
-              <view class="td">邀请者奖励</view>
-              <view class="td">被邀请者奖励</view>
+            <view class="tr">
+              <view class="th td-1">条件</view>
+              <view class="th td-2">邀请者奖励</view>
+              <view class="th td-3">被邀请者奖励</view>
             </view>
             <view class="tr">
-              <view class="td">注册成功</view>
-              <view class="td">{{detail.prizes.register.be_invite}}</view>
-              <view class="td">{{detail.prizes.register.invite_by_self}}</view>
+              <view class="td td-1">注册成功</view>
+              <view class="td td-2"><text>￥</text>{{activityData.detail.prizes.register.be_invite || 0}}</view>
+              <view class="td td-3"><text>￥</text>{{activityData.detail.prizes.register.invite_by_self || 0}}</view>
             </view>
             <view class="tr">
-              <view class="td">完成认证</view>
-              <view class="td">{{detail.prizes.be_checked.be_invite}}</view>
-              <view class="td">{{detail.prizes.be_checked.invite_by_self}}</view>
+              <view class="td td-1">完成认证</view>
+              <view class="td td-2"><text>￥</text>{{activityData.detail.prizes.be_checked.be_invite || 0}}</view>
+              <view class="td td-3"><text>￥</text>{{activityData.detail.prizes.be_checked.invite_by_self || 0}}</view>
             </view>
           </view>
         </view>
@@ -82,40 +82,43 @@
         this.getActivityDetail()
       }
       data = {
-        id: 1,
-        name: '邀请美导',
-        type: 'beautician',
-        join_times: -1,
-        from_date: '2018-02-23',
-        to_date: '2018-02-23',
-        image_url: 'http://img.jerryf.cn/static_files/uploads/merchantImages/2018/01/20/15/1516433191lioPNhcc.jpg',
-        detail: {
-          description: '活动描述',
-          invite_count: {
-            maximum: 10,
-            self_be_checked: 2,
-            other_invited: [
-              {
-                be_checked: 1,
-                invite_count: 5
-              },
-              {
-                be_checked: 3,
-                invite_count: 10
-              }
-            ]
-          },
-          prizes: {
-            register: {
-              be_invite: 1,
-              invite_by_self: 5
+        activityData: {
+          id: 0,
+          name: '邀请美导',
+          type: '',
+          join_times: -1,
+          from_date: '',
+          to_date: '',
+          image_url: '', // http://img.jerryf.cn/static_files/uploads/merchantImages/2018/01/20/15/1516433191lioPNhcc.jpg
+          detail: {
+            description: '活动描述',
+            invite_count: {
+              maximum: 0,
+              self_be_checked: 0,
+              other_invited: [
+                {
+                  be_checked: 0,
+                  invite_count: 0
+                },
+                {
+                  be_checked: 0,
+                  invite_count: 0
+                }
+              ]
             },
-            be_checked: {
-              be_invite: 15,
-              invite_by_self: 5
+            prizes: {
+              register: {
+                be_invite: 0,
+                invite_by_self: 0
+              },
+              be_checked: {
+                be_invite: 0,
+                invite_by_self: 0
+              }
             }
           }
         }
+
       }
 
       async getActivityDetail() {
@@ -123,91 +126,138 @@
           type: 'beautician'
         }
         let Json = await Beauticians.activityDetail(data)
-        console.log(Json)
+        // console.log(Json)
         this.loaded()
         if (Json.error !== ERR_OK) {
           this.$invoke('Toast', 'show', Json.message)
           return
         }
+        this.activityData = Json.data
         this.$apply()
       }
     }
 </script>
 <style lang="stylus">
+  @import "../../common/stylus/variable"
   page
     background: #fff
+    font-family:$font-family-regular
   .activity
-    font-size: 14px
-    color: #666666
+    font-size: $font-size-medium
+    color: $color-text-d
   .activity-time,.activity-rules,.activity-award
     padding: 10px
 
   .activity-title
-    padding: 10px 0 15px 0px
-    font-size: 18px
-    color: #333333
-    font-weight: 600
+    height: 32px
+    line-height: 32px
+    font-size: 16px
+    color: $color-text
     text
       border-left: 4px solid #707FFF
       padding-left: 5px
 
-
   .activity-time-title
-    color: #666666
-    padding: 0 10px 10px 10px
+    font-family:$font-family-light
+    font-size: $font-size-medium
+    color: $color-text-d
+    line-height: 28px
+    height: 28px
     text
       display inline-block
-      /*padding: 5px*/
       line-height 20px
 
+  .activity-rules-title
+    font-family:$font-family-light
+    font-size: $font-size-medium
+    color: $color-text-d
+    margin-bottom:10px
+    text
+      display inline-block
+      line-height 28px
+      height: 28px
+
+  .activity-rules-withdraw
+    font-family:$font-family-light
+    font-size: $font-size-medium
+    color: $color-text-d
+    line-height 26px
+    margin-top: -15px
+    text
+      display inline-block
+
+
   .table-1
-    border: 1px solid #DAE0E4
+    border: 1px solid $color-row-line
     .tr
-      border-bottom: .5px solid #DAE0E4
-      border-top: .5px solid #DAE0E4
       display: flex
       width: 100%
-      justify-content: enter
-      height: 3rem
+      justify-content: center
+      height: 45px
       align-items: center
       .td
-        border: .5px solid #DAE0E4
         justify-content: center
         text-align: center
         align-items: center
-        height: 3rem
-        line-height: 3rem
+        height: 45px
+        line-height: 45px
+        color: $color-text-d
+        border-top: .5px solid $color-row-line
       .td.td-1
         width:65%
+        border-right: .5px solid $color-row-line
       .td.td-2
         width: 35%
-      /*.th*/
-      /*width: 40%*/
-      /*justify-content: center*/
-      /*background: #3366FF*/
-      /*color: #fff*/
-      /*display: flex*/
-      /*height: 3rem*/
-      /*align-items: center*/
+
+      .th
+        height: 45px
+        line-height: 45px
+        text-align: center
+        align-items: center
+        justify-content: center
+        color: $color-text-tr
+        background-color: $color-assist-gray-d
+      .th.td-1
+        width:65%
+        border-right: .5px solid $color-row-line
+      .th.td-2
+        width: 35%
+
   .table-2
-    border: 1px solid #DAE0E4
+    border: 1px solid $color-row-line
     .tr
-      border-bottom: .5px solid #DAE0E4
-      border-top: .5px solid #DAE0E4
       display: flex
       width: 100%
-      justify-content: enter
-      height: 3rem
+      justify-content: center
+      height: 45px
       align-items: center
       .td
-        border: .5px solid #DAE0E4
+        width: 33.5%
         justify-content: center
         text-align: center
         align-items: center
-        height: 3rem
-        line-height: 3rem
-        width: 35%
-
-  .tr-title
-    background-color: #f1f1f1
+        height: 45px
+        line-height: 45px
+        color: $color-text-d
+        border-top: .5px solid $color-row-line
+        text
+          font-size: $font-size-small
+      .td.td-2
+        border-left: .5px solid $color-row-line
+        border-right: .5px solid $color-row-line
+        color: $color-assist-pink
+      .td.td-3
+        color: $color-assist-pink
+      .th
+        width: 33.5%
+        height: 45px
+        line-height: 45px
+        text-align: center
+        align-items: center
+        justify-content: center
+        color: $color-text-tr
+        background-color: $color-assist-gray-d
+      .th.td-2
+        border-left: .5px solid $color-row-line
+        border-right: .5px solid $color-row-line
 </style>
