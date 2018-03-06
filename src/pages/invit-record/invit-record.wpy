@@ -19,7 +19,7 @@
         </view>
       </scroll-view>
       <swiper class="tab-content" current="{{currentTab}}" duration="300" bindchange="switchTab" style="height:{{winHeight}}rpx " >
-        <swiper-item wx:for="{{expertList}}" >
+        <swiper-item wx:for="{{expertList}}" wx:key="*this">
           <scroll-view scroll-y="true" class="scoll-h"  wx:if="{{expertList[index].data.length>0}}">
             <block wx:for="{{expertList[index].data}}" wx:key="*this">
               <view class="item-ans">
