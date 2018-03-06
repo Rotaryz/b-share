@@ -3,7 +3,7 @@
     <image class="invit-bac" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_women@2x.png'}}"></image>
     <image class="invit-bac-btn write" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg@2x.png'}}"></image>
     <view class="invit-text">
-      <image class="invit-text-img" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_word_women@2x.png'}}"></image>
+      <image class="invit-text-img" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_word@2x.png'}}"></image>
     </view>
     <view class="invit-text-white" style="height: 75%">
       <image wx:if="{{imageUrl}}"  class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg_white@2x_s.png'}}"></image>
@@ -73,9 +73,6 @@
                   @tap="submitForm({{submitType}})">
             提交
           </button>
-          <!--<image wx:if="{{!submitNormal && imageUrl}}" src="{{imageUrl + '/defaults/share/page/btn-login_disable@2x.png'}}"></image>-->
-          <!--<image wx:if="{{submitNormal && imageUrl}}"  src="{{imageUrl + '/defaults/share/page/btn-login_normal@2x.png'}}"></image>-->
-          <!--<text>提交</text>-->
         </view>
       </view>
     </view>
@@ -83,7 +80,7 @@
   </view>
   <!-- 活动规则 -->
   <view class="right-activity" @tap="promtClose">
-    <image wx:if="{{imageUrl && true}}" src="{{imageUrl + '/defaults/share/page/icon-invite_rule@2x.png'}}"></image>
+    活动规则
   </view>
   <!-- 活动规则 over -->
 </template>
@@ -298,7 +295,7 @@
             this.$invoke('Toast', 'show', '注册成功')
             setTimeout(async () => {
               await wepy.switchTab({// 跳转到发现页面
-                url: '/pages/index/index'
+                url: '/pages/index/index?redPack=1&price=' + res.data.prizes
               })
             }, 1000)
           } else {
@@ -328,39 +325,5 @@
 </script>
 <style lang="stylus">
   @import "../../common/stylus/invit"
-  .prompt
-    width:100%
-    height: 100%
-    background-color:rgba(0,0,0,0.15)
-    position: fixed
-    top: 0px
-    left: 0px
-    z-index: 9
-    .prompt-message
-      width: 70%
-      height: 60%
-      position: absolute
-      top: 20%
-      left: 15%
-      z-index: 99
-      .prompt-message-info
-        height: 80%
-        border: 1px solid #ccc
-        background-color: #fff
-        margin-bottom: 9%
-        border-radius: 4px
-        .prompt-message-info-title
-          text-align: center
-          padding: 10px
-          font-size: $font-size-medium-x
-        .prompt-message-info-body
-          font-size: $font-size-medium
-          padding: 10px
-      .prompt-message-close
-        height: 50px
-        width: 50px
-        margin: 0 auto
-        image
-          width: 100%
-          height: 100%
+
 </style>

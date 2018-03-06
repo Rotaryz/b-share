@@ -100,19 +100,24 @@ page
 .invit-my
   position: absolute
   top: 64%
-  font-size: $font-size-large
   display: flex
   width: 80%
   left: 10%
+  padding: 8px 0px
+  font-family: $font-family-regular;
   view:nth-child(1)
-    border-left: 5px solid #707FFF
+    font-size: $font-size-medium-x
+    border-left: 4px solid #707FFF
     padding-left: 3px
+
+    color: $color-text
   view:nth-child(2)
-    font-size: $font-size-small
+    font-size: $font-size-small-s
     right: 0px
-    top: 5px
+    top: 12px
     position: absolute
-    color: #999999
+    color: $color-text-tr
+
 
 .invit-my-li
   position: absolute
@@ -124,16 +129,29 @@ page
   font-family: $font-family-regular
   view
     width: 33%
-  view:nth-child(2)
-    border-left: 1px solid #DAE0E4
-    border-right: 1px solid #DAE0E4
+  view:nth-child(2):before
+    content: ""
+    display: block
+    height: 50%
+    width: 1px
+    background: $color-row-line
+    position: absolute
+    top: 20%
+  view:nth-child(3):before
+    content: ""
+    display: block
+    height: 50%
+    width: 1px
+    background: $color-row-line
+    position: absolute
+    top: 20%
   .rmb-color
     display: block
     text-align: center
     margin: 5px 0px
     font-weight: bold
     font-size: $font-size-large-m
-    color: #FF3388
+    color:$color-assist-pink
     text
       .rmb-color-min
         font-size: $font-size-medium
@@ -141,12 +159,13 @@ page
 .number
   display: block
   text-align: center
-  margin: 5px 0px
-  color: #999999
+  margin: 6px 0px
+  color: $color-text-d
+  font-size: $font-size-small
   text
     font-weight: bold
     font-size: $font-size-large-m
-    color: #333333
+    color: $color-text
 
 .invit-form
   position:absolute
@@ -155,6 +174,9 @@ page
   left:10%
   .invit-form-title
     text-align: center
+    color: $color-text
+    font-size: $font-size-large
+    font-family: $font-family-regular
   .invit-form-v
     font-size: $font-size-medium
     border-bottom: 1px solid #DAE0E4
@@ -166,10 +188,14 @@ page
     input
       width: 66%
       height: 39px
+      color: $color-text
+      font-size: $font-size-medium-x
+      font-family: $font-family-regular
     .invit-form-v-picker
       width: 70%
       height: 30px
       line-height: 34px
+      font-family: $font-family-regular
       .eye
         image
           transform:rotate(90deg);
@@ -224,6 +250,11 @@ page
   z-index: 5
   width: 60px
   height: 26px
-  image
-    width: 100%
-    height: 100%
+  line-height:26px;
+  background-color: #fff
+  border-radius: 15px 0px 0px 15px
+  text-align: center
+  font-size: 12px
+  color: $color-assist-pink
+
+
