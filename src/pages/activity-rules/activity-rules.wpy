@@ -126,7 +126,7 @@
           type: 'beautician'
         }
         let Json = await Beauticians.activityDetail(data)
-        // console.log(Json)
+        console.log(Json)
         this.loaded()
         if (Json.error !== ERR_OK) {
           this.$invoke('Toast', 'show', Json.message)
@@ -140,7 +140,7 @@
 <style lang="stylus">
   @import "../../common/stylus/variable"
   page
-    background: #fff
+    background: $color-white
     font-family:$font-family-regular
   .activity
     font-size: $font-size-medium
@@ -151,7 +151,7 @@
   .activity-title
     height: 32px
     line-height: 32px
-    font-size: 16px
+    font-size: $font-size-medium-x
     color: $color-text
     text
       border-left: 4px solid #707FFF

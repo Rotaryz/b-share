@@ -6,7 +6,7 @@
       </view>
       <scroll-view scroll-x="true" class="tab-h" scroll-left="{{scrollLeft}}">
         <view class="tab-item {{currentTab==0?'active':''}}"  data-current="0" bindtap="swichNav">
-          <text class="rmb-color"><text><text class="rmb-color-min">￥</text>{{myInvit.myMoney || '0.00'}}</text></text>
+          <text class="number rmb-color"><text><text class="rmb-color-min">￥</text>{{myInvit.myMoney || '0.00'}}</text></text>
           <text class="number">获得的红包</text>
         </view>
         <view class="tab-item {{currentTab==1?'active':''}}" data-current="1" bindtap="swichNav">
@@ -38,6 +38,7 @@
             </block>
           </scroll-view>
           <!-- 样板 -->
+
             <!--<scroll-view scroll-y="true" class="scoll-h"  wx:if="{{true}}">-->
             <!--<block>-->
                 <!--<view class="item-ans">-->
@@ -55,16 +56,17 @@
                 <!--</view>-->
               <!--</block>-->
             <!--</scroll-view>-->
+
           <!-- 样板 over -->
           <scroll-view  wx:else style="text-align: center">
             <block wx:if="{{currentTab==0}}">
-              <image class="no-packet" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@2x.png'}}"></image>
+              <image class="no-packet" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@2x_s.png'}}"></image>
             </block>
             <block wx:elif="{{currentTab==1}}">
-              <image class="no-packet" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@2x.png'}}"></image>
+              <image class="no-packet" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@2x_s.png'}}"></image>
             </block>
             <block wx:else="{{currentTab==2}}">
-              <image class="no-packet" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@2x.png'}}"></image>
+              <image class="no-packet" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@2x_s.png'}}"></image>
             </block>
           </scroll-view>
         </swiper-item>
@@ -199,6 +201,7 @@
 </script>
 <style lang="stylus">
   @import "../../common/stylus/variable"
+
   page
     overflow: hidden
   .invit-my
@@ -209,7 +212,7 @@
     color: $color-text
     padding: 10px 10px 0px 10px
     text
-      border-left: 5px solid #707FFF
+      border-left: 5px solid $color-assist-bule
       padding-left: 8px
       color: $color-text
 
@@ -226,7 +229,7 @@
       color: $color-text
 
   .white
-    background-color: #fff
+    background-color: $color-white
     margin-top: 10px
 
   .tab-item:nth-child(2):before
@@ -234,7 +237,7 @@
     display: block
     height: 30%
     width: 1px
-    background: #DAE0E4
+    background: $color-row-line
     position: absolute
     top: 20%
 
@@ -243,18 +246,17 @@
     display: block
     height: 30%
     width: 1px
-    background: #DAE0E4
+    background: $color-row-line
     position: absolute
     top: 20%
 
-  .rmb-color
+  .number.rmb-color
     display: block
     text-align: center
     margin 5px 0px
-    font-weight: bold
-    font-size: $font-size-large-m
     color:$color-assist-pink
     text
+      color:$color-assist-pink
       .rmb-color-min
         font-size: $font-size-medium
 
@@ -267,16 +269,12 @@
     font-size: 16px
     white-space: nowrap
 
-
-
   .tab-item
     display: inline-block
     width:33%
     text-align: center
     height: 90%
-    border-bottom: 1px solid #F2F2F2
-  .tab-item.active
-    color: #4675F9
+    border-bottom: 1px solid $color-row-line
 
   .tab-item.active:after
     content: ""
@@ -284,9 +282,8 @@
     height: 4px
     width: 35%
     background:$color-assist-pink
-    margin: 15px auto
+    margin: 13px auto
     border-radius: 10px
-
 
   .item-ans
     width: 100%
@@ -297,13 +294,13 @@
     box-sizing: border-box
     height: 55px
     align-items: center
-    border-bottom: 1px solid #F2F2F2
+    border-bottom: 1px solid $color-row-line
 
   .avatar
     width: 34px
     height: 34px
     position: relative
-    padding-right: 30rpx
+    padding-right: 30px
 
   .avatar
     .img
@@ -319,31 +316,30 @@
     right: 20rpx
 
   .expertInfo
-
     flex-grow: 2
     font-family: $font-family-light
     .name
-      font-size: 14px
-      color:#333333
+      font-size: $font-size-medium
+      color:$color-text
       line-height: 28px
     .tag
       line-height: 24px
-      font-size: 12px
-      color: #999999
+      font-size: $font-size-small
+      color: $color-text-tr
 
   .askBtn
     width: 80rpx
     line-height: 20rpx
     text-align: center
-    color:#FF3388
+    color:$color-assist-pink
     font-family: $font-family-regular
-    font-size: 14px
+    font-size: $font-size-medium
     text
-      font-size: 10px
+      font-size: $font-size-small-s
   .askBtn-2
     text-align: center
-    font-size: 12px
-    color: #333333
+    font-size: $font-size-small
+    color: $color-text
     line-height: 24px
     font-family: $font-family-light
 
@@ -352,7 +348,7 @@
 
   .no-packet
     margin: 50px auto
-    width: 115px
+    width: 150px
     height: 150px
 
 </style>

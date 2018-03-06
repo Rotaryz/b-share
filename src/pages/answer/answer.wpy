@@ -46,7 +46,11 @@
           <view class="small-txt" wx:if="{{!resRightCount}}">再接再厉！</view>
         </view>
         <view class="result-down">
-          <view class="item red">分享战绩</view>
+          <view class="item red">
+            <button open-type="share" style="font-size: 16px" class="submit {{submit ? 'can-use' : 'disable'}}">
+              分享战绩
+            </button>
+          </view>
           <navigator url="/pages/my-wellet/my-wellet" hover-class="none">
             <view class="item white">我的钱包</view>
           </navigator>
@@ -111,9 +115,13 @@
     onUnload() {
       this._clearAll()
     }
-
+    // 分享
     onShareAppMessage(res) {
-
+      return {
+        title: '分享战绩',
+        imageUrl: this.imageUrl + '/defaults/share/page/pic-invite_bg_shop@2x.png',
+        path: '/pages/answer/answer'
+      }
     }
 
     async load(option) {
