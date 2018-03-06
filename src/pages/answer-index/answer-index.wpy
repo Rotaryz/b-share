@@ -17,6 +17,7 @@
       </view>
     </view>
     <view class="btn {{checked?'':'dis'}}" @tap="toAnswer">Ready Go!</view>
+    <Toast></Toast>
   </view>
 </template>
 
@@ -26,6 +27,7 @@
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
   import Beauticians from 'api/beauticians'
+  import Toast from '@/base/toast/toast'
 
   export default class answerIndex extends wepy.page {
     mixins = [base]
@@ -37,7 +39,8 @@
     data = {
       imageUrl: URIS.image,
       majorArr: [],
-      checked: ''
+      checked: '',
+      overAnswer: false
     }
 
     async onShow() {
@@ -59,12 +62,16 @@
       const next = Json1.data.next_do
       switch (next) {
         case 'beginFight':
+          this.overAnswer = false
           break
         case 'findQuiz':
           this.$redirect('/pages/answer/answer?next=findQuiz')
           break
         case 'getResult':
           this.$redirect('/pages/answer/answer?next=getResult')
+          break
+        case 'overAnswer':
+          this.overAnswer = true
           break
       }
       this.loaded()
@@ -81,9 +88,17 @@
         if (!this.checked) {
           return
         }
+        if (this.overAnswer) {
+          this.$invoke('Toast', 'show', '您已完成过问答')
+          return
+        }
         let url = '/pages/answer/answer?categoryId=' + this.checked + '&categoryName=' + this.checkedName + '&next=beginFight'
         this.$redirect(url)
       }
+    }
+
+    components = {
+      Toast
     }
   }
 </script>

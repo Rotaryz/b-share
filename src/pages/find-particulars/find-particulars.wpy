@@ -134,7 +134,7 @@
           setTimeout(() => {
             this.focus = true
             this.$apply()
-          }, 50)
+          }, 500)
         }
       }
 //      测试
@@ -144,7 +144,7 @@
 
     async load(id) {
       let res = this._infoRes(await logs.findDetail(id))
-      console.log(res)
+
       this.loaded()
       return res
     }
@@ -166,7 +166,7 @@
       setTimeout(() => {
         this.focus = true
         this.$apply()
-      },20)
+      }, 20)
     }
 
     async _comments(id, content, commentUserId = '', commentId = 0) {
@@ -264,7 +264,6 @@
         this.$apply()
       },
       sendComment(id) {
-        console.log(this.commentId)
         if (this.commentId === 0 && this.userId === '') {
           this._comments(id, this.comment)
         } else if (this.userId !== '' && this.commentId === 0) {
@@ -287,7 +286,6 @@
       async sure() {
         let res = await logs.delFind(this.findDetail[0].id)
         this.loaded()
-        console.log(res)
         if (res.error === ERR_OK) {
           wepy.switchTab({
             url: '/pages/find/find'

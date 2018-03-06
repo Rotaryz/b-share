@@ -95,7 +95,6 @@
   import {ERR_OK} from 'api/base'
   import Info from 'api/info'
   import Upload from '@/api/uploads'
-  import Industries from '@/api/industries'
   import Tips from 'common/js/tips'
   import Toast from '@/base/toast/toast'
 
