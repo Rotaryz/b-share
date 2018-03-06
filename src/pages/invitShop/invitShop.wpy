@@ -32,8 +32,8 @@
         <text>通过后你获得红包</text>
       </view>
 
-      <view wx:if="{{fillout}}" class="invit-click">
-        <button open-type="share" style="font-size: 16px" class="invit-click-btn submit {{submit ? '' : 'disable'}}">
+      <view wx:if="{{fillout}}" class="invit-click ">
+        <button open-type="share" style="font-size: 16px" class="invit-click-btn submit {{submit ? 'can-use' : 'disable'}}">
           邀请美业门店入驻
         </button>
       </view>
@@ -149,19 +149,4 @@
 </script>
 <style lang="stylus">
   @import "../../common/stylus/invit"
-  .submit
-    background: $color-theme
-    color: $color-white
-    font-size: $font-size-medium-x
-    height: 45px
-    line-height: 45px
-    width: 90.667%
-    border-radius: 50px
-    nomal-icon()
-  .disable
-    disable-icon()
-  .hover-btn
-    hover-icon()
-
-
 </style>

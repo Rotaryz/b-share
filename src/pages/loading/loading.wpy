@@ -1,12 +1,34 @@
 <style type="stylus">
-
+  @import "../../common/stylus/variable"
+  @import "../../common/stylus/mixin"
+  .submit
+    background: $color-theme
+    color: $color-white
+    font-size: $font-size-medium-x
+    height: 45px
+    line-height: 45px
+    width: 90.667%
+    border-radius: 50px
+    nomal-icon()
+    &::after
+      border: 1px solid rgba(0, 0, 0, 0)
+  .disable
+    disable-icon()
+  .hover-btn
+    hover-icon()
 </style>
 <template>
+
+    <button open-type="share" style="font-size: 16px" class="invit-click-btn submit {{submit ? '' : 'disable'}}">
+      邀请我的美导好友
+    </button>
 
 </template>
 <script>
     import wepy from 'wepy'
     export default class MyPage extends wepy.page {
-
+      data = {
+        submit: false
+      }
     }
 </script>
