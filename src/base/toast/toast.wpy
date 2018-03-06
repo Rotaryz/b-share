@@ -35,9 +35,8 @@
     top: 50%
     left: 50%
     transform: translate(-50%, -50%)
-    min-width: 90px
     max-width: 300px
-    padding: 10px 0
+    padding: 10px 17px
     opacity: .9
     border-radius: 6px
     transition: all .5s ease-out

@@ -113,36 +113,24 @@
       if (option.redPack && option.redPack === '1') {
         this.$invoke('PopUpWindows', 'show', '', false, option.price)
       }
-
-//      wepy.connectSocket({
-//        url: 'wss://ws.jerryf.cn/scoket.io/?EIO=3&transport=websocket'
-//      })
-//
-//      wepy.onSocketOpen((res) => {
-//      })
-//      wepy.onSocketMessage((res) => {
-//        let data = res.data.slice(1)
-//        data = JSON.parse(data)
-//        console.log(data)
-//      })
-//      console.log(typeof  io)
-//      const news = io('wss://ws.jerryf.cn/scoket.io/?EIO=3&transport=websocket')
-//      news.on(`channel-remind:newMessage:${id}`, (data)=> {
-//        console.log('======news data: ', data)
-//      })
       let id = wepy.getStorageSync('user_info').id
       let socket = this.$parent.globalData.socket
       console.log(this.$parent.globalData.socket)
-      socket.on(`channel-remind:newMessage:${id}`, function (msg) {
-        wx.showTabBarRedDot({index: 1})
+      socket.on(`channel-remind:newMessage:${id}`, (msg) => {
+        wepy.showTabBarRedDot({index: 1})
         this.userLiveLogIid.push(msg.user_live_log_id)
-//        console.log(msg)
+        this.$apply()
       })
     }
 
     async onShow() {
+      console.log(this.userLiveLogIid.length)
       if (this.userLiveLogIid.length) {
-
+        wepy.startPullDownRefresh()
+        await this.onPullDownRefresh()
+        this.userLiveLogIid = []
+        wepy.hideTabBarRedDot({index: 1})
+        this.$apply()
       }
       setTimeout(() => {
         this.bottom = 0
