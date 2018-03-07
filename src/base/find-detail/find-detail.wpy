@@ -5,7 +5,7 @@
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header" @tap.stop="goMine({{find.user_id}})"
+            <image class="header" mode="aspectFill" @tap.stop="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
             <text class="nickname" @tap.stop="goMine({{find.user_id}})">
               {{find.user_data.name}}
@@ -55,7 +55,7 @@
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header" @tap.stop="goMine({{find.user_id}})"
+            <image class="header" mode="aspectFill" @tap.stop="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
             <text class="nickname" @tap.stop="goMine({{find.user_id}})">
               {{find.user_data.name}}
@@ -103,7 +103,7 @@
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header" @tap.stop="goMine({{find.user_id}})"
+            <image class="header" @tap.stop="goMine({{find.user_id}})" mode="aspectFill"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
             <text class="nickname" @tap.stop="goMine({{find.user_id}})">
               {{find.user_data.name}}
@@ -153,7 +153,7 @@
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header" @tap.stop="goMine({{find.user_id}})"
+            <image class="header" @tap.stop="goMine({{find.user_id}})" mode="aspectFill"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
             <text class="nickname" @tap.stop="goMine({{find.user_id}})">
               {{find.user_data.name}}
@@ -204,7 +204,7 @@
       <view class="find-box">
         <view class="cainter">
           <view class="user">
-            <image class="header" @tap.stop="goMine({{find.user_id}})"
+            <image class="header" @tap.stop="goMine({{find.user_id}})" mode="aspectFill"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
             <text class="nickname" @tap.stop="goMine({{find.user_id}})">
               {{find.user_data.name}}
