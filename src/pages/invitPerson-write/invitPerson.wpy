@@ -67,7 +67,7 @@
           </picker>
 
         </view>
-        <view wx:if="{{!submit}}"><text style="color: red;font-size: 14px">{{msg}}</text></view>
+        <view wx:if="{{!submit}}" class="form-msg"><text>{{msg}}</text></view>
         <view class="invit-form-v-submit">
           <button class="submit {{submit ? 'can-use' : 'disable'}}"
                   @tap="submitForm({{submitType}})">
@@ -325,5 +325,6 @@
 </script>
 <style lang="stylus">
   @import "../../common/stylus/invit"
-
+  page
+    overflow-y: auto
 </style>
