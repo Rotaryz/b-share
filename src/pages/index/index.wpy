@@ -95,7 +95,6 @@
         return
       }
       this.rankList = Json.data
-      console.log(this.rankList)
       this.$apply()
     }
 

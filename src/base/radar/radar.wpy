@@ -33,7 +33,6 @@
   import URIS from 'common/js/config'
 
   export default class Radar extends wepy.component {
-
     data = {
       imageUrl: URIS.image,
       chart: null,
@@ -99,7 +98,6 @@
             }
           }
         })
-        console.log(this)
         this.$apply()
       }
     }
