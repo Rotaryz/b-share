@@ -28,13 +28,11 @@ page
 .invit-bac-btn
   width: 100%
   height: 20%
- // margin-top: -2%
- // margin-bottom: -1%
 .invit-bac-btn.write
   height: 45%
 .invit-text-white
   position: absolute
-  top: 47.5%
+  top: 48%
   z-index: 1
   width: 93%
   height: 53%
@@ -206,14 +204,18 @@ page
       color: $color-text
       font-size: $font-size-medium-x
       font-family: $font-family-regular
-      &::-webkit-input-placeholder
-        color:$color-placeholder
+    .placeholder
+      color: $color-placeholder
+      font-family: $font-family-light
 
     .invit-form-v-picker
       width: 70%
       height: 30px
       line-height: 34px
       font-family: $font-family-regular
+      .text-default
+        color: $color-placeholder
+        font-family: $font-family-light
       .eye
         image
           transform:rotate(90deg);
@@ -246,7 +248,7 @@ page
 
   .invit-form-v-submit
     width: 90%
-    margin: -9px auto
+    margin: 0px auto
     .submit
       margin-top: 14px
       background: $color-theme
@@ -268,6 +270,7 @@ page
   font-size: $font-size-small
   color: red
   text-align: center
+  padding: 3px 0px
 
 .right-activity
   position: absolute
