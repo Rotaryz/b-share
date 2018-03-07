@@ -86,7 +86,7 @@
         if (this.noMore) {
           limit = 100
         } else {
-          limit = this.rankList.length
+          limit = Math.ceil(this.rankList.length % 10) * 10
         }
         Json = await Beauticians.getRanks(1, limit)
       }
