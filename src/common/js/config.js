@@ -56,6 +56,7 @@ class URIS {
     this.image = URLS.image
     this.login = URLS.login
     this.api = URLS.api
+    this.socket = URLS.socket
   }
 }
 

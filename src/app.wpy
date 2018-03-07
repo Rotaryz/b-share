@@ -7,6 +7,7 @@
   import 'wepy-async-function'
   import URIS from 'common/js/config'
   import io from './scoket/index'
+
   export default class extends wepy.app {
     constructor() {
       super()
@@ -15,19 +16,12 @@
     }
 
     onLaunch(options) {
-//      const socket = io('wss://ws.jerryf.cn')
-      const socket = io('wss://ws.jkweixin.net')
+      this._applySocket()
+    }
 
-      this.updateGlobalData('socket', socket)
-      // 校验SDK
-//      wxUtils.checkSDK()
-//      const storageDate = wepy.getStorageSync('collectDate')
-//      const date = new Date()
-//      const collectDate = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
-//      if (storageDate !== collectDate) {
-//        wepy.setStorageSync('collectDate', collectDate)
-//        wepy.setStorageSync('collectLength', 0)
-//      }
+    _applySocket() {
+      const socket = io(URIS.socket)
+      this.globalData.socket = socket
     }
 
     isObject(item) {
