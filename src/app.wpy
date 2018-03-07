@@ -15,7 +15,8 @@
     }
 
     onLaunch(options) {
-      const socket = io('wss://ws.jerryf.cn')
+//      const socket = io('wss://ws.jerryf.cn')
+      const socket = io('wss://ws.jkweixin.net')
 
       this.updateGlobalData('socket', socket)
       // 校验SDK
