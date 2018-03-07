@@ -139,10 +139,11 @@
         this.loaded()
         return
       }
-      console.log(Json)
       let res = Json.data
-      this.configArr.data = [res.zhuanye * 100, res.xiaoshou * 100, res.guanxi * 100, res.peixun * 100, res.cehua * 100]
+      let max = res.max_score
+      this.configArr.data = [res.zhuanye / max * 100, res.xiaoshou / max * 100, res.guanxi / max * 100, res.peixun / max * 100, res.cehua / max * 100]
       this.configArr.score = res.score
+      this.$invoke('Radar', 'init', this.configArr)
       this.$apply()
     }
 

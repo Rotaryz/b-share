@@ -25,7 +25,7 @@ const version = '/v1'
 // const URLS = {
 //   image: 'https://img.jerryf.cn',
 //   login: 'https://dev.share-jwt.jerryf.cn',
-//   api: 'https://dev.share-wap-api.jerryf.cn' + version，
+//   api: 'https://dev.share-wap-api.jerryf.cn' + version,
 //   socket: 'wss://ws.jerryf.cn'
 // }
 
