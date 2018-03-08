@@ -123,7 +123,6 @@
     }
 
     async onShow() {
-      console.log(this.userLiveLogIid.length)
       if (this.userLiveLogIid.length) {
         wepy.startPullDownRefresh()
         await this.onPullDownRefresh()

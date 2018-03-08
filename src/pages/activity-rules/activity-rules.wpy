@@ -126,7 +126,6 @@
           type: 'beautician'
         }
         let Json = await Beauticians.activityDetail(data)
-        console.log(Json)
         this.loaded()
         if (Json.error !== ERR_OK) {
           this.$invoke('Toast', 'show', Json.message)

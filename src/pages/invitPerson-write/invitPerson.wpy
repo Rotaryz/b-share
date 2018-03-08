@@ -288,7 +288,6 @@
             industry_id: this.industryId
           }
           let res = await Beauticians.invitRegister(formData)
-          console.log(res)
           this.loaded()
           if (res.error === ERR_OK) {
             wepy.setStorageSync('token', res.data.access_token)

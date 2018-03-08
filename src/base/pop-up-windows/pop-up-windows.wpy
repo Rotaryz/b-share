@@ -71,7 +71,6 @@
         this.$emit('sure')
       },
       show(content, pop, money) {
-        console.log(typeof money === 'object')
         typeof content === 'object' ? this.content = '' : this.content = content
         typeof pop === 'object' ? this.pop = true : this.pop = pop
         typeof money === 'object' ? this.money = 0 : this.money = money + ''

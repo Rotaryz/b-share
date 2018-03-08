@@ -114,7 +114,6 @@
         this.setRewardList()
         this.invitRegisterList()
         this.setWaitRewardList()
-        console.log(this.expertList)
       }
       async setInvitFun() {
         let Json = await Beauticians.invitDetail()
@@ -131,7 +130,6 @@
       // 获得的红包
       async setRewardList() {
         let Json = await Beauticians.invitRewardList() // page,limit
-        console.log(Json)
         this.loaded()
         if (Json.error !== ERR_OK) {
           this.$invoke('Toast', 'show', Json.message)
@@ -143,7 +141,6 @@
       // 成功邀请的记录
       async invitRegisterList() {
         let Json = await Beauticians.invitRegisterList() // page,limit
-        console.log(Json)
         this.loaded()
         if (Json.error !== ERR_OK) {
           this.$invoke('Toast', 'show', Json.message)
@@ -155,7 +152,6 @@
       // 红包在路上
       async setWaitRewardList() {
         let Json = await Beauticians.invitWaitRewardList() // page,limit
-        console.log(Json)
         this.loaded()
         if (Json.error !== ERR_OK) {
           this.$invoke('Toast', 'show', Json.message)
