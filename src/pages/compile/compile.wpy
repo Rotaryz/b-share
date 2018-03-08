@@ -46,13 +46,13 @@
       </view>
       <view class="com-tab-item" @tap="choiceImage">
         <image class="com-tab-icon" wx:if="{{imageUrl}}"
-               style="opacity: {{fileType === 2 ? 0.5:fileType === -1 ? 0.5 :1}}"
+               style="opacity: {{videoUrl === '' && imgUrl.length <= 9 ? 1 : 0.5}}"
                src="{{imageUrl + '/defaults/share/page/icon-pic@2x.png'}}"></image>
         <view class="com-tab-item-title">图片</view>
       </view>
       <view class="com-tab-item" @tap="choiceVideo">
         <image class="com-tab-icon" wx:if="{{imageUrl}}"
-               style="opacity: {{fileType === 1 ? 0.5:fileType === -1 ? 0.5 :1}}"
+               style="opacity: {{isPic ? 0.5 : 1}}"
                src="{{imageUrl + '/defaults/share/page/icon-video@2x.png'}}"></image>
         <view class="com-tab-item-title">视频</view>
       </view>
@@ -96,7 +96,8 @@
       address: '你在哪里',
       longitude: 0,
       latitude: 0,
-      focus: true
+      focus: true,
+      isPic: false
     }
 
     async onShow() {
@@ -128,7 +129,6 @@
 
     checkSend() {
       this.showSend = this.words !== '' || this.videoUrl !== '' || this.imgUrl.length !== 0
-      this.imgUrl.length === 9 ? this.fileType = -1 : this.fileType = this.fileType
       if (this.showSend) {
         this.$parent.updateGlobalData('status', 2)
       } else {
@@ -166,6 +166,7 @@
       async choiceImage() {
         if (this.fileType !== 2 && this.fileType !== -1 && this.imgUrl.length !== 9) {
           let res = await wepy.chooseImage()
+          this.isPic = true
           this._focus()
           if (!res) {
             return
@@ -183,6 +184,7 @@
             this.$apply()
           })
         }
+        console.log(this.fileType)
       },
       async choiceVideo() {
         if (this.fileType !== 1 && this.fileType !== -1) {
@@ -191,7 +193,7 @@
           if (!res) {
             return
           }
-          this.fileType = -1
+          this.fileType = 2
           let video = await Uploads.uploadVideo(res.tempFilePath)
           this.videoUrl = `${video.url}?second=1&width=94&height=94`
           this.fileId.push(video.id)
@@ -206,6 +208,8 @@
         this.imgUrl.splice(index, 1)
         this.fileId.splice(index, 1)
         this.imgUrl.length === 0 ? this.fileType = 0 : this.fileType = 1
+
+        this.imgUrl.length === 0 ? this.isPic = false : this.isPic = true
         this.checkSend()
       },
       delVideo() {
@@ -228,6 +232,7 @@
         this.$apply()
       },
       async submit() {
+        console.log(this.fileType)
         if (!this.showSend) {
           this.$invoke('Toast', 'show', '内容不能为空')
           return false
@@ -235,7 +240,7 @@
         let detail = []
         this.fileId.forEach((item, index) => {
           detail.push({
-            type: this.fileType === -1 ? 2 : this.fileType,
+            type: this.fileType,
             detail_id: item
           })
         })
