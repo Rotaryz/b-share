@@ -7,30 +7,6 @@
     </view>
     <view class="invit-text-white" style="height: 75%">
       <image wx:if="{{imageUrl}}"  class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg_white@2x_s.png'}}"></image>
-      <view class="invit-li-img" style="display: none">
-        <view class="li-img">
-          <image wx:if="{{imageUrl}}"   src="{{imageUrl + '/defaults/share/page/pic-invite_girl@2x.png'}}"></image>
-        </view>
-        <view class="li-img">
-          <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-invite_ questions@2x.png'}}"></image>
-        </view>
-        <view class="li-img">
-          <image wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_ money@2x.png'}}"></image>
-        </view>
-      </view>
-      <view class="invit-arrow" style="display: none">
-        <view class="view-1">
-          <image wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_ arrow@2x.png'}}"></image>
-        </view>
-        <view class="view-2">
-          <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-invite_ arrow@2x.png'}}"></image>
-        </view>
-      </view>
-      <view class="invit-li-text" style="display: none">
-        <text>邀请美导入驻</text>
-        <text>美导参与问答</text>
-        <text>通过后你获得红包</text>
-      </view>
       <view class="invit-form">
         <view class="invit-form-title">填写入驻信息</view>
         <view class="invit-form-v">
@@ -79,9 +55,9 @@
     <Toast></Toast>
   </view>
   <!-- 活动规则 -->
-  <view class="right-activity" @tap="promtClose">
-    活动规则
-  </view>
+  <!--<view class="right-activity" @tap="promtClose">-->
+    <!--活动规则-->
+  <!--</view>-->
   <!-- 活动规则 over -->
 </template>
 <script>
