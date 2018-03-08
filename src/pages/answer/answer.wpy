@@ -278,7 +278,7 @@
 
     methods = {
       async chioceAnswer(id) {
-        if (this.answerChecked) {
+        if (this.answerChecked || this.time <= 0) {
           return
         }
         this.answerChecked = id

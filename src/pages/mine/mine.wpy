@@ -118,7 +118,6 @@
 
     async load() {
       let Json = await Info.getUserInfo()
-      console.log(Json)
       this.loaded()
       if (Json.error !== ERR_OK) {
         return

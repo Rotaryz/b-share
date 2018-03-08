@@ -12,7 +12,7 @@
           <image class="item-li-left" src="{{item.image_url}}"></image>
           <view class="item-li-right">
             <view class="item-li-title">{{item.name}}</view>
-            <view class="item-li-btn {{item.already ? 'dis' : ''}}" @tap="doneAbility({{item.url}}, {{item.code}})">{{item.already ? '已完成' : item.code === 'invitationGuide' ? '去邀请' : '去完成'}}</view>
+            <view class="item-li-btn {{item.already ? 'dis' : ''}}" @tap="doneAbility({{item.url}}, {{item.code}}, {{item.already}})">{{item.already ? '已完成' : item.code === 'invitationGuide' ? '去邀请' : '去完成'}}</view>
           </view>
         </view>
       </view>
@@ -26,7 +26,7 @@
           <image class="item-li-left" src="{{item.image_url}}"></image>
           <view class="item-li-right">
             <view class="item-li-title">{{item.name}}</view>
-            <view class="item-li-btn {{item.already ? 'dis' : ''}}" @tap="doneAbility({{item.url}}, {{item.code}})">{{item.already ? '已完成' : item.code === 'invitationGuide' ? '去邀请' : '去完成'}}</view>
+            <view class="item-li-btn {{item.already ? 'dis' : ''}}" @tap="doneAbility({{item.url}}, {{item.code}}, {{item.already}})">{{item.already ? '已完成' : item.code === 'invitationGuide' ? '去邀请' : '去完成'}}</view>
           </view>
         </view>
       </view>
@@ -109,7 +109,10 @@
 //    }
 
     methods = {
-      doneAbility(url, code) {
+      doneAbility(url, code, already) {
+        if (already) {
+          return
+        }
         if (code === 'serviceLog') {
           this.$switch(url)
         } else {
