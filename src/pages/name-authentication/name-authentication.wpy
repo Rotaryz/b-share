@@ -14,9 +14,8 @@
       </view>
     </view>
     <view class="authentication-submit">
-      <button class="submit {{submit ? '' : 'disable'}}"
-              @tap="submitForm({{submitType}})">
-        提交审核
+      <button class="submit {{submit ? 'can-use' : 'disable'}}" @tap="submitForm">
+        {{submitText}}
       </button>
     </view>
     <Toast></Toast>
@@ -52,14 +51,17 @@
           {title: '前台照片'}],
         nothing: true,
         test: '',
-        submitType: 1,
-        submit: false
+        submit: false,
+        submitText: '提交审核'
       }
       async onLoad() {
         this.load()
       }
       methods = {
         async uploadImg(idx) {
+          if (!this.submit) {
+            return
+          }
           let res = await wepy.chooseImage()
           if (!res) {
             return
@@ -69,9 +71,13 @@
           this.images[idx].url = upRes.url
           this.images[idx].image_id = upRes.id
           this.images[idx].sort = idx
+          this._testEmperty()
           this.$apply()
         },
         async submitForm() {
+          if (!this.submit) {
+            return
+          }
           let res = this._testEmperty()
           if (!res) {
             this.$invoke('Toast', 'show', '图片未全部上传')
@@ -103,7 +109,6 @@
       }
       async load() {
         await this.getRealImage()
-        await this._testEmperty()
       }
       async getRealImage() {
         let res = await Info.realNameList()
@@ -111,9 +116,21 @@
         if (res.error !== ERR_OK) {
           return
         }
-        let images = res.data
+        if (res.data.check === 2) { // 用户审核的状态0未审核，1已审核，2审核中，3审核拒绝
+          this.submit = false // 不能修改
+          this.submitText = '审核中'
+        } else if (res.data.check === 0) {
+          this.submit = true
+          this.submitText = '未审核'
+        } else if (res.data.check === 1) {
+          this.submit = true
+          this.submitText = '已审核'
+        } else {
+          this.submit = true
+          this.submitText = '审核拒绝'
+        }
+        let images = res.data.image
         this.images = this._computedImg(this.images, images)
-        console.log(this.images)
         if (res.data && res.data.length > 0) {
           this.nothing = false
         }
@@ -138,9 +155,6 @@
           this.$apply()
         }
         return v
-      }
-      submitImageFun() { // 切换按键背景图
-        this.submit = true
       }
     }
 </script>

@@ -89,6 +89,7 @@
         myMoneys: 0
       },
       userId: '',
+      userName: '',
       prompt: false,
       fillout: true,
       submit: true,
@@ -130,19 +131,21 @@
       // 分享
       onShareAppMessage() {
         return {
-          title: '共享美导',
-          imageUrl: this.imageUrl + '/defaults/share/page/pic-invite_bg_shop@2x.png',
+          title: this.userName + '邀请你入驻共享美导第一平台',
+          imageUrl: this.imageUrl + '/defaults/share/page/pic-share_02@2x.png',
           path: '/pages/invitPerson-write/invitPerson?id=' + this.userId
         }
       }
     }
     async getUser() {
       let Json = await Info.getUserInfo()
+      console.log(Json)
       this.loaded()
       if (Json.error !== ERR_OK) {
         return
       }
       this.userId = Json.data.id
+      this.userName = Json.data.name || Json.data.random_id
       this.$apply()
     }
   }

@@ -7,30 +7,6 @@
     </view>
     <view class="invit-text-white" style="height: 75%">
       <image wx:if="{{imageUrl}}"  class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg_white@2x_s.png'}}"></image>
-      <view class="invit-li-img" style="display: none">
-        <view class="li-img">
-          <image wx:if="{{imageUrl}}"   src="{{imageUrl + '/defaults/share/page/pic-invite_girl@2x.png'}}"></image>
-        </view>
-        <view class="li-img">
-          <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-invite_ questions@2x.png'}}"></image>
-        </view>
-        <view class="li-img">
-          <image wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_ money@2x.png'}}"></image>
-        </view>
-      </view>
-      <view class="invit-arrow" style="display: none">
-        <view class="view-1">
-          <image wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_ arrow@2x.png'}}"></image>
-        </view>
-        <view class="view-2">
-          <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-invite_ arrow@2x.png'}}"></image>
-        </view>
-      </view>
-      <view class="invit-li-text" style="display: none">
-        <text>邀请美导入驻</text>
-        <text>美导参与问答</text>
-        <text>通过后你获得红包</text>
-      </view>
       <view class="invit-form">
         <view class="invit-form-title">填写入驻信息</view>
         <view class="invit-form-v">
@@ -44,7 +20,7 @@
           </view>
         </view>
         <view class="invit-form-v">
-          <input type="text" value="{{verificationCode}}" placeholder="验证码" maxlength="6" @input="putVerificationCode" />
+          <input type="text" placeholder-class="placeholder" value="{{verificationCode}}" placeholder="验证码" maxlength="6" @input="putVerificationCode" />
           <text class="invit-form-v-getcode codes {{isSet ? 'set-code' : ''}}" @tap="setCode">{{time}}</text>
         </view>
         <view class="invit-form-v">
@@ -60,14 +36,14 @@
         <view class="invit-form-v">
           <picker mode="selector" class="invit-form-v-picker"
                   range="{{industryArray}}" range-key="{{'name'}}" value="{{index}}" @change="bindPickerChange">
-            <text>{{industry}}</text>
+            <text class="{{industry ==='行业' ?'text-default':''}}">{{industry}}</text>
             <view class="eye">
               <image class="close" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/iocn-invite_enter@2x.png'}}"></image>
             </view>
           </picker>
 
         </view>
-        <view wx:if="{{!submit}}"><text style="color: red;font-size: 14px">{{msg}}</text></view>
+        <view wx:if="{{!submit}}" class="form-msg"><text>{{msg}}</text></view>
         <view class="invit-form-v-submit">
           <button class="submit {{submit ? 'can-use' : 'disable'}}"
                   @tap="submitForm({{submitType}})">
@@ -79,9 +55,9 @@
     <Toast></Toast>
   </view>
   <!-- 活动规则 -->
-  <view class="right-activity" @tap="promtClose">
-    活动规则
-  </view>
+  <!--<view class="right-activity" @tap="promtClose">-->
+    <!--活动规则-->
+  <!--</view>-->
   <!-- 活动规则 over -->
 </template>
 <script>
@@ -288,7 +264,6 @@
             industry_id: this.industryId
           }
           let res = await Beauticians.invitRegister(formData)
-          console.log(res)
           this.loaded()
           if (res.error === ERR_OK) {
             wepy.setStorageSync('token', res.data.access_token)
@@ -325,5 +300,6 @@
 </script>
 <style lang="stylus">
   @import "../../common/stylus/invit"
-
+  page
+    overflow-y: auto
 </style>

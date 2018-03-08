@@ -17,7 +17,7 @@
         <view class="xRank">
           <view class="xRank-head">人气榜</view>
           <view class="xRank-list">
-            <view class="xRank-item" wx:for="{{rankList}}" wx:key="{{item}}" @tap="showDetail({{item.user_id}})">
+            <view class="xRank-item" wx:for="{{rankList}}" wx:key="{{item}}" @tap="showDetail({{item.user_id}})" wx:if="{{index <= 100}}">
               <view class="xRank-item-left">
                 <view class="rankNum">
                   <image class="rankNum-img" wx:if="{{index <= 2 && imageUrl}}" src="{{imageUrl}}/defaults/share/page/{{index === 0 ? 'icon-index_no1@2x.png' : index === 1 ? 'icon-index_no2@2x.png' : 'icon-index_no3@2x.png'}}"></image>
@@ -41,6 +41,13 @@
               <view class="xRank-item-right">{{item.score}}</view>
             </view>
           </view>
+        </view>
+        <view class="underline-block" wx:if="{{(noMore && rankList.length < 100) || rankList.length < 10}}">
+          <view class="line"></view>
+          <view class="dot"></view>
+          <view class="content">一大波美导正在赶来</view>
+          <view class="dot"></view>
+          <view class="line"></view>
         </view>
       </scroll-view>
     </view>
@@ -79,7 +86,7 @@
         if (this.noMore) {
           limit = 100
         } else {
-          limit = this.rankList.length
+          limit = Math.ceil(this.rankList.length % 10) * 10
         }
         Json = await Beauticians.getRanks(1, limit)
       }
@@ -93,7 +100,7 @@
 
     methods = {
       async loadMore() {
-        if (this.noMore) {
+        if (this.noMore || this.rankList.length >= 100) {
           return
         }
         this.page ++
@@ -243,5 +250,29 @@
               font-family: PingFangSC-Medium
               font-size: $font-size-large
               color: $color-assist-pink
+
+      .underline-block
+        height: 33px
+        background: $color-background
+        display: flex
+        justify-content: center
+        align-items: center
+
+        .line
+         height: 1px
+         width: 34px
+         transform: scale(1, 0.5)
+         background: #ccc
+
+        .dot
+          width: 1px
+          height: 1px
+          border-radius: 50%
+          background: #ccc
+          margin: 0 5px
+
+        .content
+          font-size: $font-size-small
+          color: #c8c8c8
 
 </style>

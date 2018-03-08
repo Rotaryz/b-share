@@ -33,13 +33,6 @@
   import URIS from 'common/js/config'
 
   export default class Radar extends wepy.component {
-    props = {
-      configArr: {
-        type: Object,
-        default: {}
-      }
-    }
-
     data = {
       imageUrl: URIS.image,
       chart: null,
@@ -74,7 +67,8 @@
       ],
       checked: 0,
       eventIn: false,
-      score: 0
+      score: 0,
+      configArr: {}
     }
 
     methods = {
@@ -83,30 +77,33 @@
           this.checked = idx
           this.$apply()
         }
+      },
+      init(configArr) {
+        this.eventIn = configArr.eventIn
+        this.checked = configArr.checked
+        this.score = configArr.score
+        this.chart = new WxCharts({
+          canvasId: 'radarCanvas',
+          type: 'radar',
+          categories: ['', '', '', '', ''],
+          series: [{
+            data: configArr.data,
+            color: '#ff3388'
+          }],
+          width: 300,
+          height: 240,
+          extra: {
+            radar: {
+              max: 100
+            }
+          }
+        })
+        this.$apply()
       }
     }
 
     onLoad() {
-      this.eventIn = this.configArr.eventIn
-      this.checked = this.configArr.checked
-      this.score = this.configArr.score
-      this.chart = new WxCharts({
-        canvasId: 'radarCanvas',
-        type: 'radar',
-        categories: ['', '', '', '', ''],
-        series: [{
-          data: this.configArr.data,
-          color: '#ff3388'
-        }],
-        width: 300,
-        height: 240,
-        extra: {
-          radar: {
-            max: 100
-          }
-        }
-      })
-      this.$apply()
+
     }
   }
 </script>
