@@ -148,6 +148,7 @@
       this.userId = Json.data.id
       this.userName = Json.data.name || Json.data.random_id
       this.$apply()
+      console.log(this.userId)
     }
   }
 </script>
