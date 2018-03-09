@@ -1,12 +1,13 @@
 <template>
+  <!--<image class="invit-bac" style="height: 100%" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_women@2x_new.png'}}"></image>-->
   <view class="invit">
-    <image class="invit-bac" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_women@2x.png'}}"></image>
-    <image class="invit-bac-btn" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg@2x.png'}}"></image>
-    <view class="invit-text">
-      <image class="invit-text-img" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_word_women@2x.png'}}"></image>
-    </view>
-    <view class="invit-text-white">
-      <image wx:if="{{fillout && imageUrl}}" class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_white2@2x_s.png'}}"></image>
+    <image class="invit-bac" style="height: 100%" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_women@2x_new.png'}}"></image>
+    <!--<image class="invit-bac-btn" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg@2x.png'}}"></image>-->
+    <!--<view class="invit-text" >-->
+      <!--<image class="invit-text-img" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_word_women@2x.png'}}"></image>-->
+    <!--</view>-->
+    <view class="invit-text-white" >
+      <image wx:if="{{fillout && imageUrl}}" class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_white2@2x_new.png'}}"></image>
       <view class="invit-li-img" style="display: none">
         <view class="li-img">
           <image wx:if="{{imageUrl}}"   src="{{imageUrl + '/defaults/share/page/pic-invite_girl@2x.png'}}"></image>
@@ -38,20 +39,22 @@
         </button>
       </view>
       <view wx:if="{{fillout}}" class="invit-my">
-        <view>我的邀请</view>
-        <view><navigator url="{{lookInvit}}">查看邀请记录 ></navigator></view>
+        <view><text>我的邀请</text></view>
+        <view><navigator url="{{lookInvit}}">查看邀请记录</navigator></view>
       </view>
       <view wx:if="{{fillout}}" class="invit-my-li" >
         <view @tap="lookPack" data-current="0">
-          <text class="rmb-color"><text><text class="rmb-color-min">￥</text>{{myInvit.myMoney || '0.00'}}</text></text>
+          <text class="rmb-color"><text>
+            <text class="rmb-color-min">￥</text>{{myInvit.myMoney || '0.00'}}</text>
+          </text>
           <text class="number">获得的红包</text>
         </view>
         <view @tap="lookPack" data-current="1">
-          <text class="number"><text>{{myInvit.myPerson || 0}}</text>人</text>
+          <text class="number number-t"><text>{{myInvit.myPerson || 0}}</text>人</text>
           <text class="number">成功邀请</text>
         </view>
         <view @tap="lookPack" data-current="2">
-          <text class="number"><text>{{myInvit.myMoneys || 0}}</text>个</text>
+          <text class="number number-t"><text>{{myInvit.myMoneys || 0}}</text>个</text>
           <text class="number">红包在路上</text>
         </view>
       </view>
@@ -132,7 +135,7 @@
       onShareAppMessage() {
         return {
           title: this.userName + '邀请你入驻共享美导第一平台',
-          imageUrl: this.imageUrl + '/defaults/share/page/pic-share_02@2x.png',
+          imageUrl: this.imageUrl + '/defaults/share/page/pic-share_02@2x_new.png',
           path: '/pages/invitPerson-write/invitPerson?id=' + this.userId
         }
       }

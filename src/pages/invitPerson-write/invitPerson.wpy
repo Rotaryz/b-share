@@ -1,12 +1,12 @@
 <template>
   <view class="invit">
-    <image class="invit-bac" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_women@2x.png'}}"></image>
-    <image class="invit-bac-btn write" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg@2x.png'}}"></image>
-    <view class="invit-text">
-      <image class="invit-text-img" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_word@2x.png'}}"></image>
-    </view>
-    <view class="invit-text-white" style="height: 75%">
-      <image wx:if="{{imageUrl}}"  class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg_white@2x_s.png'}}"></image>
+    <image class="invit-bac-white" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg01@2x_new.png'}}"></image>
+    <!--<image class="invit-bac-btn write" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg@2x.png'}}"></image>-->
+    <!--<view class="invit-text">-->
+      <!--<image class="invit-text-img" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_word@2x.png'}}"></image>-->
+    <!--</view>-->
+    <view class="invit-text-white" style="height: 83%;top: 42%" >
+      <image wx:if="{{imageUrl}}"  class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg_white@2x_new.png'}}"></image>
       <view class="invit-form">
         <view class="invit-form-title">填写入驻信息</view>
         <view class="invit-form-v">
@@ -38,7 +38,7 @@
                   range="{{industryArray}}" range-key="{{'name'}}" value="{{index}}" @change="bindPickerChange">
             <text class="{{industry ==='行业' ?'text-default':''}}">{{industry}}</text>
             <view class="eye">
-              <image class="close" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/iocn-invite_enter@2x.png'}}"></image>
+              <image class="close" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-select@2x_new.png'}}"></image>
             </view>
           </picker>
 
@@ -54,11 +54,6 @@
     </view>
     <Toast></Toast>
   </view>
-  <!-- 活动规则 -->
-  <!--<view class="right-activity" @tap="promtClose">-->
-    <!--活动规则-->
-  <!--</view>-->
-  <!-- 活动规则 over -->
 </template>
 <script>
   import wepy from 'wepy'
@@ -76,7 +71,7 @@
   export default class invitPerson extends wepy.page {
     mixins = [base]
     config = {
-      navigationBarTitleText: '邀请美导赚钱'
+      navigationBarTitleText: '邀请美导'
     }
     components = {
       Toast: Toast
@@ -94,7 +89,6 @@
       industryArray: [],
       modalHidden: true,
       show: false,
-      modalInfo: '活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则....',
       phoneNum: '', // 手机号
       password: '', // 密码
       verificationCode: '', // 验证码
@@ -165,6 +159,7 @@
       },
       // 点击获取验证码
       async setCode() {
+        if (!this.isSet) return
         let regPhone = REGPHONE
         if (this.phoneNum === '') {
           this.$invoke('Toast', 'show', '请输入手机号码')
@@ -187,7 +182,7 @@
           if (codeData.error !== ERR_OK) {
             this.time = '获取验证码'
             this.$invoke('Toast', 'show', codeData.message)
-          // this.rightTip(codeData.message, false)
+            this.$apply()
           } else {
             this.isSet = false
             this.$invoke('Toast', 'show', codeData.message)
