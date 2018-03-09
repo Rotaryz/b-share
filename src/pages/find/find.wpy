@@ -1,6 +1,6 @@
 <template>
-  <view class="find">
-    <cover-view class="nav" style="bottom:{{bottom}}">
+  <view class="find" @touchmove="fixation">
+    <cover-view class="nav" style="top:{{bottom}}px">
       <cover-view wx:for="{{nav}}" wx:key="{{index}}"
                   class="item {{navIndex === index ? 'item-active' : ''}}"
                   @tap="checkNav({{index}})">
@@ -122,7 +122,11 @@
         this.$apply()
       })
     }
-
+    onPageScroll() {
+      this.bottom = 0
+      this.$apply()
+      console.log(this.bottom)
+    }
     async onShow() {
       if (this.userLiveLogIid.length) {
         wepy.startPullDownRefresh()
@@ -206,6 +210,9 @@
     }
 
     methods = {
+      fixation() {
+
+      },
       goAnswer() {
         if (wepy.getStorageSync('user_info').role) {
           this.$navigate('/pages/name-authentication/name-authentication')
@@ -357,7 +364,7 @@
     padding: 0 15px
     box-sizing: border-box
     position: fixed
-    top: 0px
+    top: 0
     left: 0
     width: 100%
     z-index: 1000
@@ -378,7 +385,7 @@
         width: 24px
         row-center()
         bottom: -1px
-        z-index: 500
+        z-index: 1500
         background: transparent
     .item-active
       color: $color-text
