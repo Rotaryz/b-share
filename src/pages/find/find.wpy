@@ -20,11 +20,11 @@
         <view class="find-box">
           <view class="cainter">
             <view class="user">
-              <image class="header" wx:if="{{imageUrl}}" src="{{guidanceBanner}}"></image>
+              <image class="header" mode="aspectFill" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-m@2x.png'}}"></image>
               <text class="nickname">共享美导</text>
             </view>
             <view class="words">完成实名认证后，领取更多现金红包！</view>
-            <image src="" class="img-one-item"></image>
+            <image wx:if="{{imageUrl}}" src="{{guidanceBanner}}" class="img-one-item" ></image>
           </view>
           <view class="information" @tap.stop="delStick">
             删除
@@ -337,8 +337,6 @@
       background: $color-background
     .words
       white-space: nowrap
-    .header
-      background: $color-split-line
     .information
       display: block
       padding-left: 0px
