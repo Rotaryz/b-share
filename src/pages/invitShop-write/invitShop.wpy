@@ -43,7 +43,7 @@
           </picker>
 
         </view>
-        <view class="form-msg" wx:if="{{!submit}}"><text>{{msg}}</text></view>
+        <view class="form-msg"><text>{{msg}}</text></view>
         <view class="invit-form-v-submit">
           <button class="submit {{submit ? 'can-use' : 'disable'}}"
                   @tap="submitForm({{submitType}})">
