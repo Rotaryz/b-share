@@ -11,9 +11,11 @@ page
   font-size: 0px // 处理图片间隙
 
 .invit-bac
-  height: 83%
+  height: 100%
   width: 100%
-
+.invit-bac-white
+  height: 131%
+  width: 100%
 .invit-text
   position: absolute
   top: 2%
@@ -32,7 +34,7 @@ page
   height: 45%
 .invit-text-white
   position: absolute
-  top: 48%
+  top: 45%
   z-index: 1
   width: 93%
   height: 53%
@@ -102,7 +104,7 @@ page
     font-size: $font-size-medium-x
     height: 45px
     line-height: 45px
-    width: 90.667%
+    width: 93.667%
     border-radius: 50px
     &::after
       border: 1px solid rgba(0, 0, 0, 0)
@@ -115,35 +117,63 @@ page
 
 .invit-my
   position: absolute
+  line-height:40px
   top: 64%
   display: flex
-  width: 80%
-  left: 10%
+  width: 82%
+  left: 9%
   padding: 8px 0px
   font-family: $font-family-regular;
   view:nth-child(1)
     font-size: $font-size-medium-x
-    border-left: 4px solid $color-assist-bule
-    padding-left: 3px
+    //height: 50px
+    //line-height: 40px
+    font-family: $font-family-regular
+    color: $color-text
+    //padding: 10px 10px 0px 10px
+    text
+      padding-left: 15px
+      color: $color-text
+      position: relative
+    text:before
+      content: ""
+      height: 14px
+      width: 4px
+      background: $color-assist-bule
+      position: absolute
+      top:0px
+      left: 4px
+      bottom: 0px
+      margin: auto
 
     color: $color-text
   view:nth-child(2)
     font-size: $font-size-small-s
-    right: 0px
+    right: 15px
     top: 12px
     position: absolute
     color: $color-text-tr
+    &:after
+      content: ""
+      width: 7px
+      height: 7px
+      border-top: 1px solid #ccc
+      border-right: 1px solid #ccc
+      transform:rotate(45deg);
+      position: absolute
+      top: 0px
+      right: -10px
 
 .invit-my-li
   position: absolute
   top: 74%
   display: flex
-  width: 80%
-  left: 10%
+  width: 88%
+  left: 7%
   font-size: $font-size-medium
   font-family: $font-family-regular
   view
-    width: 33%
+    width: 35%
   view:nth-child(2):before
     content: ""
     display: block
@@ -179,7 +209,8 @@ page
   text
     font-size: $font-size-large-m
     color: $color-text
-
+.number.number-t
+  color: $color-text-tr
 .invit-form
   position:absolute
   top:30%
@@ -194,7 +225,7 @@ page
     font-size: $font-size-medium
     border-bottom: 1px solid $color-row-line
     display: flex
-    height: 7.5vh
+    height: 9vh
     position: relative
     align-items: center
     input
@@ -212,19 +243,23 @@ page
       height: 30px
       line-height: 34px
       font-family: $font-family-regular
+      font-size: 16px
       .text-default
         color: $color-placeholder
         font-family: $font-family-light
       .eye
         image
-          transform:rotate(90deg);
-          top:40%
+          //transform:rotate(90deg);
+          top:50%
+
     .invit-form-v-getcode
       border-left: 1px solid #ccc
       padding-left: 10px
       height: 16px
       font-size: $font-size-medium
       color: $color-placeholder
+    .invit-form-v-getcode.set-code
+      color: $color-text
     .eye
       position:absolute
       height:100%
@@ -246,16 +281,15 @@ page
       color: #CCCCCC
 
   .invit-form-v-submit
-    width: 90%
+    width: 100%
     margin: 0px auto
     .submit
-      margin-top: 14px
       background: $color-theme
       color: $color-white
       font-size: $font-size-medium-x
       height: 45px
       line-height: 45px
-      width: 90.667%
+      width: 95.667%
       border-radius: 50px
       &::after
         border: 1px solid rgba(0, 0, 0, 0)
@@ -266,14 +300,15 @@ page
     .disable
       disable-icon()
 .form-msg
-  font-size: $font-size-small
+  font-size: $font-size-small-s
   color: red
   text-align: center
-  padding: 3px 0px
+  height: 16px
+  line-height: 16px
 
 .right-activity
   position: absolute
-  top: 18%
+  top: 14%
   right: 0px
   z-index: 5
   width: 60px
@@ -284,5 +319,6 @@ page
   text-align: center
   font-size: 10px
   color: $color-assist-pink
+  text-indent:6px;
 
 

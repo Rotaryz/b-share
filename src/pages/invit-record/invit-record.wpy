@@ -19,43 +19,284 @@
         </view>
       </scroll-view>
       <swiper class="tab-content" current="{{currentTab}}" duration="300" bindchange="switchTab" style="height:{{winHeight}}rpx " >
+
         <swiper-item wx:for="{{expertList}}" wx:key="unique">
-          <scroll-view scroll-y="true" class="scoll-h"  wx:if="{{expertList[index].data.length>0}}">
-            <block wx:for="{{expertList[index].data}}" wx:key="*this">
-              <view class="item-ans">
-                <view class="avatar" wx:if="{{currentTab==1}}">
-                  <image class="img" src="{{item.data.image_url}}"></image>
-                </view>
-                <view class="expertInfo">
-                  <view class="name">{{item.data.name}}</view>
-                  <view class="tag">{{item.data.created_at}}</view>
-                </view>
-                <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>{{item.data.reward}}</view>
-                <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
-                <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
-                <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
-              </view>
-            </block>
-          </scroll-view>
+          <!--<scroll-view scroll-y="true" class="scoll-h"  wx:if="{{expertList[index].data.length>0}}">-->
+            <!--<block wx:for="{{expertList[index].data}}" wx:key="*this">-->
+              <!--<view class="item-ans">-->
+                <!--<view class="avatar" wx:if="{{currentTab==1}}">-->
+                  <!--<image class="img" src="{{item.data.image_url}}"></image>-->
+                <!--</view>-->
+                <!--<view class="expertInfo">-->
+                  <!--<view class="name">{{item.data.name}}</view>-->
+                  <!--<view class="tag">{{item.data.created_at}}</view>-->
+                <!--</view>-->
+                <!--<view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>{{item.data.reward}}</view>-->
+                <!--<view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>-->
+                <!--<view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>-->
+                <!--&lt;!&ndash;<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>&ndash;&gt;-->
+              <!--</view>-->
+            <!--</block>-->
+          <!--</scroll-view>-->
           <!-- 样板 -->
 
-            <!--<scroll-view scroll-y="true" class="scoll-h"  wx:if="{{true}}">-->
-            <!--<block>-->
-                <!--<view class="item-ans">-->
-                  <!--<view class="avatar" wx:if="{{currentTab!=0}}">-->
-                    <!--<image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>-->
-                  <!--</view>-->
-                  <!--<view class="expertInfo">-->
-                    <!--<view class="name">张三</view>-->
-                    <!--<view class="tag">12-01 12:00 </view>-->
-                  <!--</view>-->
-                  <!--<view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>-->
-                  <!--<view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>-->
-                  <!--<view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>-->
-                  <!--&lt;!&ndash;<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>&ndash;&gt;-->
-                <!--</view>-->
-              <!--</block>-->
-            <!--</scroll-view>-->
+            <scroll-view scroll-y="true" class="scoll-h"  wx:if="{{true}}">
+              <block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block>
+              <block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block><block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block><block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block><block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block><block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block><block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block><block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block>
+              <block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block><block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block><block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block><block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block><block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block><block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block><block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block><block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block><block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block><block>
+                <view class="item-ans">
+                  <view class="avatar" wx:if="{{currentTab!=0}}">
+                    <image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>
+                  </view>
+                  <view class="expertInfo">
+                    <view class="name">张三</view>
+                    <view class="tag">12-01 12:00 </view>
+                  </view>
+                  <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
+                  <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                  <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                </view>
+              </block>
+            </scroll-view>
 
           <!-- 样板 over -->
           <scroll-view  wx:else style="text-align: center">
@@ -85,7 +326,7 @@
       config = {
         navigationBarTitleText: '邀请记录',
         navigationBarBackgroundColor: '#fff',
-        backgroundColor: '#ccc'
+        backgroundColor: '#F9F9F9'
       }
       mixins = [base]
       components = {
@@ -199,17 +440,29 @@
   @import "../../common/stylus/variable"
   page
     overflow: hidden
+    background-color:#F9F9F9
+
   .invit-my
     font-size: $font-size-medium-x
-    height: 32px
-    line-height: 32px
+    height: 50px
+    line-height: 40px
     font-family: $font-family-regular
     color: $color-text
     padding: 10px 10px 0px 10px
     text
-      border-left: 5px solid $color-assist-bule
-      padding-left: 8px
+      padding-left: 15px
       color: $color-text
+      position: relative
+    text:before
+      content: ""
+      height: 14px
+      width: 4px
+      background: $color-assist-bule
+      position: absolute
+      top:0px
+      left: 4px
+      bottom: 0px
+      margin: auto
 
   .number
     display: block
@@ -231,8 +484,7 @@
     content: ""
     display: block
     height: 30%
-    width: 1px
-    background: $color-row-line
+    border-left: .8px solid $color-row-line
     position: absolute
     top: 20%
 
@@ -240,8 +492,7 @@
     content: ""
     display: block
     height: 30%
-    width: 1px
-    background: $color-row-line
+    border-left:.8px solid $color-row-line
     position: absolute
     top: 20%
 
@@ -269,39 +520,46 @@
     width:33%
     text-align: center
     height: 90%
-    border-bottom: 1px solid $color-row-line
+    border-bottom: 0.5px solid $color-row-line
+    position: relative
 
   .tab-item.active:after
     content: ""
     display: block
-    height: 4px
-    width: 35%
+    position: absolute
+    height: 2px
+    width: 28px
     background:$color-assist-pink
-    margin: 13px auto
-    border-radius: 10px
+    bottom: -1px
+    left: 0px
+    right: 0px
+    margin: auto
 
   .item-ans
-    width: 100%
+    width: 96%
     display: flex
     flex-grow: row no-wrap
     justify-content: space-between
-    padding: 0 20px
+    padding: 0 20px 0 0
     box-sizing: border-box
     height: 55px
     align-items: center
-    border-bottom: 1px solid $color-row-line
+    border-bottom: 0.5px solid $color-row-line
+    margin-left: 4%
 
   .avatar
-    width: 34px
-    height: 34px
+    width: 36px
+    height: 36px
     position: relative
-    padding-right: 30px
+    padding-right: 12px
 
   .avatar
     .img
       width: 100%
       height: 100%
       border-radius:50%
+      border: 1px solid $color-background
+      margin-top: -2px
 
   .avatar .doyen
     width: 40rpx
@@ -316,9 +574,9 @@
     .name
       font-size: $font-size-medium
       color:$color-text
-      line-height: 28px
+      line-height: 22px
     .tag
-      line-height: 24px
+      line-height: 20px
       font-size: $font-size-small
       color: $color-text-tr
 

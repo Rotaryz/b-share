@@ -9,9 +9,9 @@
       <view class="activity-rules">
         <view class="activity-title"><text>活动规则</text></view>
         <view class="activity-rules-title">
-          <text>● 只有完成问答或实名认证的用户，才有资格邀请好友。</text>
-          <text>● 好友只有通过 “邀请”页面注册成功，才获得注册奖励。</text>
-          <text>● 每个账号（手机号，微信号）{{activityData.join_times == -1?'不限': '最多只有' +(activityData.join_times || 0) +'个'}}邀请资格</text>
+          <text> 只有完成问答或实名认证的用户，才有资格邀请好友。</text>
+          <text> 好友只有通过“邀请”页面注册成功，才获得注册奖励。</text>
+          <text> 每个账号(手机号，微信号){{activityData.join_times == -1?'不限': '最多只有' +(activityData.join_times || 0) +'个'}}邀请资格</text>
         </view>
         <view>
           <view class="table-1">
@@ -33,10 +33,9 @@
             </view>
           </view>
         </view>
-        <view class="activity-rules-withdraw">
-          <text>
-            提现：满50元红包可提现，每天限提现1次。如有作弊，邀请资格取消，自动断开邀请关系，冻结账户，永不恢复。
-          </text>
+        <view class="activity-rules-title">
+          <text> 提现：满50元红包可提现，每天限提现1次。</text>
+          <text> 如有作弊，邀请资格取消，自动断开邀请关系，冻结账户，永不恢复。</text>
         </view>
       </view>
 
@@ -148,13 +147,26 @@
     padding: 10px
 
   .activity-title
+    font-size: $font-size-medium-x
     height: 32px
     line-height: 32px
-    font-size: $font-size-medium-x
+    font-family: $font-family-regular
     color: $color-text
+    padding: 10px 10px 0px 0px
     text
-      border-left: 4px solid #707FFF
-      padding-left: 5px
+      padding-left: 15px
+      color: $color-text
+      position: relative
+    text:before
+      content: ""
+      height: 14px
+      width: 4px
+      background: $color-assist-bule
+      position: absolute
+      top:0px
+      left: 4px
+      bottom: 0px
+      margin: auto
 
   .activity-time-title
     font-family:$font-family-light
@@ -175,6 +187,15 @@
       display inline-block
       line-height 28px
       height: 28px
+    text:before
+      content: ""
+      display: inline-block
+      height: 5px
+      width: 5px
+      background: #EFEEEE
+      border-radius: 50%
+      vertical-align: middle
+
 
   .activity-rules-withdraw
     font-family:$font-family-light
@@ -188,6 +209,7 @@
 
   .table-1
     border: 1px solid $color-row-line
+    font-size: $font-size-medium
     .tr
       display: flex
       width: 100%
@@ -224,6 +246,7 @@
 
   .table-2
     border: 1px solid $color-row-line
+    font-size: $font-size-medium
     .tr
       display: flex
       width: 100%
@@ -240,7 +263,7 @@
         color: $color-text-d
         border-top: .5px solid $color-row-line
         text
-          font-size: $font-size-small
+          font-size: $font-size-small-s
       .td.td-2
         border-left: .5px solid $color-row-line
         border-right: .5px solid $color-row-line

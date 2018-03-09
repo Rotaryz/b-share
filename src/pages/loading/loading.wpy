@@ -4,16 +4,67 @@
     <button open-type="share" style="font-size: 16px" class="submit {{submit ? '' : 'disable'}}">
       邀请我的美导好友
     </button>
-    <view class="side">vw</view>
-    <view class="side1">rpx</view>
-    <view class="side2">px</view>
-    <view class="side3">rem</view>
+    <!--<view class="side">vw</view>-->
+    <!--<view class="side1">rpx</view>-->
+    <!--<view class="side2">px</view>-->
+    <!--<view class="side3">rem</view>-->
+
+  <block wx:for="{{[1, 2, 3]}}">
+    <view> {{index}}:{{item}}  </view>
+  </block>
+
+  <switch wx:for="{{objectArray}}" wx:key="unique" style="display: block;"> {{item.id}} </switch>
+  <button bindtap="switch"> Switch </button>
+  <button bindtap="addToFront"> Add to the front </button>
+  <switch wx:for="{{numberArray}}" wx:key="*this" style="display: block;"> {{item}} </switch>
+  <button bindtap="addNumberToFront"> Add to the front </button>
+
+  <view wx:for="{{[1,2,3]}}">
+    {{item}}
+  </view>
 </template>
 <script>
     import wepy from 'wepy'
     export default class MyPage extends wepy.page {
       data = {
-        submit: false
+        submit: false,
+        objectArray: [
+          {id: 5, unique: 'unique_5'},
+          {id: 4, unique: 'unique_4'},
+          {id: 3, unique: 'unique_3'},
+          {id: 2, unique: 'unique_2'},
+          {id: 1, unique: 'unique_1'},
+          {id: 0, unique: 'unique_0'}
+        ],
+        numberArray: [1, 2, 3, 4]
+      }
+      methods = {
+        switch (e) {
+          const length = this.data.objectArray.length
+          for (let i = 0; i < length; ++i) {
+            const x = Math.floor(Math.random() * length)
+            const y = Math.floor(Math.random() * length)
+            const temp = this.data.objectArray[x]
+            this.data.objectArray[x] = this.data.objectArray[y]
+            this.data.objectArray[y] = temp
+          }
+          this.setData({
+            objectArray: this.data.objectArray
+          })
+        },
+        addToFront (e) {
+          const length = this.data.objectArray.length
+          this.data.objectArray = [{id: length, unique: 'unique_' + length}].concat(this.data.objectArray)
+          this.setData({
+            objectArray: this.data.objectArray
+          })
+        },
+        addNumberToFront (e) {
+          this.data.numberArray = [ this.data.numberArray.length + 1 ].concat(this.data.numberArray)
+          this.setData({
+            numberArray: this.data.numberArray
+          })
+        }
       }
       onLoad () {
         console.log('load...')

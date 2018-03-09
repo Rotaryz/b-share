@@ -191,7 +191,7 @@
         width: 44.8vw
         height: 28vw
         position: relative
-        margin-right: 15px
+        margin-right: 12px
         margin-bottom: 15px
         border: 1px dashed $color-row-line
 
