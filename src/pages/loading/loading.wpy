@@ -15,6 +15,21 @@
       data = {
         submit: false
       }
+      onLoad () {
+        console.log('load...')
+        this.fun().then((d) => {
+          console.log('>>' + d)
+        })
+      }
+      fun (x = 1, y = 2) {
+        let p = new Promise((resolve, reject) => {
+          setTimeout(function () {
+            console.log('烧水完毕！')
+            resolve('烧好的水')
+          }, 1000)
+        })
+        return p
+      }
     }
 </script>
 <style type="stylus">
