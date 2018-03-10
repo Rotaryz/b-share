@@ -111,7 +111,7 @@
     }
     async onLoad(options) {
       console.log(options)
-      this.invited_by = options.id || 0
+      this.invited_by = options.id || 10
       await this.load()
       this.$apply()
     }
@@ -261,6 +261,7 @@
             role: 1,
             industry_id: this.industryId
           }
+          console.log(formData)
           let res = await Beauticians.invitRegister(formData)
           console.log(res)
           this.loaded()

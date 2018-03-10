@@ -113,14 +113,15 @@
       this.$apply()
     }
     async setInvitFun(Json) {
-      this.myInvit.myMoney = Json.data.registerRewards
-      this.myInvit.myPerson = Json.data.invitedCount
-      this.myInvit.myMoneys = Json.data.waitCheckeCount
+      this.myInvit.myMoney = Json.data.register_rewards
+      this.myInvit.myPerson = Json.data.invited_count
+      this.myInvit.myMoneys = Json.data.wait_checke_count
       this.$apply()
     }
     methods = {
       lookPack(e) {
         var key = e.currentTarget.dataset.current
+        console.log(key)
         var that = this
         wepy.navigateTo({
           url: that.lookInvit + '?id=' + key
@@ -141,14 +142,14 @@
       }
     }
     async getUser() {
-      let Json = await Info.getUserInfo()
-      console.log(Json)
-      this.loaded()
-      if (Json.error !== ERR_OK) {
-        return
-      }
-      this.userId = Json.data.id
-      this.userName = Json.data.name || Json.data.random_id
+      let Json = wepy.getStorageSync('user_info')
+//      let Json = await Info.getUserInfo()
+//      this.loaded()
+//      if (Json.error !== ERR_OK) {
+//        return
+//      }
+      this.userId = Json.user_data.user_id
+      this.userName = Json.user_data.name || Json.user_data.random_id
       this.$apply()
     }
   }

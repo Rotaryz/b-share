@@ -109,8 +109,7 @@
       submit: false
     }
     async onLoad(options) {
-      console.log(options)
-      this.invited_by = options.id || 0
+      this.invited_by = options.id || 10
       await this.load()
       this.$apply()
     }
@@ -249,6 +248,7 @@
       async submitForm () {
         if (this.submit) {
           let data = await wepy.login()
+          console.log(data)
           let formData = {
             mobile: this.phoneNum,
             code: this.verificationCode,
