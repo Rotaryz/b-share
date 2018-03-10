@@ -1,6 +1,8 @@
 <template>
   <view class="logn">
-    <image class="login-img"></image>
+    <view class="login-img">
+      <image class="login-foget-logo" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/b-image/page/pic-login_logo@2x.png'}}"></image>
+    </view>
     <view class="lg-from">
       <view class="mistake {{showLogo ? 'right-tip':''}}"
             wx:if="{{showMistake}}">
@@ -353,7 +355,11 @@
     .login-img
       height: 42.667vw
       width: 100vw
-      background: #ccc
+      position: relative
+      .login-foget-logo
+        width : 21.734vw
+        height :13.867vw
+        all-center()
 
   .login-nav-text-active
     &::before
@@ -390,7 +396,7 @@
       position: relative
       border-bottom: 0.5px solid $color-split-line
       width: 85.333%
-      margin: 0 auto
+      margin: 12px auto 0
       .icon, .close
         position: absolute
         col-center()
@@ -409,11 +415,11 @@
           right: 10px
       .inputs
         text-align: left
-        height: 54px
-        line-height: 54px
+        height: 42px
+        line-height: 42px
         font-size: $font-size-medium-x
         color: #363547
-        width: 83.5%
+        width: 80%
         font-family: $font-family-light
       .picker
         width: 100%
@@ -424,6 +430,8 @@
       .placeholder
         color: $color-placeholder
         font-family: $font-family-light
+      .picker-active
+        color: $color-text
     .error-fa
       border-bottom: 0.5px solid $color-assist-f
     .code-box
@@ -445,7 +453,7 @@
       .set-code
         color: $color-text
     .submit
-      margin-top: 14px
+      margin-top: 20px
       background: $color-theme
       color: $color-white
       font-size: $font-size-medium-x
