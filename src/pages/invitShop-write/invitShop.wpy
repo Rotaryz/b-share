@@ -110,14 +110,12 @@
       submit: false
     }
     async onLoad(options) {
-      console.log(options)
       this.invited_by = options.id || 10
       await this.load()
       this.$apply()
     }
     async load() {
       let res = this.infoRes(await industries.industries())
-//      console.log(res)
       this.loaded()
       this.industryArray = res
       this.$apply()
@@ -263,7 +261,6 @@
           }
           console.log(formData)
           let res = await Beauticians.invitRegister(formData)
-          console.log(res)
           this.loaded()
           if (res.error === ERR_OK) {
             wepy.setStorageSync('token', res.data.access_token)

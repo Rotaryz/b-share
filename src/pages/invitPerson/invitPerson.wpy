@@ -121,7 +121,6 @@
     methods = {
       lookPack(e) {
         var key = e.currentTarget.dataset.current
-        console.log(key)
         var that = this
         wepy.navigateTo({
           url: that.lookInvit + '?id=' + key

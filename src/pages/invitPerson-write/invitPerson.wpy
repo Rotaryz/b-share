@@ -248,7 +248,6 @@
       async submitForm () {
         if (this.submit) {
           let data = await wepy.login()
-          console.log(data)
           let formData = {
             mobile: this.phoneNum,
             code: this.verificationCode,
@@ -260,7 +259,6 @@
           }
           console.log(formData)
           let res = await Beauticians.invitRegister(formData)
-          console.log(res)
           this.loaded()
           if (res.error === ERR_OK) {
             wepy.setStorageSync('token', res.data.access_token)
