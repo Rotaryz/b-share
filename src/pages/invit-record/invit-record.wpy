@@ -150,7 +150,6 @@
       }
       // 获得的红包
       async setRewardList(limit = 10) {
-        console.log('111')
         let data = { page: this.page[this.currentTab], limit: limit }
         let Json = await Beauticians.invitRewardList(data) // page,limit
         this.loaded()
@@ -181,7 +180,6 @@
           return
         }
         this.expertList[1] = Json.data
-        console.log(this.expertList)
         this.$apply()
       }
       // 红包在路上
@@ -211,7 +209,6 @@
         // 滚动切换标签样式
         switchTab (e) {
           this.currentTab = e.detail.current
-          this.checkCor()
         },
         // 点击标题切换当前页时改变样式
         swichNav (e) {
@@ -232,13 +229,6 @@
         let calc = clientHeight - 150
         this.winHeight = calc
         this.$apply()
-      }
-      checkCor() {
-        if (this.currentTab > 4) {
-          this.scrollLeft = 300
-        } else {
-          this.scrollLeft = 0
-        }
       }
     }
 </script>

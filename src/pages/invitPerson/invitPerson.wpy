@@ -128,7 +128,7 @@
       },
       promtClose(e) {
         wepy.navigateTo({
-          url: '/pages/activity-rules/activity-rules'
+          url: '/pages/activity-rules/activity-rules?type=beautician'
         })
       },
       // 分享

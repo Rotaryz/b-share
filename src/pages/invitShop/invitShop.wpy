@@ -114,11 +114,6 @@
       this.myInvit.myMoney = Json.data.register_rewards
       this.myInvit.myPerson = Json.data.invited_count
       this.myInvit.myMoneys = Json.data.wait_checke_count
-
-//      this.myInvit.myMoney = Json.data.registerRewards
-//      this.myInvit.myPerson = Json.data.invitedCount
-//      this.myInvit.myMoneys = Json.data.waitCheckeCount
-//      this.$apply()
     }
     methods = {
       lookPack(e) {
@@ -130,7 +125,7 @@
       },
       promtClose(e) {
         wepy.navigateTo({
-          url: '/pages/activity-rules/activity-rules'
+          url: '/pages/activity-rules/activity-rules?type=shop'
         })
       },
       // 分享
