@@ -115,14 +115,12 @@
     async onLoad(option) {
       await this.load(option)
     }
-
 //    onHide() {
 //      this._clearAll()
 //      this.rightTranslate = 0
 //      this.leftTranslate = 0
 //      this.$apply()
 //    }
-//
     onUnload() {
       this._clearAll()
     }

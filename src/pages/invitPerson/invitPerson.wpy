@@ -74,7 +74,7 @@
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
   import Beauticians from 'api/beauticians'
-  import Info from 'api/info'
+//  import Info from 'api/info'
 
   export default class invit extends wepy.page {
     mixins = [base]
@@ -120,8 +120,8 @@
     }
     methods = {
       lookPack(e) {
-        var key = e.currentTarget.dataset.current
-        var that = this
+        let key = e.currentTarget.dataset.current
+        let that = this
         wepy.navigateTo({
           url: that.lookInvit + '?id=' + key
         })

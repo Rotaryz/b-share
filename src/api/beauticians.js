@@ -132,10 +132,6 @@ export default class beauticians extends base {
    * @returns {Promise.<*>}
    */
   static async invitRewardList(data) {
-    let data = {
-      page,
-      limit
-    }
     const url = `${this.baseUrl}/api/beauticians/invite/reward-list`
     return await this.get(url, data)
   }
@@ -145,10 +141,6 @@ export default class beauticians extends base {
    * @returns {Promise.<*>}
    */
   static async invitRegisterList(data) {
-    let data = {
-      page,
-      limit
-    }
     const url = `${this.baseUrl}/api/beauticians/invite/invited-register-list`
     return await this.get(url, data)
   }
