@@ -43,7 +43,7 @@
           </picker>
 
         </view>
-        <view wx:if="{{!submit}}" class="form-msg"><text>{{msg}}</text></view>
+        <view class="form-msg"><text>{{msg}}</text></view>
         <view class="invit-form-v-submit">
           <button class="submit {{submit ? 'can-use' : 'disable'}}"
                   @tap="submitForm({{submitType}})">
@@ -109,8 +109,7 @@
       submit: false
     }
     async onLoad(options) {
-      console.log(options)
-      this.invited_by = options.id || 0
+      this.invited_by = options.id || 10
       await this.load()
       this.$apply()
     }

@@ -77,8 +77,8 @@
       config = {
         navigationBarTitleText: '活动规则'
       }
-      onLoad() {
-        this.getActivityDetail()
+      onLoad(option) {
+        this.getActivityDetail(option)
       }
       data = {
         activityData: {
@@ -120,9 +120,9 @@
 
       }
 
-      async getActivityDetail() {
+      async getActivityDetail(option) {
         let data = {
-          type: 'beautician'
+          type: option.type || 'beautician' // beautician：美导活动 shop:邀请门店 question:问答活动
         }
         let Json = await Beauticians.activityDetail(data)
         this.loaded()

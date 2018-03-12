@@ -72,7 +72,7 @@
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
   import Beauticians from 'api/beauticians'
-  import Info from 'api/info'
+//  import Info from 'api/info'
 
   export default class invit extends wepy.page {
     mixins = [base]
@@ -111,22 +111,21 @@
       this.$apply()
     }
     async setInvitFun(Json) {
-      this.myInvit.myMoney = Json.data.registerRewards
-      this.myInvit.myPerson = Json.data.invitedCount
-      this.myInvit.myMoneys = Json.data.waitCheckeCount
-      this.$apply()
+      this.myInvit.myMoney = Json.data.register_rewards
+      this.myInvit.myPerson = Json.data.invited_count
+      this.myInvit.myMoneys = Json.data.wait_checke_count
     }
     methods = {
       lookPack(e) {
-        var key = e.currentTarget.dataset.current
-        var that = this
+        let key = e.currentTarget.dataset.current
+        let that = this
         wepy.navigateTo({
           url: that.lookInvit + '?id=' + key
         })
       },
       promtClose(e) {
         wepy.navigateTo({
-          url: '/pages/activity-rules/activity-rules'
+          url: '/pages/activity-rules/activity-rules?type=shop'
         })
       },
       // 分享
@@ -139,16 +138,15 @@
       }
     }
     async getUser() {
-      let Json = await Info.getUserInfo()
-      console.log(Json)
-      this.loaded()
-      if (Json.error !== ERR_OK) {
-        return
-      }
-      this.userId = Json.data.id
-      this.userName = Json.data.name || Json.data.random_id
+      let Json = wepy.getStorageSync('user_info')
+//      let Json = await Info.getUserInfo()
+//      this.loaded()
+//      if (Json.error !== ERR_OK) {
+//        return
+//      }
+      this.userId = Json.user_data.user_id
+      this.userName = Json.user_data.name || Json.user_data.random_id
       this.$apply()
-      console.log(this.userId)
     }
   }
 </script>
