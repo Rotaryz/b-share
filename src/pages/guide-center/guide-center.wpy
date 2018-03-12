@@ -243,7 +243,8 @@
 
     events = {
       good(item, idx) {
-
+        this.logs[idx] = item
+        this.$apply()
       },
       delFind(id) {
         this.delId = id

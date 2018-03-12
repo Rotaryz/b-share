@@ -144,7 +144,8 @@
 
     async load(id) {
       let res = this._infoRes(await logs.findDetail(id))
-
+      res.video = true
+      res.play = true
       this.loaded()
       return res
     }

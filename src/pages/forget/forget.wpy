@@ -1,15 +1,15 @@
 <template>
   <view class="logn">
     <view class="login-img">
-      <image class="login-foget-logo" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/b-image/page/pic-login_logo@2x.png'}}"></image>
+      <image class="login-foget-logo" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/share/page/pic-login_logo@2x.png'}}"></image>
     </view>
     <view class="lg-from">
-      <view class="mistake {{showLogo ? 'right-tip':''}}"
-            wx:if="{{showMistake}}">
-        <image
-          src="{{showLogo ? imageUri+'/defaults/b-image/page/icon-login_right@2x.png':imageUri+'/defaults/b-image/page/icon-login_prompt@2x.png'}}"></image>
-        {{mistakeTip}}
-      </view>
+      <!--<view class="mistake {{showLogo ? 'right-tip':''}}"-->
+            <!--wx:if="{{showMistake}}">-->
+        <!--<image-->
+          <!--src="{{showLogo ? imageUri+'/defaults/b-image/page/icon-login_right@2x.png':imageUri+'/defaults/b-image/page/icon-login_prompt@2x.png'}}"></image>-->
+        <!--{{mistakeTip}}-->
+      <!--</view>-->
       <view
         class="lg-ch phone">
         <view>

@@ -171,23 +171,25 @@
     }
 
     onPageScroll(e) {
-      let status = false
-      if ((e.scrollTop - this.scroll > 2 || this.scroll - e.scrollTop > 2) && this.scroll - e.scrollTop === e.scrollTop - this.scroll) {
-        this.scroll = e.scrollTop
-        status = false
-      } else if (this.scroll - e.scrollTop === 0) {
-        status = true
+      if (this.videoIndex !== -1) {
+        let status = false
+        if ((e.scrollTop - this.scroll > 2 || this.scroll - e.scrollTop > 2) && this.scroll - e.scrollTop === e.scrollTop - this.scroll) {
+          this.scroll = e.scrollTop
+          status = false
+        } else if (this.scroll - e.scrollTop === 0) {
+          status = true
+        }
+        if (this.navIndex === 0) {
+          this.findList[this.videoIndex].video = status
+        } else if (this.navIndex === 1) {
+          this.findAll[this.videoIndex].video = status
+        } else if (this.navIndex === 2) {
+          this.findPeo[this.videoIndex].video = status
+        } else if (this.navIndex === 3) {
+          this.findShop[this.videoIndex].video = status
+        }
+        this.$apply()
       }
-      if (this.navIndex === 0) {
-        this.findList[this.videoIndex].video = status
-      } else if (this.navIndex === 1) {
-        this.findAll[this.videoIndex].video = status
-      } else if (this.navIndex === 2) {
-        this.findPeo[this.videoIndex].video = status
-      } else if (this.navIndex === 3) {
-        this.findShop[this.videoIndex].video = status
-      }
-      this.$apply()
     }
 
     async onShow() {
@@ -333,7 +335,16 @@
 
     events = {
       good(res, index) {
-        this.findList[index] = res
+        if (this.navIndex === 0) {
+          this.findList[index] = res
+        } else if (this.navIndex === 1) {
+          this.findAll[index] = res
+        } else if (this.navIndex === 2) {
+          this.findPeo[index] = res
+        } else if (this.navIndex === 3) {
+          this.findShop[index] = res
+        }
+        this.$apply()
       },
       async delFind(id) {
         this.$invoke('PopUpWindows', 'show', '是否确定删除服务日志？')
