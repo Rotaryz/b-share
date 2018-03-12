@@ -39,7 +39,7 @@
               </view>
             </view>
             <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} "
-                  @tap.stop="good({{find.id}},{{listNum}})">
+                  @tap.stop="good({{find}},{{find.id}},{{listNum}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
               <view class="find-num">
@@ -62,9 +62,14 @@
             </text>
           </view>
           <view class="words">{{find.content}}</view>
-          <video src="{{find.user_live_log_details[0].file_url}}"
+          <video @tap.stop="" autoplay="{{!find.play}}" direction="0" src="{{find.user_live_log_details[0].file_url}}" wx:if="{{find.video}}"
                  objectFit="cover"
                  class="find-video"></video>
+          <image @tap.stop="showVideo({{listNum}}, {{find}})"  wx:if="{{!find.video}}" src="{{find.user_live_log_details[0].file_url + '?second=1&width=223&height=124'}}"
+                 objectFit="cover"
+                 class="find-video">
+            <image class="find-video-play" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-find_video@2x.png'}}"></image>
+          </image>
         </view>
         <view class="address" wx:if="{{find.address}}"
               @tap.stop="openLocation({{find}})">
@@ -87,7 +92,7 @@
               </view>
             </view>
             <view class="share-item {{find.is_like ? 'thumbs-up' : ''}}"
-                  @tap.stop="good({{find.id}},{{listNum}})">
+                  @tap.stop="good({{find}},{{find.id}},{{listNum}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
               <view class="find-num">
@@ -137,7 +142,7 @@
               </view>
             </view>
             <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} "
-                  @tap.stop="good({{find.id}},{{listNum}})">
+                  @tap.stop="good({{find}},{{find.id}},{{listNum}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
               <view class="find-num">
@@ -188,7 +193,7 @@
               </view>
             </view>
             <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} "
-                  @tap.stop="good({{find.id}},{{listNum}})">
+                  @tap.stop="good({{find}},{{find.id}},{{listNum}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
               <view class="find-num">
@@ -238,7 +243,7 @@
               </view>
             </view>
             <view class="share-item {{find.is_like ? 'thumbs-up' : ''}} "
-                  @tap.stop="good({{find.id}},{{listNum}})">
+                  @tap.stop="good({{find}},{{find.id}},{{listNum}})">
               <image class="find-icon" wx:if="{{imageUrl}}"
                      src="{{find.is_like ? imageUrl +'/defaults/share/page/icon-like_press@2x.png' : imageUrl +'/defaults/share/page/icon-like@2x.png'}}"></image>
               <view class="find-num">
@@ -326,18 +331,22 @@
           })
         }
       },
-      async good(id, index) {
+      async good(find, id, index) {
         let like = 0
-        this.find.is_like ? like = 0 : like = 1
+        find.is_like ? like = 0 : like = 1
         let data = {user_live_log_id: id, like: like}
         let res = await logs.like(data)
         this.loaded()
         if (res.error === ERR_OK) {
-          this.find.is_like = !this.find.is_like
-          this.find.is_like ? this.find.like_count++ : this.find.like_count--
+          find.is_like = !find.is_like
+          find.is_like ? find.like_count++ : find.like_count--
         }
         this.$apply()
-        this.$emit('good', this.find, index)
+        this.$emit('good', find, index)
+      },
+      showVideo(index, find) {
+        find.video = true
+        this.$emit('showVideo', find, index)
       },
       delFind(id) {
         this.$emit('delFind', id)
@@ -401,6 +410,7 @@
           border-radius: 100%
           height: 34px
           width: 34px
+          border :0.5px solid $color-background
         .nickname
           transform: translateY(-25%)
           font-family: $font-family-regular
@@ -457,6 +467,12 @@
     .find-video
       width: 54vw
       height: 30.134vw
+      position: relative
+      background :$color-background
+      .find-video-play
+        height :10.933vw
+        width :@height
+        all-center()
 
   .img-one
     .img-one-item

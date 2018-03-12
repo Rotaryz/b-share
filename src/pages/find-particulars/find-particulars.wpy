@@ -15,7 +15,7 @@
             wx:for="{{findDetail[0].user_live_log_comments}}"
             wx:key="{{index}}">
         <view class="header-box">
-          <image class="com-header" wx:if="{{imageUrl}}"
+          <image class="com-header" wx:if="{{imageUrl}}" mode="aspectFill"
                  src="{{!item.user_data.image_url && item.user_data.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !item.user_data.image_url && item.user_data.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : item.user_data.image_url}}"></image>
         </view>
         <view class="com-container">
@@ -41,7 +41,7 @@
           <view class="comment-item" wx:for="{{item.comments}}"
                 wx:key="{{index}}">
             <view class="header-box">
-              <image class="com-header"
+              <image class="com-header" mode="aspectFill"
                      src="{{!item.user_data.image_url && item.user_data.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !item.user_data.image_url && item.user_data.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : item.user_data.image_url}}"></image>
             </view>
             <view class="com-container">
@@ -144,7 +144,8 @@
 
     async load(id) {
       let res = this._infoRes(await logs.findDetail(id))
-
+      res.video = true
+      res.play = true
       this.loaded()
       return res
     }
@@ -342,11 +343,15 @@
       .header-box
         height: 9.067vw
         width: @height
+        position: relative
       .com-header
-        border-radius: 90%
-        height: 90%
+        position: absolute
+        top: 0
+        left: 0
+        border-radius: 82%
+        height: 82%
         width: @height
-        background: $color-split-line
+        border :0.5px solid $color-background
       .com-container
         width: 83vw
         margin-left: 10px
@@ -397,6 +402,8 @@
       transform: translateY(-1px) translateX(-16.8vw)
       width: 101vw
       border-bottom: 0.5px solid $color-split-line
+      position: relative
+      top: -8px
       .more-icon
         height: 12px
         width: @height
