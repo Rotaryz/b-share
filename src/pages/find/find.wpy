@@ -214,12 +214,41 @@
       }
       if (this.$parent.globalData.logId) {
         let id = this.$parent.globalData.logId
-        for (let i = 0; i < this.findList.length; i++) {
-          if (this.findList[i].id === id) {
-            this.findList.splice(i, 1)
-            this.$parent.updateGlobalData('logId', null)
-            this.$apply()
-            break
+        if (this.navIndex === 0) {
+          for (let i = 0; i < this.findList.length; i++) {
+            if (this.findList[i].id === id) {
+              this.findList.splice(i, 1)
+              this.$parent.updateGlobalData('logId', null)
+              this.$apply()
+              break
+            }
+          }
+        } else if (this.navIndex === 1) {
+          for (let i = 0; i < this.findAll.length; i++) {
+            if (this.findAll[i].id === id) {
+              this.findAll.splice(i, 1)
+              this.$parent.updateGlobalData('logId', null)
+              this.$apply()
+              break
+            }
+          }
+        } else if (this.navIndex === 2) {
+          for (let i = 0; i < this.findPeo.length; i++) {
+            if (this.findPeo[i].id === id) {
+              this.findPeo.splice(i, 1)
+              this.$parent.updateGlobalData('logId', null)
+              this.$apply()
+              break
+            }
+          }
+        } else if (this.navIndex === 3) {
+          for (let i = 0; i < this.findShop.length; i++) {
+            if (this.findShop[i].id === id) {
+              this.findShop.splice(i, 1)
+              this.$parent.updateGlobalData('logId', null)
+              this.$apply()
+              break
+            }
           }
         }
       }
