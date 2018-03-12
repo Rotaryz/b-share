@@ -8,7 +8,7 @@
       <view class="title">提现金额</view>
       <view class="input-box">
         <view class="txt">￥</view>
-        <input type="digit" class="moneyInput" value="{{money}}" bindinput="moneyChange"/>
+        <input type="digit" class="moneyInput" bindinput="moneyChange" value="{{money}}"/>
       </view>
       <view class="foot">
         <view class="left">提现到微信零钱(满50元才可提现)</view>
@@ -73,10 +73,19 @@
       }
     }
 
+    watch = {
+      money(newNum) {
+        if (newNum * 1 > this.canUse * 1) {
+          this.money = this.canUse * 1
+        }
+        this.$apply()
+      }
+    }
+
     computed = {
       checkMoney() {
         let reg = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/
-        return reg.test(this.money) && this.money >= 50
+        return reg.test(this.money) && this.money * 1 >= 50 && this.money * 1 <= this.canUse * 1
       }
     }
   }

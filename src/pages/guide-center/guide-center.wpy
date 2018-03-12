@@ -32,8 +32,8 @@
           <view class="tab-underline"></view>
         </view>
         <view class="tab {{tabIdx===2?'active':''}}">
-          <view class="tab-item" @tap="changeTab(2)">能力模型</view>
-          <view class="tab-underline"></view>
+          <view class="tab-item" @tap="changeTab(2)" wx:if="{{role === 0}}">能力模型</view>
+          <view class="tab-underline" wx:if="{{role === 0}}"></view>
         </view>
       </view>
     </view>
@@ -94,7 +94,8 @@
       logs: [],
       page: 1,
       noMore: false,
-      delId: ''
+      delId: '',
+      role: 0
     }
 
     onLoad(option) {
@@ -130,6 +131,7 @@
         return
       }
       this.userInfo = Json.data
+      this.role = Json.data.role
       this.$apply()
     }
 
@@ -165,7 +167,7 @@
         this.loaded()
         return
       }
-      this.logs = Json.data
+      this.logs = this._checkLength(Json.data)
       this.$apply()
     }
 
@@ -185,8 +187,19 @@
         this.$invoke('Underline', 'show')
         return
       }
-      this.logs = [...this.logs, ...res]
+      let resData = this._checkLength(res)
+      this.logs = [...this.logs, ...resData]
       this.$apply()
+    }
+
+    _checkLength(arr) {
+      return arr.map((item) => {
+        if (item.user_live_log_details.length === 0 && item.content.length > 50) {
+          item.content = item.content.slice(0, 50)
+          item.showDetail = true
+        }
+        return item
+      })
     }
 
     methods = {
