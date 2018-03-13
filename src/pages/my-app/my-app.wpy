@@ -82,8 +82,9 @@
 
       .item
         padding-left: 15px
+        margin-bottom: 10px
         .item-head
-          height: 50px
+          height: 44px
           display: flex
           align-items: center
           .blue-block
@@ -102,8 +103,8 @@
           .left
             margin-right: 10px
             .left-icon
-              width: 25px
-              height: 25px
+              width: 32.5px
+              height: 32.5px
           .right
             flex: 1
             display: flex
