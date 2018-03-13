@@ -125,7 +125,7 @@
       check: false,
       userLiveLogIid: [],
       videoIndex: 0,
-      scroll: 0,
+      scroll: -1,
       guidanceBanner: ROLE ? URIS.image + '/defaults/share/page/pic-banner_02@2x.png' : URIS.image + '/defaults/share/page/pic-banner_03@2x.png'
     }
 
