@@ -5,8 +5,8 @@
         <view class="container-BC-box">
           <image class="container-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-answer_bg-top@3x.png'}}"></image>
           <view class="time-box">
-            <image class="time-img left" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time1@3x.png'}}" style="transform:rotate({{leftTranslate}}deg);"></image>
-            <image class="time-img right" wx:if="{{imageUrl && time > 5}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time2@3x.png'}}" style="transform: rotate({{rightTranslate}}deg);"></image>
+            <image class="time-img left" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time1@3x.png'}}" style="transform:rotate({{leftTranslate}}deg);transform-origin: 100% 50%;"></image>
+            <image class="time-img right" wx:if="{{imageUrl && time > 5}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time2@3x.png'}}" style="transform: rotate({{rightTranslate}}deg);transform-origin: left 50%;"></image>
             <image class="white-right" wx:if="{{imageUrl && time <= 5}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time3@3x+.png'}}"></image>
             <view class="time-num">{{time}}</view>
           </view>
@@ -279,7 +279,7 @@
 
     methods = {
       async chioceAnswer(id) {
-        if (this.answerChecked) {
+        if (this.answerChecked || this.time <= 0) {
           return
         }
         this.answerChecked = id
@@ -436,10 +436,8 @@
               top: 1px
             .left
               left: 0
-              transform-origin: 100% 50%
             .right
               left: 50%
-              transform-origin: 0 50%
             .white-right
               width: 7.06666666665vw
               height: 14.1333333333vw

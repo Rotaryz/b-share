@@ -12,7 +12,7 @@
           <image class="item-li-left" src="{{item.image_url}}"></image>
           <view class="item-li-right">
             <view class="item-li-title">{{item.name}}</view>
-            <view class="item-li-btn {{item.already ? 'dis' : ''}}" @tap="doneAbility({{item.url}}, {{item.code}})">{{item.already ? '已完成' : item.code === 'invitationGuide' ? '去邀请' : '去完成'}}</view>
+            <view class="item-li-btn {{item.already ? 'dis' : ''}}" @tap="doneAbility({{item.url}}, {{item.url_type}}, {{item.already}})">{{item.status}}</view>
           </view>
         </view>
       </view>
@@ -26,7 +26,7 @@
           <image class="item-li-left" src="{{item.image_url}}"></image>
           <view class="item-li-right">
             <view class="item-li-title">{{item.name}}</view>
-            <view class="item-li-btn {{item.already ? 'dis' : ''}}" @tap="doneAbility({{item.url}}, {{item.code}})">{{item.already ? '已完成' : item.code === 'invitationGuide' ? '去邀请' : '去完成'}}</view>
+            <view class="item-li-btn {{item.already ? 'dis' : ''}}" @tap="doneAbility({{item.url}}, {{item.url_type}}, {{item.already}})">{{item.status}}</view>
           </view>
         </view>
       </view>
@@ -87,13 +87,14 @@
       }
       this.role = Json1.data.role
       let Json2 = await Beauticians.getScores()
-      if (Json2.error !== ERR_OK) {
-        this.loaded()
-        return
+      this.loaded()
+      if (Json2.error === ERR_OK) {
+        let scoreRes = Json2.data
+        let max = scoreRes.max_score
+        this.configArr.data = [scoreRes.zhuanye / max * 100, scoreRes.xiaoshou / max * 100, scoreRes.guanxi / max * 100, scoreRes.peixun / max * 100, scoreRes.cehua / max * 100]
+        this.configArr.score = scoreRes.score
       }
-      let scoreRes = Json2.data
-      this.configArr.data = [scoreRes.zhuanye * 100, scoreRes.xiaoshou * 100, scoreRes.guanxi * 100, scoreRes.peixun * 100, scoreRes.cehua * 100]
-      this.configArr.score = scoreRes.score
+      this.$invoke('Radar', 'init', this.configArr)
       this.loaded()
       this.$apply()
     }
@@ -108,8 +109,11 @@
 //    }
 
     methods = {
-      doneAbility(url, code) {
-        if (code === 'serviceLog') {
+      doneAbility(url, urlType, already) {
+        if (already) {
+          return
+        }
+        if (urlType === 'switch') {
           this.$switch(url)
         } else {
           this.$navigate(url)
@@ -188,8 +192,9 @@
       background: $color-white
       .item
         padding-left: 15px
+        margin-bottom: 10px
         .title
-          height: 54px
+          height: 44px
           display: flex
           align-items: center
           .blue-black

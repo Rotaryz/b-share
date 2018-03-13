@@ -6,7 +6,7 @@
       </view>
       <view class="subhead">请慎重选择，确定后不可修改</view>
     </view>
-    <view class="content">
+    <view class="content-box">
       <view class="item" wx:for="{{majorArr}}" wx:key="{{item}}" @tap="choice({{item.id}}, {{item.name}})">
         <image class="item-BC" src="{{item.image_url}}" mode="aspectFit"></image>
         <view class="item-name">{{item.name}}</view>
@@ -137,7 +137,7 @@
           text-align: center
           margin-top: 12.5px
 
-      .content
+      .content-box
         min-height: 85vw
         margin: 8vw 0
         padding: 0 15px

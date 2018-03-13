@@ -33,7 +33,7 @@
       </view>
 
       <view class="container">
-        <navigator class="mine-item" url="/pages/ability/ability" hover-class="none">
+        <navigator class="mine-item" url="/pages/ability/ability" hover-class="none" wx:if="{{role === 0}}">
           <view class="left">
             <image class="left-icon" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-mine_ability@2x.png'}}"></image>
           </view>
@@ -118,7 +118,6 @@
 
     async load() {
       let Json = await Info.getUserInfo()
-      console.log(Json)
       this.loaded()
       if (Json.error !== ERR_OK) {
         return
@@ -189,14 +188,15 @@
           font-family: PingFangSC-Medium
 
         .avatar
-          width: 48px
-          height: 48px
+          width: 50px
+          height: 50px
           border-radius: 50%
 
           .avatar-img
             width: 48px
             height: 48px
             border-radius: 50%
+            border: 1px solid $color-background
 
       navigator.mine-item:last-child .right
         border-bottom: 0 none

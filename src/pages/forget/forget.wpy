@@ -154,7 +154,6 @@
     rightTip (content, showLogo = true) {
       this.mistakeTip = content
       this.showLogo = showLogo
-      console.log(content)
       this.showMistake = true
       setTimeout(() => {
         this.showMistake = false

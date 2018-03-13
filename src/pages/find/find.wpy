@@ -20,11 +20,11 @@
         <view class="find-box">
           <view class="cainter">
             <view class="user">
-              <image class="header"></image>
+              <image class="header" mode="aspectFill" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-m@2x.png'}}"></image>
               <text class="nickname">共享美导</text>
             </view>
             <view class="words">完成实名认证后，领取更多现金红包！</view>
-            <image src="" class="img-one-item"></image>
+            <image wx:if="{{imageUrl}}" src="{{guidanceBanner}}" class="img-one-item" ></image>
           </view>
           <view class="information" @tap.stop="delStick">
             删除
@@ -59,7 +59,7 @@
   import PopUpWindows from '@/base/pop-up-windows/pop-up-windows'
   import UnderlineBlock from '@/base/underline-block/underline-block'
   import Blank from '@/base/blank/blank'
-
+  const ROLE = wepy.getStorageSync('user_info').role
   const NAV = [{title: '我关注的', type: 1}, {title: '全部', type: 0}, {
     title: '美导',
     type: 2
@@ -92,7 +92,8 @@
       delIndex: {},
       bottom: 0,
       check: false,
-      userLiveLogIid: []
+      userLiveLogIid: [],
+      guidanceBanner: ROLE ? URIS.image + '/defaults/share/page/pic-banner_02@2x.png' : URIS.image + '/defaults/share/page/pic-banner_03@2x.png'
     }
 
     async onPullDownRefresh() {
@@ -115,7 +116,6 @@
       }
       let id = wepy.getStorageSync('user_info').id
       let socket = this.$parent.globalData.socket
-      console.log(this.$parent.globalData.socket)
       socket.on(`channel-remind:newMessage:${id}`, (msg) => {
         wepy.showTabBarRedDot({index: 1})
         this.userLiveLogIid.push(msg.user_live_log_id)
@@ -124,7 +124,6 @@
     }
 
     async onShow() {
-      console.log(this.userLiveLogIid.length)
       if (this.userLiveLogIid.length) {
         wepy.startPullDownRefresh()
         await this.onPullDownRefresh()
@@ -338,8 +337,6 @@
       background: $color-background
     .words
       white-space: nowrap
-    .header
-      background: $color-split-line
     .information
       display: block
       padding-left: 0px

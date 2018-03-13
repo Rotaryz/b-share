@@ -108,7 +108,6 @@
           return
         }
         this.redPackList = [...this.redPackList, ...res]
-        console.log(this)
         this.$apply()
       },
       toWithDraw() {
