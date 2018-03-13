@@ -222,7 +222,7 @@
         if (!res.address) {
           return
         }
-        this.address = res.address
+        this.address = res.name
         this.longitude = res.longitude
         this.latitude = res.latitude
         this.$parent.updateGlobalData('address', this.address)

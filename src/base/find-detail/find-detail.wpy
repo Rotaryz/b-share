@@ -425,11 +425,12 @@
           margin-left: 3px
           transform: translateY(1.5px)
       .information
-        height: 12px
+        height: 20px
         display: flex
-        margin: 16px 0 16px
+        margin: 12px 0 12px
         font-size: $font-size-small
         justify-content: space-between
+        align-items: center
         .del
           color: $color-del
           margin-left: 12px
@@ -442,6 +443,7 @@
           .share-item
             display: flex
             align-items: center
+            padding: 5px
             &:last-child
               margin-left: 22.5px
           .find-icon
