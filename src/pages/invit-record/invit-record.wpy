@@ -42,7 +42,6 @@
               </view>
             </block>
           </scroll-view>
-
           <!-- 样板 -->
             <!--<scroll-view scroll-y="true" class="scoll-h"  wx:if="{{true}}" @scrolltolower="scrolltolower" lower-threshold="30">-->
               <!--<block wx:for="{{forTest}}" wx:key="*this">-->
