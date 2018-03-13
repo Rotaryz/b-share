@@ -129,7 +129,7 @@
       return {
         title: '能力比拼，点击来战，敢来比拼一下？',
         imageUrl: this.imageUrl + '/defaults/share/page/pic-share_03@2x.png',
-        path: '/pages/answer/answer'
+        path: '/pages/answer-index/answer-index'
       }
     }
 
