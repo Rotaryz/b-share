@@ -37,7 +37,7 @@
                 </view>
                 <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>{{item.reward}}</view>
                 <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
-                <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
+                <view class="askBtn-2" wx:if="{{currentTab==2}}">还未完成认证</view>
                 <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
               </view>
             </block>
