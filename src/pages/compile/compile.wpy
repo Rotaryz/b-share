@@ -116,6 +116,7 @@
         this.longitude = this.$parent.globalData.longitude || 0
         this.latitude = this.$parent.globalData.latitude || 0
         this.address = this.$parent.globalData.address || '你在哪里'
+        this.send = true
         this.$apply()
       }
       this.checkSend()
@@ -266,6 +267,13 @@
             this.$invoke('Toast', 'show', '发表成功')
             this.$parent.updateGlobalData('status', 1)
             setTimeout(() => {
+              this.$parent.updateGlobalData('fileId', [])
+              this.$parent.updateGlobalData('words', '')
+              this.$parent.updateGlobalData('imgUrl', [])
+              this.$parent.updateGlobalData('videoUrl', '')
+              this.$parent.updateGlobalData('longitude', 0)
+              this.$parent.updateGlobalData('latitude', 0)
+              this.$parent.updateGlobalData('address', '你在哪里')
               this.$back(1)
             }, 500)
           }
