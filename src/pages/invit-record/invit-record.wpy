@@ -20,9 +20,9 @@
       </scroll-view>
       <swiper class="tab-content" current="{{currentTab}}" duration="300"  bindchange="switchTab" style="height:{{winHeight}}px" >
 
-        <swiper-item wx:for="{{expertList}}" wx:key="unique">
+        <swiper-item wx:for="{{expertList}}" wx:key="*this">
 
-          <scroll-view scroll-y="true" class="scoll-h"  wx:if="{{expertList[index].length>0}}" @scrolltolower="scrolltolower" lower-threshold="30">
+          <scroll-view scroll-y="true" class="scoll-h"  wx:if="{{expertList[index].length>0}}" @scrolltolower="scrolltolower" lower-threshold="50">
             <block wx:for="{{expertList[index]}}" wx:key="*this">
               <view class="item-ans">
                 <view class="avatar" wx:if="{{currentTab !=0}}">
@@ -37,13 +37,13 @@
                 </view>
                 <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>{{item.reward}}</view>
                 <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
-                <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
-                <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                <view class="askBtn-2" wx:if="{{currentTab==2}}">还未完成认证</view>
               </view>
             </block>
+            <block wx:if="{{pageFlag[currentTab]}}" >
+              <view class="textmsg"><text>没有数据了</text></view>
+            </block>
           </scroll-view>
-
-          <!-- 样板 over -->
           <scroll-view  wx:else style="text-align: center">
             <block>
               <image class="no-packet" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@2x_s.png'}}"></image>
@@ -99,8 +99,9 @@
         scrollLeft: 0, // tab标题的滚动条位置
         expertList: [],
         page: [1, 1, 1],
+        pageFlag: [false, false, false],
         forTest: [1, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3], // 测试数据
-        fillout: true
+        fillout: true,
       }
       async onLoad(option) {
         await this.setInvitFun()
@@ -108,6 +109,7 @@
         await this.tabheight(option)
         let code = wepy.getStorageSync('user_info')
         this.role = code.role
+        this.$apply()
       }
       async load(id) { // meta.current_page
         if (id * 1 === 1) {
@@ -135,8 +137,10 @@
         let data = { page: this.page[this.currentTab], limit: limit }
         let Json = await Beauticians.invitRewardList(data) // page,limit
         this.loaded()
-        if (Json.meta.current_page === this.page[0] - 1) {
+        if (Json.data.length <= 0) {
           this.page[0]--
+          this.pageFlag[0] = true
+          this.$apply()
           return
         }
         this.page[0] = Json.meta.current_page
@@ -152,8 +156,10 @@
         let data = { page: this.page[this.currentTab], limit: limit }
         let Json = await Beauticians.invitRegisterList(data) // page,limit
         this.loaded()
-        if (Json.meta.current_page === this.page[1] - 1) {
+        if (Json.data.length <= 0) {
           this.page[1]--
+          this.pageFlag[1] = true
+          this.$apply()
           return
         }
         this.page[1] = Json.meta.current_page
@@ -169,8 +175,10 @@
         let data = { page: this.page[this.currentTab], limit: limit }
         let Json = await Beauticians.invitWaitRewardList(data) // page,limit
         this.loaded()
-        if (Json.meta.current_page === this.page[2] - 1) {
+        if (Json.data.length <= 0) {
           this.page[2]--
+          this.pageFlag[2] = true
+          this.$apply()
           return
         }
         this.page[2] = Json.meta.current_page
@@ -183,10 +191,11 @@
       }
       methods = {
         async scrolltolower() {
-          this.page[this.currentTab]++
-          this.load(this.currentTab)
-          this.$apply()
-          console.log(this.page)
+          if (!this.pageFlag[this.currentTab]) {
+            this.page[this.currentTab]++
+            this.load(this.currentTab)
+            this.$apply()
+          }
         },
         // 滚动切换标签样式
         switchTab (e) {
@@ -381,5 +390,11 @@
     margin: 50px auto
     width: 150px
     height: 150px
-
+  .textmsg
+    background-color:#F9F9F9
+    font-family: $font-family-regular
+    font-size: $font-size-small-s
+    color: $color-text
+    text-align: center
+    padding: 5px
 </style>

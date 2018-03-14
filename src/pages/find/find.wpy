@@ -1,61 +1,38 @@
 <template>
-  <view class="find" @touchmove="fixation">
-    <view class="nav" style="top:{{bottom}}px">
-      <view wx:for="{{nav}}" wx:key="{{index}}"
-            class="item {{navIndex === index ? 'item-active' : ''}}"
-            @tap="checkNav({{index}})">
+  <view class="find">
+    <cover-view class="nav" style="bottom:{{bottom}}">
+      <cover-view wx:for="{{nav}}" wx:key="{{index}}"
+                  class="item {{navIndex === index ? 'item-active' : ''}}"
+                  @tap="checkNav({{index}})">
         {{item.title}}
-        <view class="item-line"></view>
-      </view>
-      <view class="find-line"></view>
-    </view>
+        <cover-view class="item-line"></cover-view>
+      </cover-view>
+      <cover-view class="find-line"></cover-view>
+    </cover-view>
     <!--<view class="loading {{isLoad ? 'load-active' : ''}}">-->
     <!--<image class="load-img" wx:if="{{imageUrl}}"-->
     <!--src="{{imageUrl + '/defaults/share/page/icon-loading@2x.png'}}"></image>-->
     <!--<view class="load-refresh">刷新中…</view>-->
     <!--</view>-->
-    <view class="list-box find-box-active">
+    <Blank></Blank>
+    <view class="list-box {{!isLoad ? 'find-box-active' : 'find-big-box'}}">
       <view class="find-item guidance" wx:if="{{!isChecked}}" @tap="goAnswer">
         <view class="find-box">
           <view class="cainter">
             <view class="user">
-              <image class="header" mode="aspectFill" wx:if="{{imageUrl}}"
-                     src="{{imageUrl + '/defaults/share/page/pic-m@2x.png'}}"></image>
+              <image class="header" mode="aspectFill" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-m@2x.png'}}"></image>
               <text class="nickname">共享美导</text>
             </view>
-            <view class="words">完成{{role ? '店铺验证' : '美导问答'}}后，领取更多现金红包！</view>
-            <image wx:if="{{imageUrl}}" src="{{guidanceBanner}}"
-                   class="img-one-item"></image>
+            <view class="words" >{{!roleFlag ? '完成问答认证后':'完成实名认证后'}}，领取更多现金红包！</view>
+            <image wx:if="{{imageUrl}}" src="{{guidanceBanner}}" class="img-one-item" ></image>
           </view>
           <view class="information" @tap.stop="delStick">
             删除
           </view>
         </view>
       </view>
-      <view wx:if="{{navIndex === 0}}">
-        <Blank wx:if="{{!findList.length}}"></Blank>
-        <repeat for="{{findList}}" key="index"
-                index="index" item="item">
-          <FindDetail :find.sync="item" :listNum.sync="index"></FindDetail>
-        </repeat>
-      </view>
-      <view wx:if="{{navIndex === 1}}">
-        <Blank wx:if="{{!findAll.length}}"></Blank>
-        <repeat for="{{findAll}}" key="index"
-                index="index" item="item">
-          <FindDetail :find.sync="item" :listNum.sync="index"></FindDetail>
-        </repeat>
-      </view>
-      <view wx:if="{{navIndex === 2}}">
-        <Blank wx:if="{{!findPeo.length}}"></Blank>
-        <repeat for="{{findPeo}}" key="index"
-                index="index" item="item">
-          <FindDetail :find.sync="item" :listNum.sync="index"></FindDetail>
-        </repeat>
-      </view>
-      <view wx:if="{{navIndex === 3}}">
-        <Blank wx:if="{{!findShop.length}}"></Blank>
-        <repeat for="{{findShop}}" key="index"
+      <view>
+        <repeat wx:if="{{findList.length}}" for="{{findList}}" key="index"
                 index="index" item="item">
           <FindDetail :find.sync="item" :listNum.sync="index"></FindDetail>
         </repeat>
@@ -94,14 +71,9 @@
       navigationBarTitleText: '共享美导',
       onReachBottomDistance: 30,
       enablePullDownRefresh: true,
-      backgroundTextStyle: 'dark',
-      backgroundColor: '#ffffff'
+      backgroundTextStyle: 'dark'
     }
     data = {
-      findAll: [],
-      findPeo: [],
-      findShop: [],
-      role: ROLE,
       imageUrl: URIS.image,
       nav: NAV,
       navIndex: 0,
@@ -109,9 +81,6 @@
       showGuidance: true,
       findList: [],
       page: 1,
-      pageAll: 1,
-      pageShop: 1,
-      pagePeo: 1,
       isChecked: true,
       scrollTop: '',
       startTop: 0,
@@ -124,28 +93,13 @@
       bottom: 0,
       check: false,
       userLiveLogIid: [],
-      videoIndex: 0,
-      scroll: 0,
-      guidanceBanner: ROLE ? URIS.image + '/defaults/share/page/pic-banner_02@2x.png' : URIS.image + '/defaults/share/page/pic-banner_03@2x.png'
+      guidanceBanner: !ROLE ? URIS.image + '/defaults/share/page/pic-banner_02@2x.png' : URIS.image + '/defaults/share/page/pic-banner_03@2x.png',
+      roleFlag: ROLE
     }
 
     async onPullDownRefresh() {
-      if (this.navIndex === 0) {
-        this.findList = await this.load(this.option)
-        this.page = 1
-      } else if (this.navIndex === 1) {
-        this.findAll = await this.load(this.option)
-        this.pageAll = 1
-      } else if (this.navIndex === 2) {
-        this.findPeo = await this.load(this.option)
-        this.pagePeo = 1
-      } else if (this.navIndex === 3) {
-        this.findShop = await this.load(this.option)
-        this.pageShop = 1
-      }
-      this.loadMore = true
+      this.findList = await this.load(this.option)
       setTimeout(() => {
-        wepy.hideTabBarRedDot({index: 1})
         wepy.stopPullDownRefresh()
         this.bottom = 0
         this.$parent.updateGlobalData('status', 0)
@@ -168,28 +122,6 @@
         this.userLiveLogIid.push(msg.user_live_log_id)
         this.$apply()
       })
-    }
-
-    onPageScroll(e) {
-      if (this.videoIndex !== -1) {
-        let status = false
-        if ((e.scrollTop - this.scroll > 2 || this.scroll - e.scrollTop > 2) && this.scroll - e.scrollTop === e.scrollTop - this.scroll) {
-          this.scroll = e.scrollTop
-          status = false
-        } else if (this.scroll - e.scrollTop === 0) {
-          status = true
-        }
-        if (this.navIndex === 0) {
-          this.findList[this.videoIndex].video = status
-        } else if (this.navIndex === 1) {
-          this.findAll[this.videoIndex].video = status
-        } else if (this.navIndex === 2) {
-          this.findPeo[this.videoIndex].video = status
-        } else if (this.navIndex === 3) {
-          this.findShop[this.videoIndex].video = status
-        }
-        this.$apply()
-      }
     }
 
     async onShow() {
@@ -238,28 +170,11 @@
 
     async onReachBottom() {
       this.bottom = 0
+      this.page++
       if (this.loadMore) {
-        if (this.navIndex === 0) {
-          this.page++
-          let res = await this.load(this.option, this.page)
-          this.loadMore = res.length !== 0
-          this.findList = this.findList.concat(res)
-        } else if (this.navIndex === 1) {
-          this.pageAll++
-          let res = await this.load(this.option, this.pageAll)
-          this.loadMore = res.length !== 0
-          this.findAll = this.findAll.concat(res)
-        } else if (this.navIndex === 2) {
-          this.pagePeo++
-          let res = await this.load(this.option, this.pagePeo)
-          this.loadMore = res.length !== 0
-          this.findPeo = this.findPeo.concat(res)
-        } else if (this.navIndex === 3) {
-          this.pageShop++
-          let res = await this.load(this.option, this.pageShop)
-          this.loadMore = res.length !== 0
-          this.findShop = this.findShop.concat(res)
-        }
+        let res = await this.load(this.option, this.page)
+        this.loadMore = res.length !== 0
+        this.findList = this.findList.concat(res)
         this.$apply()
       }
     }
@@ -292,10 +207,6 @@
     }
 
     methods = {
-      fixation() {
-        this.bottom = 0
-        this.$apply()
-      },
       goAnswer() {
         if (wepy.getStorageSync('user_info').role) {
           this.$navigate('/pages/name-authentication/name-authentication')
@@ -310,20 +221,9 @@
       async checkNav(index) {
         this.navIndex = index * 1
         this.option = this.nav[this.navIndex].type
-        if (index === 0 && this.findList.length === 0) {
-          this.findList = await this.load(this.option)
-          this.showBlank(this.findList)
-        } else if (index === 1 && this.findAll.length === 0) {
-          this.findAll = await this.load(this.option)
-          this.showBlank(this.findAll)
-        } else if (index === 2 && this.findPeo.length === 0) {
-          this.findPeo = await this.load(this.option)
-          this.showBlank(this.findPeo)
-        } else if (index === 3 && this.findShop.length === 0) {
-          this.findShop = await this.load(this.option)
-          this.showBlank(this.findShop)
-        }
+        this.findList = await this.load(this.option)
         this.loadMore = true
+        this.showBlank(this.findList)
         this.$apply()
       },
       goCompile() {
@@ -335,48 +235,16 @@
 
     events = {
       good(res, index) {
-        if (this.navIndex === 0) {
-          this.findList[index] = res
-        } else if (this.navIndex === 1) {
-          this.findAll[index] = res
-        } else if (this.navIndex === 2) {
-          this.findPeo[index] = res
-        } else if (this.navIndex === 3) {
-          this.findShop[index] = res
-        }
-        this.$apply()
+        this.findList[index] = res
       },
       async delFind(id) {
         this.$invoke('PopUpWindows', 'show', '是否确定删除服务日志？')
         this.content = false
         this.check = false
-        if (this.navIndex === 0) {
-          for (let i = 0; i < this.findList.length; i++) {
-            if (this.findList[i].id === id) {
-              Object.assign(this.delIndex, {id: id, index: i})
-              break
-            }
-          }
-        } else if (this.navIndex === 1) {
-          for (let i = 0; i < this.findAll.length; i++) {
-            if (this.findAll[i].id === id) {
-              Object.assign(this.delIndex, {id: id, index: i})
-              break
-            }
-          }
-        } else if (this.navIndex === 2) {
-          for (let i = 0; i < this.findPeo.length; i++) {
-            if (this.findPeo[i].id === id) {
-              Object.assign(this.delIndex, {id: id, index: i})
-              break
-            }
-          }
-        } else if (this.navIndex === 3) {
-          for (let i = 0; i < this.findShop.length; i++) {
-            if (this.findShop[i].id === id) {
-              Object.assign(this.delIndex, {id: id, index: i})
-              break
-            }
+        for (let i = 0; i < this.findList.length; i++) {
+          if (this.findList[i].id === id) {
+            Object.assign(this.delIndex, {id: id, index: i})
+            break
           }
         }
       },
@@ -385,16 +253,7 @@
           let res = await logs.delFind(this.delIndex.id)
           this.loaded()
           if (res.error === ERR_OK) {
-            if (this.navIndex === 0) {
-              this.findList.splice(this.delIndex.index, 1)
-            } else if (this.navIndex === 1) {
-              this.findAll.splice(this.delIndex.index, 1)
-            } else if (this.navIndex === 2) {
-              this.findPeo.splice(this.delIndex.index, 1)
-            } else if (this.navIndex === 3) {
-              this.findShop.splice(this.delIndex.index, 1)
-            }
-
+            this.findList.splice(this.delIndex.index, 1)
             this.$apply()
           }
           this.$parent.updateGlobalData('status', 1)
@@ -415,19 +274,6 @@
           })
           this.check = false
         }
-      },
-      showVideo(find, index) {
-        this.videoIndex = index
-        if (this.navIndex === 0) {
-          this.findList[index] = find
-        } else if (this.navIndex === 1) {
-          this.findAll[index] = find
-        } else if (this.navIndex === 2) {
-          this.findPeo[index] = find
-        } else if (this.navIndex === 3) {
-          this.findShop[index] = find
-        }
-        console.log(find, index)
       }
     }
     watch = {
@@ -512,12 +358,12 @@
     padding: 0 15px
     box-sizing: border-box
     position: fixed
-    top: 0
+    top: 0px
     left: 0
     width: 100%
     z-index: 1000
     .find-line
-      height: 1px
+      height: 0.5px
       background: $color-split-line
       width: 100%
       position: absolute
@@ -529,11 +375,11 @@
       height: 100%
       line-height: 45px
       .item-line
-        height: 2px
+        height: 3px
         width: 24px
         row-center()
-        bottom: 0px
-        z-index: 1500
+        bottom: -1px
+        z-index: 500
         background: transparent
     .item-active
       color: $color-text
