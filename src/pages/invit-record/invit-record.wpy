@@ -10,67 +10,48 @@
           <text class="number">获得的红包</text>
         </view>
         <view class="tab-item {{currentTab==1?'active':''}}" data-current="1" bindtap="swichNav">
-          <text class="number"><text>{{myInvit.myPerson || 0}}</text>人</text>
+          <text class="number number-t"><text>{{myInvit.myPerson || 0}}</text>人</text>
           <text class="number">成功邀请</text>
         </view>
         <view class="tab-item {{currentTab==2?'active':''}}" data-current="2" bindtap="swichNav">
-          <text class="number"><text>{{myInvit.myMoneys || 0}}</text>个</text>
+          <text class="number number-t"><text>{{myInvit.myMoneys || 0}}</text>个</text>
           <text class="number">红包在路上</text>
         </view>
       </scroll-view>
-      <swiper class="tab-content" current="{{currentTab}}" duration="300" bindchange="switchTab" style="height:{{winHeight}}rpx " >
-        <swiper-item wx:for="{{expertList}}" wx:key="unique">
-          <scroll-view scroll-y="true" class="scoll-h"  wx:if="{{expertList[index].data.length>0}}">
-            <block wx:for="{{expertList[index].data}}" wx:key="*this">
+      <swiper class="tab-content" current="{{currentTab}}" duration="300"  bindchange="switchTab" style="height:{{winHeight}}px" >
+
+        <swiper-item wx:for="{{expertList}}" wx:key="*this">
+
+          <scroll-view scroll-y="true" class="scoll-h"  wx:if="{{expertList[index].length>0}}" @scrolltolower="scrolltolower" lower-threshold="50">
+            <block wx:for="{{expertList[index]}}" wx:key="*this">
               <view class="item-ans">
-                <view class="avatar" wx:if="{{currentTab==1}}">
-                  <image class="img" src="{{item.data.image_url}}"></image>
+                <view class="avatar" wx:if="{{currentTab !=0}}">
+                  <image class="img" wx:if="{{imageUrl}}"
+                         src="{{item.image_url || imageUrl + '/defaults/share/page/'+(role===0?'pic-find_defaulta01@2x':'pic-find_defaulta02@2x')+'.png'}}">
+                  </image>
                 </view>
                 <view class="expertInfo">
-                  <view class="name">{{item.data.name}}</view>
-                  <view class="tag">{{item.data.created_at}}</view>
+                  <view class="name" wx:if="{{currentTab==0}}">{{item.type==='register'?'邀请奖励红包':'认证奖励红包'}}</view>
+                  <view class="name" wx:else>{{item.name}}</view>
+                  <view class="tag">{{item.updated_at || item.created_at}}</view>
                 </view>
-                <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>{{item.data.reward}}</view>
+                <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>{{item.reward}}</view>
                 <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
-                <view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>
-                <!--<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>-->
+                <view class="askBtn-2" wx:if="{{currentTab==2}}">还未完成认证</view>
               </view>
             </block>
+            <block wx:if="{{pageFlag[currentTab]}}" >
+              <view class="textmsg"><text>没有数据了</text></view>
+            </block>
           </scroll-view>
-          <!-- 样板 -->
-
-            <!--<scroll-view scroll-y="true" class="scoll-h"  wx:if="{{true}}">-->
-            <!--<block>-->
-                <!--<view class="item-ans">-->
-                  <!--<view class="avatar" wx:if="{{currentTab!=0}}">-->
-                    <!--<image class="img" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-body@2x.png'}}"></image>-->
-                  <!--</view>-->
-                  <!--<view class="expertInfo">-->
-                    <!--<view class="name">张三</view>-->
-                    <!--<view class="tag">12-01 12:00 </view>-->
-                  <!--</view>-->
-                  <!--<view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>8.00</view>-->
-                  <!--<view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>-->
-                  <!--<view class="askBtn-2" wx:if="{{currentTab==2}}">还未成功邀请入驻</view>-->
-                  <!--&lt;!&ndash;<navigator url="/pages/askExpert/expertDetail" class="askBtn">问TA</navigator>&ndash;&gt;-->
-                <!--</view>-->
-              <!--</block>-->
-            <!--</scroll-view>-->
-
-          <!-- 样板 over -->
           <scroll-view  wx:else style="text-align: center">
-            <block wx:if="{{currentTab==0}}">
-              <image class="no-packet" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@2x_s.png'}}"></image>
-            </block>
-            <block wx:elif="{{currentTab==1}}">
-              <image class="no-packet" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@2x_s.png'}}"></image>
-            </block>
-            <block wx:else="{{currentTab==2}}">
+            <block>
               <image class="no-packet" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@2x_s.png'}}"></image>
             </block>
           </scroll-view>
         </swiper-item>
       </swiper>
+      <UnderlineBlock></UnderlineBlock>
       <Toast></Toast>
     </view>
 </template>
@@ -81,18 +62,32 @@
     import URIS from 'common/js/config'
     import {ERR_OK} from 'api/base'
     import Beauticians from 'api/beauticians'
+    import UnderlineBlock from '@/base/underline-block/underline-block'
+
     export default class invitRecord extends wepy.page {
       config = {
         navigationBarTitleText: '邀请记录',
         navigationBarBackgroundColor: '#fff',
-        backgroundColor: '#ccc'
+        backgroundColor: '#F9F9F9',
+        onReachBottomDistance: 30
       }
       mixins = [base]
       components = {
-        Toast: Toast
+        Toast: Toast,
+        UnderlineBlock: UnderlineBlock
+      }
+      watch = {
+        loadMore(newValue) {
+          if (!newValue) {
+            this.$invoke('UnderlineBlock', 'show')
+          } else {
+            this.$invoke('UnderlineBlock', 'hide')
+          }
+        }
       }
       data = {
         imageUrl: URIS.image,
+        role: 0,
         myInvit: {
           myMoney: 0,
           myPerson: 0,
@@ -103,17 +98,27 @@
         noPacketW: 0,
         scrollLeft: 0, // tab标题的滚动条位置
         expertList: [],
-        fillout: true
+        page: [1, 1, 1],
+        pageFlag: [false, false, false],
+        forTest: [1, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3], // 测试数据
+        fillout: true,
       }
       async onLoad(option) {
-        await this.load()
+        await this.setInvitFun()
+        await this.load(option.id)
         await this.tabheight(option)
+        let code = wepy.getStorageSync('user_info')
+        this.role = code.role
+        this.$apply()
       }
-      async load() {
-        this.setInvitFun()
-        this.setRewardList()
-        this.invitRegisterList()
-        this.setWaitRewardList()
+      async load(id) { // meta.current_page
+        if (id * 1 === 1) {
+          this.invitRegisterList()
+        } else if (id * 1 === 2) {
+          this.setWaitRewardList()
+        } else { // 0
+          this.setRewardList()
+        }
       }
       async setInvitFun() {
         let Json = await Beauticians.invitDetail()
@@ -122,55 +127,86 @@
           this.$invoke('Toast', 'show', Json.message)
           return
         }
-        this.myInvit.myMoney = Json.data.registerRewards
-        this.myInvit.myPerson = Json.data.invitedCount
-        this.myInvit.myMoneys = Json.data.waitCheckeCount
+        this.myInvit.myMoney = Json.data.register_rewards
+        this.myInvit.myPerson = Json.data.invited_count
+        this.myInvit.myMoneys = Json.data.wait_checke_count
         this.$apply()
       }
       // 获得的红包
-      async setRewardList() {
-        let Json = await Beauticians.invitRewardList() // page,limit
+      async setRewardList(limit = 10) {
+        let data = { page: this.page[this.currentTab], limit: limit }
+        let Json = await Beauticians.invitRewardList(data) // page,limit
         this.loaded()
+        if (Json.data.length <= 0) {
+          this.page[0]--
+          this.pageFlag[0] = true
+          this.$apply()
+          return
+        }
+        this.page[0] = Json.meta.current_page
         if (Json.error !== ERR_OK) {
           this.$invoke('Toast', 'show', Json.message)
           return
         }
-        this.expertList[0] = Json
+        this.expertList[0] = Json.data
         this.$apply()
       }
       // 成功邀请的记录
-      async invitRegisterList() {
-        let Json = await Beauticians.invitRegisterList() // page,limit
+      async invitRegisterList(limit = 10) {
+        let data = { page: this.page[this.currentTab], limit: limit }
+        let Json = await Beauticians.invitRegisterList(data) // page,limit
         this.loaded()
+        if (Json.data.length <= 0) {
+          this.page[1]--
+          this.pageFlag[1] = true
+          this.$apply()
+          return
+        }
+        this.page[1] = Json.meta.current_page
         if (Json.error !== ERR_OK) {
           this.$invoke('Toast', 'show', Json.message)
           return
         }
-        this.expertList[1] = Json
+        this.expertList[1] = Json.data
         this.$apply()
       }
       // 红包在路上
-      async setWaitRewardList() {
-        let Json = await Beauticians.invitWaitRewardList() // page,limit
+      async setWaitRewardList(limit = 10) {
+        let data = { page: this.page[this.currentTab], limit: limit }
+        let Json = await Beauticians.invitWaitRewardList(data) // page,limit
         this.loaded()
+        if (Json.data.length <= 0) {
+          this.page[2]--
+          this.pageFlag[2] = true
+          this.$apply()
+          return
+        }
+        this.page[2] = Json.meta.current_page
         if (Json.error !== ERR_OK) {
           this.$invoke('Toast', 'show', Json.message)
           return
         }
-        this.expertList[2] = Json
+        this.expertList[2] = Json.data
         this.$apply()
       }
       methods = {
+        async scrolltolower() {
+          if (!this.pageFlag[this.currentTab]) {
+            this.page[this.currentTab]++
+            this.load(this.currentTab)
+            this.$apply()
+          }
+        },
         // 滚动切换标签样式
         switchTab (e) {
           this.currentTab = e.detail.current
-          this.checkCor()
         },
         // 点击标题切换当前页时改变样式
         swichNav (e) {
           let cur = e.currentTarget.dataset.current
           if (this.currentTab !== cur) {
             this.currentTab = cur
+            this.load(this.currentTab)
           } else {
             return false
           }
@@ -181,35 +217,38 @@
         //  高度自适应
         const res = await wepy.getSystemInfo()
         let clientHeight = res.windowHeight
-        let clientWidth = res.windowWidth
-        let rpxR = 750 / clientWidth
-        let calc = clientHeight * rpxR - 140
+        let calc = clientHeight - 150
         this.winHeight = calc
-      }
-      checkCor() {
-        if (this.currentTab > 4) {
-          this.scrollLeft = 300
-        } else {
-          this.scrollLeft = 0
-        }
+        this.$apply()
       }
     }
 </script>
 <style lang="stylus">
   @import "../../common/stylus/variable"
   page
-    overflow: hidden
+    background-color:#F9F9F9
+
   .invit-my
     font-size: $font-size-medium-x
-    height: 32px
-    line-height: 32px
+    height: 50px
+    line-height: 40px
     font-family: $font-family-regular
     color: $color-text
     padding: 10px 10px 0px 10px
     text
-      border-left: 5px solid $color-assist-bule
-      padding-left: 8px
+      padding-left: 15px
       color: $color-text
+      position: relative
+    text:before
+      content: ""
+      height: 14px
+      width: 4px
+      background: $color-assist-bule
+      position: absolute
+      top:0px
+      left: 4px
+      bottom: 0px
+      margin: auto
 
   .number
     display: block
@@ -217,12 +256,13 @@
     margin 5px 0px
     color: $color-text-d
     font-size: $font-size-small
-    line-height:17px;
+    line-height:17px
     text
       font-family: $font-family-regular
       font-size $font-size-large-m
       color: $color-text
-
+  .number.number-t
+    color: $color-text-tr
   .white
     background-color: $color-white
     margin-top: 10px
@@ -231,8 +271,7 @@
     content: ""
     display: block
     height: 30%
-    width: 1px
-    background: $color-row-line
+    border-left: .8px solid $color-row-line
     position: absolute
     top: 20%
 
@@ -240,8 +279,7 @@
     content: ""
     display: block
     height: 30%
-    width: 1px
-    background: $color-row-line
+    border-left:.8px solid $color-row-line
     position: absolute
     top: 20%
 
@@ -269,39 +307,46 @@
     width:33%
     text-align: center
     height: 90%
-    border-bottom: 1px solid $color-row-line
+    border-bottom: 0.5px solid $color-row-line
+    position: relative
 
   .tab-item.active:after
     content: ""
     display: block
-    height: 4px
-    width: 35%
+    position: absolute
+    height: 2px
+    width: 28px
     background:$color-assist-pink
-    margin: 13px auto
-    border-radius: 10px
+    bottom: -1px
+    left: 0px
+    right: 0px
+    margin: auto
 
   .item-ans
-    width: 100%
+    width: 96%
     display: flex
     flex-grow: row no-wrap
     justify-content: space-between
-    padding: 0 20px
+    padding: 0 20px 0 0
     box-sizing: border-box
     height: 55px
     align-items: center
-    border-bottom: 1px solid $color-row-line
+    border-bottom: 0.5px solid $color-row-line
+    margin-left: 4%
 
   .avatar
-    width: 34px
-    height: 34px
+    width: 36px
+    height: 36px
     position: relative
-    padding-right: 30px
+    padding-right: 12px
 
   .avatar
     .img
       width: 100%
       height: 100%
       border-radius:50%
+      border: 1px solid $color-background
+      margin-top: -2px
 
   .avatar .doyen
     width: 40rpx
@@ -316,9 +361,9 @@
     .name
       font-size: $font-size-medium
       color:$color-text
-      line-height: 28px
+      line-height: 22px
     .tag
-      line-height: 24px
+      line-height: 20px
       font-size: $font-size-small
       color: $color-text-tr
 
@@ -345,5 +390,11 @@
     margin: 50px auto
     width: 150px
     height: 150px
-
+  .textmsg
+    background-color:#F9F9F9
+    font-family: $font-family-regular
+    font-size: $font-size-small-s
+    color: $color-text
+    text-align: center
+    padding: 5px
 </style>

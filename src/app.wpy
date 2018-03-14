@@ -107,8 +107,8 @@
           {
             pagePath: 'pages/index/index',
             text: '美导',
-            iconPath: './common/image/icon-tab_find2@2x.png',
-            selectedIconPath: './common/image/icon-tab_find1@2x.png'
+            iconPath: './common/image/icon-tab_home2@2x.png',
+            selectedIconPath: './common/image/icon-tab_home1@2x.png'
           }, {
             pagePath: 'pages/find/find',
             text: '发现',

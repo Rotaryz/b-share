@@ -1,6 +1,6 @@
 <template>
   <view class="login">
-    <image class="login-img"></image>
+    <image class="login-img"  wx:if="{{imageUri}}" src="{{imageUri + '/defaults/share/page/pic-login_bg01@2x.png'}}"></image>
     <view class="lg-from">
       <view class="mistake {{showLogo ? 'right-tip':''}}"
             wx:if="{{showMistake}}">
@@ -241,11 +241,9 @@
   .login-img
     height: 160px
     width: 100vw
-    background: #ccc
 
   .logn
     text-align: center
-    padding: 23px $padding 0
 
   .lg-from
     position: relative
@@ -267,7 +265,7 @@
       position: relative
       border-bottom: 0.5px solid $color-split-line
       width: 85.333%
-      margin: 0 auto
+      margin: 12px auto 0
       .icon, .close
         position: absolute
         col-center()
@@ -286,11 +284,14 @@
           right: 10px
       .inputs
         text-align: left
-        height: 54px
+        height: 42px
+        line-height: 42px
         font-size: $font-size-medium-x
         color: #363547
         width: 80%
         font-family: $font-family-light
+      .picker
+        width: 100%
       .phone
         width: 75%
       .error
@@ -298,27 +299,30 @@
       .placeholder
         color: $color-placeholder
         font-family: $font-family-light
+      .picker-active
+        color: $color-text
     .error-fa
       border-bottom: 0.5px solid $color-assist-f
-    .phone
+    .code-box
       display: flex
       align-items: center
-      #phones
-        width: 66%
-      view
+      #phone-code
+        width: 71%
+      .phone-box
         position: relative
         flex: 7.5
         border-bottom: none
-      text
+      .codes
+        white-space: nowrap
         flex: 3
         border-left: 0.5px solid $color-split-line
         font-size: $font-size-medium
         color: $color-text-gray
         line-height: 24px
       .set-code
-        color: $color-theme
+        color: $color-text
     .submit
-      margin-top: 14px
+      margin-top: 20px
       background: $color-theme
       color: $color-white
       font-size: $font-size-medium-x
@@ -326,25 +330,25 @@
       line-height: 45px
       width: 90.667%
       border-radius: 50px
+      nomal-icon()
       &::after
         border: 1px solid rgba(0, 0, 0, 0)
-    .can-use
-      nomal-icon()
-      &:active
-        hover-icon()
     .disable
       disable-icon()
-    .tip
-      position: fixed
-      width: 100%
-      bottom: 10vw
-      font-size: $font-size-medium
-      color: $color-text
-      display: flex
-      justify-content: center
-      margin-top: 17px
-      .tip-text
-        padding: 0 15.5px
-        &:first-child
-          border-right: 1px solid $color-split-line
+    .hover-btn
+      hover-icon()
+
+  .tip
+    position: fixed
+    width: 100%
+    bottom: 10vw
+    font-size: $font-size-medium
+    color: $color-text
+    display: flex
+    justify-content: center
+    margin-top: 17px
+    .tip-text
+      padding: 0 15.5px
+      &:first-child
+        border-right: 1px solid $color-split-line
 </style>

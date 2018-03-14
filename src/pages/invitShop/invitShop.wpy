@@ -1,12 +1,8 @@
 <template>
   <view class="invit">
-    <image class="invit-bac" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_shop@2x.png'}}"></image>
-    <image class="invit-bac-btn" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg@2x.png'}}"></image>
-    <view class="invit-text">
-      <image class="invit-text-img" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_word_shop@2x.png'}}"></image>
-    </view>
+    <image class="invit-bac" style="height: 100%" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_shop@2x_new.png'}}"></image>
     <view class="invit-text-white">
-      <image wx:if="{{fillout && imageUrl}}" class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_white@2x_s.png'}}"></image>
+      <image wx:if="{{fillout && imageUrl}}" class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_white@2x_new.png'}}"></image>
       <view class="invit-li-img" style="display: none">
         <view class="li-img">
           <image wx:if="{{imageUrl}}"   src="{{imageUrl + '/defaults/share/page/pic-invite_girl@2x.png'}}"></image>
@@ -38,8 +34,8 @@
         </button>
       </view>
       <view wx:if="{{fillout}}" class="invit-my">
-        <view>我的邀请</view>
-        <view><navigator url="{{lookInvit}}">查看邀请记录 ></navigator></view>
+        <view><text>我的邀请</text></view>
+        <view><navigator url="{{lookInvit}}">查看邀请记录</navigator></view>
       </view>
       <view wx:if="{{fillout}}" class="invit-my-li" >
         <view @tap="lookPack" data-current="0">
@@ -47,11 +43,11 @@
           <text class="number">获得的红包</text>
         </view>
         <view @tap="lookPack" data-current="1">
-          <text class="number"><text>{{myInvit.myPerson || 0}}</text>人</text>
+          <text class="number number-t"><text>{{myInvit.myPerson || 0}}</text>人</text>
           <text class="number">成功邀请</text>
         </view>
         <view @tap="lookPack" data-current="2">
-          <text class="number"><text>{{myInvit.myMoneys || 0}}</text>个</text>
+          <text class="number number-t"><text>{{myInvit.myMoneys || 0}}</text>个</text>
           <text class="number">红包在路上</text>
         </view>
       </view>
@@ -76,7 +72,7 @@
   export default class invit extends wepy.page {
     mixins = [base]
     config = {
-      navigationBarTitleText: '邀请美业赚钱'
+      navigationBarTitleText: '邀请门店赚钱'
     }
     components = {
       Toast: Toast
@@ -110,41 +106,39 @@
       this.$apply()
     }
     async setInvitFun(Json) {
-      this.myInvit.myMoney = Json.data.registerRewards
-      this.myInvit.myPerson = Json.data.invitedCount
-      this.myInvit.myMoneys = Json.data.waitCheckeCount
-      this.$apply()
+      this.myInvit.myMoney = Json.data.register_rewards
+      this.myInvit.myPerson = Json.data.invited_count
+      this.myInvit.myMoneys = Json.data.wait_checke_count
     }
     methods = {
       lookPack(e) {
-        var key = e.currentTarget.dataset.current
-        var that = this
+        let key = e.currentTarget.dataset.current
+        let that = this
         wepy.navigateTo({
           url: that.lookInvit + '?id=' + key
         })
       },
       promtClose(e) {
         wepy.navigateTo({
-          url: '/pages/activity-rules/activity-rules'
+          url: '/pages/activity-rules/activity-rules?type=shop'
         })
       },
       // 分享
       onShareAppMessage() {
         return {
           title: this.userName + '邀请你入驻共享美导第一平台',
-          imageUrl: this.imageUrl + '/defaults/share/page/pic-share_01@2x.png',
+          imageUrl: this.imageUrl + '/defaults/share/page/pic-share_01@2x_new.png',
           path: '/pages/invitShop-write/invitShop?id=' + this.userId
         }
       }
     }
     async getUser() {
       let Json = await Info.getUserInfo()
-      console.log(Json)
       this.loaded()
       if (Json.error !== ERR_OK) {
         return
       }
-      this.userId = Json.data.id
+      this.userId = Json.data.user_id
       this.userName = Json.data.name || Json.data.random_id
       this.$apply()
     }
@@ -152,4 +146,5 @@
 </script>
 <style lang="stylus">
   @import "../../common/stylus/invit"
+
 </style>

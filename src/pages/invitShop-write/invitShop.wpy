@@ -1,12 +1,12 @@
 <template>
   <view class="invit">
-    <image class="invit-bac" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_shop@2x.png'}}"></image>
-    <image class="invit-bac-btn write"  wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg@2x.png'}}"></image>
-    <view class="invit-text">
-      <image class="invit-text-img" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_word@2x.png'}}"></image>
-    </view>
-    <view class="invit-text-white" style="height: 75%">
-      <image wx:if="{{imageUrl}}"  class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg_white2@2x_s.png'}}"></image>
+    <image class="invit-bac-white" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg02@2x_new.png'}}"></image>
+    <!--<image class="invit-bac-btn write"  wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg@2x.png'}}"></image>-->
+    <!--<view class="invit-text">-->
+      <!--<image class="invit-text-img" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_word@2x.png'}}"></image>-->
+    <!--</view>-->
+    <view class="invit-text-white" style="height: 83%;top: 42%">
+      <image wx:if="{{imageUrl}}"  class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg_white2@2x_new.png'}}"></image>
       <view class="invit-form">
         <view class="invit-form-title">填写入驻信息</view>
         <view class="invit-form-v">
@@ -38,12 +38,12 @@
                   range="{{industryArray}}" range-key="{{'name'}}" value="{{index}}" @change="bindPickerChange">
             <text class="{{industry ==='行业' ?'text-default':''}}">{{industry}}</text>
             <view class="eye">
-              <image class="close" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/iocn-invite_enter@2x.png'}}"></image>
+              <image class="close" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-select@2x_new.png'}}"></image>
             </view>
           </picker>
 
         </view>
-        <view wx:if="{{!submit}}"><text style="color: red;font-size: 14px">{{msg}}</text></view>
+        <view class="form-msg"><text>{{msg}}</text></view>
         <view class="invit-form-v-submit">
           <button class="submit {{submit ? 'can-use' : 'disable'}}"
                   @tap="submitForm({{submitType}})">
@@ -54,11 +54,6 @@
     </view>
     <Toast></Toast>
   </view>
-  <!-- 活动规则 -->
-  <!--<view class="right-activity" @tap="promtClose">-->
-    <!--活动规则-->
-  <!--</view>-->
-  <!-- 活动规则 over -->
 </template>
 <script>
   import wepy from 'wepy'
@@ -76,7 +71,7 @@
   export default class invitPerson extends wepy.page {
     mixins = [base]
     config = {
-      navigationBarTitleText: '邀请美导赚钱'
+      navigationBarTitleText: '邀请美业'
     }
     components = {
       Toast: Toast
@@ -94,7 +89,6 @@
       industryArray: [],
       modalHidden: true,
       show: false,
-      modalInfo: '活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则活动规则....',
       phoneNum: '', // 手机号
       password: '', // 密码
       verificationCode: '', // 验证码
@@ -115,13 +109,12 @@
       submit: false
     }
     async onLoad(options) {
-      this.invited_by = options.invited_by || 0
+      this.invited_by = options.id || 10
       await this.load()
       this.$apply()
     }
     async load() {
       let res = this.infoRes(await industries.industries())
-//      console.log(res)
       this.loaded()
       this.industryArray = res
       this.$apply()
@@ -165,6 +158,7 @@
       },
       // 点击获取验证码
       async setCode() {
+        if (!this.isSet) return
         let regPhone = REGPHONE
         if (this.phoneNum === '') {
           this.$invoke('Toast', 'show', '请输入手机号码')
@@ -187,6 +181,7 @@
           if (codeData.error !== ERR_OK) {
             this.time = '获取验证码'
             this.$invoke('Toast', 'show', codeData.message)
+            this.$apply()
             // this.rightTip(codeData.message, false)
           } else {
             this.isSet = false
@@ -230,14 +225,13 @@
       },
       clearPhone() {
         this.phoneNum = ''
-        this.phoneSusses = ''
         this.phoneFocus = false
+        this.isSet = false
         setTimeout(() => {
           this.phoneFocus = true
           this.$apply()
         }, 30)
         this.showClose = false
-        this.showMistake = false
       },
       showCiphertext(type) {
         this.ciphertext = !this.ciphertext
@@ -256,21 +250,22 @@
           let data = await wepy.login()
           let formData = {
             mobile: this.phoneNum,
-            code: this.isVer,
+            code: this.verificationCode,
             password: this.password,
             invited_by: this.invited_by,
             wx_code: data.code,
             role: 1,
             industry_id: this.industryId
           }
+          console.log(formData)
           let res = await Beauticians.invitRegister(formData)
           this.loaded()
           if (res.error === ERR_OK) {
             wepy.setStorageSync('token', res.data.access_token)
             this.$invoke('Toast', 'show', '注册成功')
             setTimeout(async () => {
-              await wepy.switchTab({// 跳转到美导页面
-                url: '/pages/index/index?redPack=1&price=' + res.data.prizes
+              await wepy.switchTab({// 跳转到发现页面
+                url: '/pages/find/find?redPack=1&price=' + res.data.prizes
               })
             }, 1000)
           } else {
