@@ -2,7 +2,7 @@
   <view class="compile">
        <textarea class="words-text" placeholder="记录你的点点滴滴…"
                  placeholder-class="com-words" focus="{{focus}}"
-                 value="{{words}}"
+                 value="{{subTxt}}"
                  show-confirm-bar="{{false}}" @focus="bindfocus"
                  @blur="showTop" @input="getWords" maxlength="-1"></textarea>
     <view class="com-box" style="height: {{comHeight}}px">
@@ -96,7 +96,8 @@
       longitude: 0,
       latitude: 0,
       focus: true,
-      isPic: false
+      isPic: false,
+      subTxt: ''
     }
 
     async onShow() {
@@ -109,6 +110,7 @@
     onLoad(option) {
       if (option.status) {
         this.fileId = this.$parent.globalData.fileId || []
+        this.subTxt = this.$parent.globalData.words || ''
         this.words = this.$parent.globalData.words || ''
         this.imgUrl = this.$parent.globalData.imgUrl || []
         this.videoUrl = this.$parent.globalData.videoUrl || ''
@@ -138,7 +140,6 @@
 
     _focus() {
       setTimeout(() => {
-        this.focus = true
         this.height = this.screenHeight * 0.445
         this.comHeight = this.screenHeight * 0.179
         this.$apply()
@@ -151,7 +152,6 @@
       },
       showTop() {
         setTimeout(() => {
-          this.focus = false
           this.height = 1
           this.comHeight = this.screenHeight * 0.55
           this.$apply()
