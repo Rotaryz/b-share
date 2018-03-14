@@ -164,6 +164,7 @@
       let id = wepy.getStorageSync('user_info').id
       let socket = this.$parent.globalData.socket
       socket.on(`channel-remind:newMessage:${id}`, (msg) => {
+        console.log(msg)
         wepy.showTabBarRedDot({index: 1})
         this.userLiveLogIid.push(msg.user_live_log_id)
         this.$apply()
