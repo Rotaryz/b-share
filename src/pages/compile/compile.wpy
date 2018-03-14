@@ -4,7 +4,7 @@
                  placeholder-class="com-words" focus="{{focus}}"
                  value="{{words}}"
                  show-confirm-bar="{{false}}" @focus="bindfocus"
-                 @blur="showTop" @input="getWords"></textarea>
+                 @blur="showTop" @input="getWords" maxlength="-1"></textarea>
     <view class="com-box" style="height: {{comHeight}}px">
       <view class="com-image">
         <image class="img-item" mode="aspectFill" wx:for="{{imgUrl}}"
@@ -230,7 +230,7 @@
         if (!res.address) {
           return
         }
-        this.address = res.address
+        this.address = res.name
         this.longitude = res.longitude
         this.latitude = res.latitude
         this.$parent.updateGlobalData('address', this.address)
