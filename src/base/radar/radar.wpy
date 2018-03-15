@@ -82,6 +82,7 @@
         this.eventIn = configArr.eventIn
         this.checked = configArr.checked
         this.score = configArr.score
+        this.$apply()
         this.chart = new WxCharts({
           canvasId: 'radarCanvas',
           type: 'radar',
