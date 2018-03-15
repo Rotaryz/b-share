@@ -8,7 +8,7 @@ page
   height: 100%
   width: 100%
   position: relative
-  font-size: 0px // 处理图片间隙
+  font-size: 0px
 
 .invit-bac
   height: 100%
@@ -126,11 +126,8 @@ page
   font-family: $font-family-regular;
   view:nth-child(1)
     font-size: $font-size-medium-x
-    //height: 50px
-    //line-height: 40px
     font-family: $font-family-regular
     color: $color-text
-    //padding: 10px 10px 0px 10px
     text
       padding-left: 15px
       color: $color-text
@@ -155,13 +152,13 @@ page
     color: $color-text-tr
     &:after
       content: ""
-      width: 7px
-      height: 7px
+      width: 5px
+      height: 5px
       border-top: 1px solid #ccc
       border-right: 1px solid #ccc
       transform:rotate(45deg);
       position: absolute
-      top: 0px
+      top: 1px
       right: -10px
 
 .invit-my-li
@@ -177,17 +174,15 @@ page
   view:nth-child(2):before
     content: ""
     display: block
-    height: 50%
-    width: 1px
-    background: $color-row-line
+    height: 30px
+    border-left: .5px solid $color-row-line
     position: absolute
     top: 20%
   view:nth-child(3):before
     content: ""
     display: block
-    height: 50%
-    width: 1px
-    background: $color-row-line
+    height: 30px
+    border-left: .5px solid $color-row-line
     position: absolute
     top: 20%
   .rmb-color
@@ -196,6 +191,7 @@ page
     margin: 5px 0px
     font-size: $font-size-large-m
     color:$color-assist-pink
+    font-family:$font-family-regular
     text
       .rmb-color-min
         font-size: $font-size-medium
@@ -207,6 +203,7 @@ page
   color: $color-text-d
   font-size: $font-size-small
   text
+    font-family:$font-family-regular
     font-size: $font-size-large-m
     color: $color-text
 .number.number-t
@@ -223,11 +220,11 @@ page
     font-family: $font-family-regular
   .invit-form-v
     font-size: $font-size-medium
-    border-bottom: 1px solid $color-row-line
+    border-bottom: .5px solid $color-row-line
     display: flex
     height: 9vh
     position: relative
-    align-items: center
+    align-items: flex-end
     input
       width: 66%
       height: 39px
@@ -240,7 +237,7 @@ page
 
     .invit-form-v-picker
       width: 70%
-      height: 30px
+      height: 39px
       line-height: 34px
       font-family: $font-family-regular
       font-size: 16px
@@ -249,15 +246,16 @@ page
         font-family: $font-family-light
       .eye
         image
-          top:50%
+          top:60%
 
     .invit-form-v-getcode
-      border-left: 1px solid #ccc
+      border-left: 0.5px solid $color-row-line
       padding-left: 10px
       height: 16px
       font-size: $font-size-medium
       color: $color-placeholder
       line-height: 16px
+      margin-bottom: 13px
     .invit-form-v-getcode.set-code
       color: $color-text
     .eye
@@ -270,7 +268,7 @@ page
       image
         position:absolute
         position:absolute
-        top:50%
+        top:63%
         -webkit-transform:translateY(-50%)
         -moz-transform:translateY(-50%)
         transform:translateY(-50%)
