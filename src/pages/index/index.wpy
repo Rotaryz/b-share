@@ -209,7 +209,6 @@
                   font-family: Univers-Condensed-Bold
                   text-align: center
                   line-height: 24px
-                  font-weight: bold
 
               .avatar
                 width: 48px
