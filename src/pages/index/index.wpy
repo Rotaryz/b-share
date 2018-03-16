@@ -213,6 +213,7 @@
               .avatar
                 width: 48px
                 height: 48px
+                border: 1px solid $color-background
                 border-radius: 50%
                 overflow: hidden
                 margin-right: 10px

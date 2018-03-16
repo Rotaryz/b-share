@@ -2,12 +2,12 @@
   <view class="withdraw">
     <view class="top">
       <view class="left">账户余额</view>
-      <view class="right"><text class="small">￥</text>{{canUse}}</view>
+      <view class="right"><text class="small">¥</text>{{canUse}}</view>
     </view>
     <view class="content">
       <view class="title">提现金额</view>
       <view class="input-box">
-        <view class="txt">￥</view>
+        <view class="txt">¥</view>
         <input type="digit" class="moneyInput" bindinput="moneyChange" value="{{money}}"/>
       </view>
       <view class="foot">

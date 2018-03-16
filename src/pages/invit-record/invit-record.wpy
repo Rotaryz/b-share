@@ -6,7 +6,7 @@
       </view>
       <scroll-view scroll-x="true" class="tab-h" scroll-left="{{scrollLeft}}">
         <view class="tab-item {{currentTab==0?'active':''}}"  data-current="0" bindtap="swichNav">
-          <text class="number rmb-color"><text><text class="rmb-color-min">￥</text>{{myInvit.myMoney || '0.00'}}</text></text>
+          <text class="number rmb-color"><text><text class="rmb-color-min">¥</text>{{myInvit.myMoney || '0.00'}}</text></text>
           <text class="number">获得的红包</text>
         </view>
         <view class="tab-item {{currentTab==1?'active':''}}" data-current="1" bindtap="swichNav">
@@ -35,7 +35,7 @@
                   <view class="name" wx:else>{{item.name}}</view>
                   <view class="tag">{{item.updated_at || item.created_at}}</view>
                 </view>
-                <view class="askBtn" wx:if="{{currentTab==0}}"><text>￥</text>{{item.reward}}</view>
+                <view class="askBtn" wx:if="{{currentTab==0}}"><text>¥</text>{{item.reward}}</view>
                 <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
                 <view class="askBtn-2" wx:if="{{currentTab==2}}">还未完成认证</view>
               </view>
