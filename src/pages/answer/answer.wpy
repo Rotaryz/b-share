@@ -5,9 +5,8 @@
         <view class="container-BC-box">
           <image class="container-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-answer_bg-top@3x.png'}}"></image>
           <view class="time-box">
-            <image class="time-img left" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time1@3x.png'}}" style="transform:rotate({{leftTranslate}}deg);transform-origin: 100% 50%;"></image>
-            <image class="time-img right" wx:if="{{imageUrl && time > 5}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time2@3x.png'}}" style="transform: rotate({{rightTranslate}}deg);transform-origin: left 50%;"></image>
-            <image class="white-right" wx:if="{{imageUrl && time <= 5}}" src="{{imageUrl + '/defaults/share/page/pic-qa_time3@3x+.png'}}"></image>
+            <canvas class="canvas {{brand === 'iPhone' ? 'iphone' : ''}}" canvas-id="redCanvas"></canvas>
+            <canvas class="canvas {{brand === 'iPhone' ? 'iphone' : ''}}" canvas-id="whiteCanvas"></canvas>
             <view class="time-num">{{time}}</view>
           </view>
         </view>
@@ -35,11 +34,11 @@
         </view>
         <view class="result-top">
           <view class="big-txt">本轮答对<text class="black">{{resRightCount}}</text>题</view>
-          <view class="small-txt">你是专业美导的概率 > {{resBeauticiansPercentage}}</view>
+          <view class="small-txt">你是专业美导的概率{{resRightCount ? ' > ' + resBeauticiansPercentage : '为 ' + resBeauticiansPercentage}}</view>
           <view class="img-box">
             <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-win@2x.png'}}" class="res-img"></image>
           </view>
-          <view class="big-txt">获得<text class="red-small">￥</text><text class="red-big">{{prizes}}</text>的红包奖励</view>
+          <view class="big-txt">获得<text class="red-small">¥</text><text class="red-big">{{prizes}}</text>的红包奖励</view>
           <view class="small-txt">红包已经存在你的钱包</view>
         </view>
         <view class="result-down">
@@ -55,20 +54,11 @@
       </view>
     </view>
     <Toast></Toast>
-    <!--<view class="result-down">-->
-      <!--<view class="item red">-->
-        <!--<button open-type="share" style="font-size: 16px" class="submit {{submit ? 'can-use' : 'disable'}}">-->
-          <!--分享战绩-->
-        <!--</button>-->
-      <!--</view>-->
-      <!--<navigator url="/pages/my-wellet/my-wellet" hover-class="none">-->
-        <!--<view class="item white">我的钱包</view>-->
-      <!--</navigator>-->
-    <!--</view>-->
   </view>
 </template>
 
 <script>
+  /* eslint-disable no-undef */
   import wepy from 'wepy'
   import base from 'common/mixins/base'
   import URIS from 'common/js/config'
@@ -106,18 +96,21 @@
       resBeauticiansPercentage: '0%',
       prizes: '0.00',
       answerOver: false,
-      submit: true
+      submit: true,
+      scale: '',
+      redCtx: '',
+      brand: ''
     }
 
     async onLoad(option) {
+      let res = await wepy.getSystemInfo()
+      let maxWidth = res.screenWidth
+      this.brand = res.brand
+      this.scale = maxWidth / 100
+      this.redCtx = wx.createCanvasContext('redCanvas')
       await this.load(option)
     }
-//    onHide() {
-//      this._clearAll()
-//      this.rightTranslate = 0
-//      this.leftTranslate = 0
-//      this.$apply()
-//    }
+
     onUnload() {
       this._clearAll()
     }
@@ -153,44 +146,58 @@
           await this._getAnswerRes()
           break
       }
+      this._drawRedCircle()
       this._beginCountdown()
       this.loaded()
       this.$apply()
     }
 
     _beginCountdown() {
-      this._rotateRun()
-      this._timeRun()
+      this._circleRun()
     }
 
-    _timeRun() {
-      clearInterval(this.timeTimer)
-      this.timeTimer = setInterval(() => {
-        this.time --
-        this.$apply()
-        if (this.time <= 0) {
+    _drawRedCircle() {
+      let ctx = this.redCtx
+      let r = 6.5 * this.scale
+      let h = this.scale * 7.07
+      ctx.setStrokeStyle('#FF3388')
+      ctx.setLineWidth(3)
+      ctx.arc(h, h, r, 0, 2 * Math.PI)
+      ctx.stroke()
+      ctx.draw()
+    }
+
+    _drawWhiteCircle(step) {
+      let ctx = wx.createCanvasContext('whiteCanvas')
+      let r = 6.5 * this.scale - 1
+      let h = this.scale * 7.07
+      ctx.setStrokeStyle('#FFFFFF')
+      ctx.setLineWidth(6)
+      ctx.arc(h, h, r, -0.5 * Math.PI, step * 2 * Math.PI - 0.5 * Math.PI)
+      ctx.stroke()
+      ctx.draw()
+    }
+
+    _circleRun() {
+      let count = 0
+      clearInterval(this.rotateTimer)
+      this.$apply()
+      this.rotateTimer = setInterval(() => {
+        count++
+        this.time = Math.ceil((200 - count) / 20)
+        this._drawWhiteCircle(count / 200)
+        if (count >= 200) {
           this.time = 0
           this._answerQuestion()
           if (this.ansCount !== this.count) {
             this._nextQuestion()
           } else {
-            this._getAnswerRes()
+            setTimeout(async () => {
+              await this._getAnswerRes()
+              this.loaded()
+            }, 1000)
           }
           this.loaded()
-          this.$apply()
-          clearInterval(this.timeTimer)
-        }
-      }, 1000)
-    }
-
-    _rotateRun() {
-      clearInterval(this.rotateTimer)
-      this.rotateTimer = setInterval(() => {
-        this.rightTranslate += 1.8
-        if (this.time <= 5) {
-          this.leftTranslate += 1.8
-        }
-        if (this.leftTranslate >= 180) {
           clearInterval(this.rotateTimer)
         }
         this.$apply()
@@ -198,17 +205,13 @@
     }
 
     _clearAll() {
-      clearInterval(this.timeTimer)
       clearInterval(this.rotateTimer)
-      this.rightTranslate = 0
-      this.leftTranslate = 0
       this.time = 10
       this.answerChecked = ''
       this.$apply()
     }
 
     _pause() {
-      clearInterval(this.timeTimer)
       clearInterval(this.rotateTimer)
     }
 
@@ -241,11 +244,11 @@
     }
 
     // 下一题
-    _nextQuestion() {
+    async _nextQuestion() {
       clearTimeout(this.nextTimer)
-      this.nextTimer = setTimeout(() => {
+      this.nextTimer = setTimeout(async () => {
         this._clearAll()
-        this._findQuestion()
+        await this._findQuestion()
         this.loaded()
         this._beginCountdown()
       }, 1500)
@@ -283,10 +286,10 @@
         this._pause()
         await this._answerQuestion()
         if (this.ansCount < this.count) {
-          this._nextQuestion()
+          await this._nextQuestion()
         } else {
-          setTimeout(() => {
-            this._getAnswerRes()
+          setTimeout(async () => {
+            await this._getAnswerRes()
             this.loaded()
           }, 1000)
         }
@@ -417,15 +420,20 @@
 
 
           .time-box
-            width: 14.1333333333vw
-            height: 14.1333333333vw
+            width: 14.14vw
+            height: 14.14vw
             position: absolute
             left: 50%
             top: 2.6666666666vw
             transform: translate(-50%)
-            border-radius: 50%
-            border: 1px solid $color-white
-            box-sizing: border-box
+            .canvas
+              width: 14.14vw
+              height: 14.14vw
+              position: absolute
+              left: 0
+              top: 0
+            .canvas.iphone
+              left: 0.24vw
             .time-img
               width: 50%
               height: 100%
@@ -531,21 +539,20 @@
             align-items: center
             .item
               width: 73.0666666vw
-              height: 11vw
+              height: 12vw
               border-radius: 6vw
               box-sizing: border-box
               text-align: center
-              line-height: 11vw
+              line-height: 12vw
               font-family: PingFangSC-Regular
               font-size: $font-size-medium-x
-              margin-bottom: 10px
               .submit
                 background: $color-theme
                 color: $color-white
                 font-size: $font-size-medium-x
-                height: 11vw
-                line-height: 11vw
-                width: 100%
+                height: 45px
+                line-height: 45px
+                width: 90.667%
                 border-radius: 50px
                 &::after
                   border: 1px solid rgba(0, 0, 0, 0)
@@ -555,9 +562,5 @@
                   hover-icon()
               .disable
                 disable-icon()
-            .white
-              border 1px solid $color-theme
-              color: $color-theme
-
 
 </style>

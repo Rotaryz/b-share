@@ -227,6 +227,7 @@
         this.phoneNum = ''
         this.phoneFocus = false
         this.isSet = false
+        this.submit = false
         setTimeout(() => {
           this.phoneFocus = true
           this.$apply()

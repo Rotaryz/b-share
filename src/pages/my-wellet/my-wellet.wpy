@@ -5,7 +5,7 @@
       <view class="container">
         <view class="top-head">
           <view class="money">
-            <view class="little">￥</view>
+            <view class="little">¥</view>
             <view class="big">{{canUse}}</view>
           </view>
           <view class="text">可提现红包金额</view>
@@ -13,7 +13,7 @@
         </view>
         <view class="top-foot">
           <view class="item">
-            <view class="item-top">￥{{total}}</view>
+            <view class="item-top"><text class="small-money">¥</text>{{total}}</view>
             <view class="item-foot">红包总额</view>
           </view>
           <view class="item">
@@ -35,7 +35,7 @@
             <view class="title">{{typeArr[item.type]}}</view>
             <view class="time">{{item.created_at}}</view>
           </view>
-          <view class="item-right"><text class="small">￥</text>{{item.money}}</view>
+          <view class="item-right"><text class="small">¥</text>{{item.money}}</view>
         </view>
       </scroll-view>
       <view class="empty" wx:if="{{!listEmpty}}">
@@ -207,6 +207,10 @@
               font-size: $font-size-large
               color: $color-text
               font-family: PingFangSC-Regular
+              .small-money
+                font-size: $font-size-medium
+                color: $color-text
+                font-family: PingFangSC-Regular
             .item-foot
               font-size: $font-size-medium
               color: $color-text-d
