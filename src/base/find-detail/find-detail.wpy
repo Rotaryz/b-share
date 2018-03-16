@@ -63,11 +63,8 @@
             </text>
           </view>
           <text class="words {{comment?'':'special'}}">{{find.content}}</text>
-          <video id="{{listNum}}" enable-progress-gesture="{{false}}" loop
-                 src="{{find.user_live_log_details[0].file_url}}"
-                 show-play-btn="{{false}}" show-center-play-btn="{{false}}"
-                 @fullscreenchange="hideVideo"
-                 objectFit="{{find.object ? 'contain' : 'cover'}}"
+          <video id="{{listNum}}" loop
+                 src="{{find.user_live_log_details[0].file_url}}" @fullscreenchange="hideVideo" objectFit="cover"
                  wx:if="{{find.video}}" class="find-video"></video>
           <image @tap.stop="showVideo({{find}},{{listNum}})"
                  src="{{find.user_live_log_details[0].file_url + '?second=1&width=202&height=113'}}"
@@ -263,7 +260,6 @@
       </view>
     </view>
   </view>
-  <play-video></play-video>
 </template>
 
 <script>
@@ -272,7 +268,6 @@
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
   import logs from 'api/logs'
-  import playVideo from '@/base/play-video/play-video'
 
   export default class findDetail extends wepy.page {
     mixins = [base]
@@ -333,7 +328,7 @@
       showVideo(find, index) {
         this.targetIndex = index
         this.targetFind = find
-        this.video = wx.createVideoContext(index + '')
+        this.video = wepy.createVideoContext(index + '')
 //        this.video.requestFullScreen()
         this.video.play()
 //        console.log(this.video)
@@ -409,9 +404,6 @@
           address: find.address
         })
       }
-    }
-    components = {
-      playVideo
     }
   }
 </script>
