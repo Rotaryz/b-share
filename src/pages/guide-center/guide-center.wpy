@@ -112,7 +112,8 @@
       page: 1,
       noMore: false,
       delId: '',
-      role: 0
+      role: 0,
+      videoIndex: 0
     }
 
     onLoad(option) {
@@ -132,6 +133,19 @@
       this.page++
       await this._getMoreLogs(this.page)
       this.loaded()
+    }
+
+    onPageScroll(e) {
+      if (this.videoIndex !== -1) {
+        let status = false
+        if ((e.scrollTop - this.scroll > 2 || this.scroll - e.scrollTop > 2) && this.scroll - e.scrollTop === e.scrollTop - this.scroll) {
+          this.scroll = e.scrollTop
+          status = false
+        } else if (this.scroll - e.scrollTop <= 0 && this.scroll - e.scrollTop > -3) {
+          status = true
+        }
+        this.logs[this.videoIndex].video = status
+      }
     }
 
     async load() {
@@ -272,6 +286,10 @@
     }
 
     events = {
+      showVideo(find, index) {
+        this.videoIndex = index
+        this.logs[index] = find
+      },
       good(item, idx) {
         this.logs[idx] = item
         this.$apply()
