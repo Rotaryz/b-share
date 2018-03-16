@@ -63,9 +63,18 @@
             </text>
           </view>
           <text class="words {{comment?'':'special'}}">{{find.content}}</text>
-          <video src="{{find.user_live_log_details[0].file_url}}"
-                 objectFit="cover"
-                 class="find-video"></video>
+          <video id="{{listNum}}" enable-progress-gesture="{{false}}" loop
+                 src="{{find.user_live_log_details[0].file_url}}"
+                 show-play-btn="{{false}}" show-center-play-btn="{{false}}"
+                 @fullscreenchange="hideVideo"
+                 objectFit="{{find.object ? 'contain' : 'cover'}}"
+                 wx:if="{{find.video}}" class="find-video"></video>
+          <image @tap.stop="showVideo({{find}},{{listNum}})"
+                 src="{{find.user_live_log_details[0].file_url + '?second=1&width=202&height=113'}}"
+                 wx:if="{{!find.video}}" class="find-video">
+            <image class="play-icon" wx:if="{{imageUrl}}"
+                   src="{{imageUrl + '/defaults/share/page/icon-find_video@2x.png'}}"></image>
+          </image>
         </view>
         <view class="address" wx:if="{{find.address}}"
               @tap.stop="openLocation({{find}})">
@@ -254,6 +263,7 @@
       </view>
     </view>
   </view>
+  <play-video></play-video>
 </template>
 
 <script>
@@ -262,6 +272,7 @@
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
   import logs from 'api/logs'
+  import playVideo from '@/base/play-video/play-video'
 
   export default class findDetail extends wepy.page {
     mixins = [base]
@@ -291,7 +302,10 @@
       imageUrl: URIS.image,
       press: URIS.image + '/defaults/share/page/icon-like@2x.png',
       finds: null,
-      imageIndex: null
+      imageIndex: null,
+      targetFind: null,
+      targetIndex: 0,
+      video: null
     }
 
     infoRes(res) {
@@ -306,6 +320,26 @@
     }
 
     methods = {
+      hideVideo(e) {
+        if (!e.detail.fullScreen) {
+//          this.targetFind.video = false
+//          this.$apply()
+//          this.$emit('showVideo', this.targetFind, this.targetIndex)
+        } else {
+//          this.targetFind.object = true
+//          this.$emit('showVideo', this.targetFind, this.targetIndex)
+        }
+      },
+      showVideo(find, index) {
+        this.targetIndex = index
+        this.targetFind = find
+        this.video = wx.createVideoContext(index + '')
+//        this.video.requestFullScreen()
+        this.video.play()
+//        console.log(this.video)
+        find.video = true
+        this.$emit('showVideo', find, index)
+      },
       goMine(id) {
         if (this.mine === 'no') {
           wepy.navigateTo({
@@ -375,6 +409,9 @@
           address: find.address
         })
       }
+    }
+    components = {
+      playVideo
     }
   }
 </script>
@@ -467,6 +504,11 @@
     .find-video
       width: 54vw
       height: 30.134vw
+      position: relative
+      .play-icon
+        height: 41px
+        width: 41px
+        all-center()
 
   .img-one
     .img-one-item

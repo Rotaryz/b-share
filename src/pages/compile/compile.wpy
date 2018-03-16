@@ -197,6 +197,7 @@
         if (this.fileType !== 1 && this.fileType !== -1) {
           let res = await wepy.chooseVideo()
           this._focus()
+          console.log(res)
           if (!res) {
             return
           }

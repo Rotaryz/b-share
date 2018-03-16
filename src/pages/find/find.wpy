@@ -130,6 +130,7 @@
     }
 
     async onPullDownRefresh() {
+      this.videoIndex = -1
       if (this.navIndex === 0) {
         this.findList = await this.load(this.option)
         this.page = 1
@@ -164,7 +165,6 @@
       let id = wepy.getStorageSync('user_info').id
       let socket = this.$parent.globalData.socket
       socket.on(`channel-remind:newMessage:${id}`, (msg) => {
-        console.log(msg)
         wepy.showTabBarRedDot({index: 1})
         this.userLiveLogIid.push(msg.user_live_log_id)
         this.$apply()
@@ -177,9 +177,10 @@
         if ((e.scrollTop - this.scroll > 2 || this.scroll - e.scrollTop > 2) && this.scroll - e.scrollTop === e.scrollTop - this.scroll) {
           this.scroll = e.scrollTop
           status = false
-        } else if (this.scroll - e.scrollTop === 0) {
+        } else if (this.scroll - e.scrollTop <= 0 && this.scroll - e.scrollTop > -3) {
           status = true
         }
+
         if (this.navIndex === 0) {
           this.findList[this.videoIndex].video = status
         } else if (this.navIndex === 1) {
@@ -307,8 +308,10 @@
           if (item.user_live_log_details.length === 0 && item.content.length > 50) {
             item.content = item.content.slice(0, 50)
             item.showDetail = true
-            return item
           }
+          item.video = false
+          item.object = false
+          return item
         })
       }
       this.loaded()
@@ -447,6 +450,7 @@
         }
       },
       showVideo(find, index) {
+        console.log(find)
         this.videoIndex = index
         if (this.navIndex === 0) {
           this.findList[index] = find
@@ -457,7 +461,6 @@
         } else if (this.navIndex === 3) {
           this.findShop[index] = find
         }
-        console.log(find, index)
       }
     }
     watch = {
