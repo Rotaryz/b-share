@@ -19,9 +19,7 @@
         </view>
       </scroll-view>
       <swiper class="tab-content" current="{{currentTab}}" duration="300"  bindchange="switchTab" style="height:{{winHeight}}px" >
-
         <swiper-item wx:for="{{expertList}}" wx:key="*this">
-
           <scroll-view scroll-y="true" class="scoll-h"  wx:if="{{expertList[index].length>0}}" @scrolltolower="scrolltolower" lower-threshold="50">
             <block wx:for="{{expertList[index]}}" wx:key="*this">
               <view class="item-ans">
@@ -97,11 +95,11 @@
         currentTab: 0, // 预设当前项的值
         noPacketW: 0,
         scrollLeft: 0, // tab标题的滚动条位置
-        expertList: [],
+        expertList: [[], [], []],
         page: [1, 1, 1],
         pageFlag: [false, false, false],
         forTest: [1, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3], // 测试数据
-        fillout: true,
+        fillout: true
       }
       async onLoad(option) {
         await this.setInvitFun()
@@ -270,16 +268,16 @@
   .tab-item:nth-child(2):before
     content: ""
     display: block
-    height: 30%
-    border-left: .8px solid $color-row-line
+    height: 30px
+    border-left: .5px solid $color-row-line
     position: absolute
     top: 20%
 
   .tab-item:nth-child(3):before
     content: ""
     display: block
-    height: 30%
-    border-left:.8px solid $color-row-line
+    height: 30px
+    border-left:.6px solid $color-row-line
     position: absolute
     top: 20%
 
@@ -304,7 +302,7 @@
 
   .tab-item
     display: inline-block
-    width:33%
+    width:33.3%
     text-align: center
     height: 90%
     border-bottom: 0.5px solid $color-row-line
