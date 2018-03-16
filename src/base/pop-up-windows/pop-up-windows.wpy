@@ -1,36 +1,34 @@
 <template>
-  <cover-view class="pop-up-windows" wx:if="{{showWindow}}">
-    <cover-view class="window" wx:if="{{pop}}">
-      <cover-view class="tip">{{content}}</cover-view>
-      <cover-view class="pop-line"></cover-view>
-      <cover-view class="btn">
-        <cover-view class="btn-item" @tap="cancel">取消
-          <cover-view class="btn-line"></cover-view>
-        </cover-view>
-        <cover-view class="btn-item" @tap="sure">确定</cover-view>
-      </cover-view>
-    </cover-view>
-    <cover-view class="red-peck" wx:if="{{!pop}}">
-      <cover-view class="up-header">
-        <cover-view class="up-text">恭喜您！</cover-view>
-        <cover-image class="red-image" wx:if="{{imageUrl}}"
-                     src="{{imageUrl + '/defaults/share/page/pic-window_red@2x.png'}}"></cover-image>
-      </cover-view>
-      <cover-view class="money">
-        <cover-view class="money-box">
-          <cover-view class="money-icon">¥</cover-view>
-          <cover-view class="mon-text" style="width:{{width}}px">{{money}}
-          </cover-view>
-          <cover-view class="money-icon monry-title">红包</cover-view>
-        </cover-view>
-      </cover-view>
-      <cover-view class="red-text">红包已经存在你的钱包</cover-view>
-      <cover-view class="red-btn" @tap="ansewr">回答认证问题，领取更多红包</cover-view>
-    </cover-view>
-    <cover-image class="red-close" wx:if="{{imageUrl && !pop}}"
+  <view class="pop-up-windows" wx:if="{{showWindow}}">
+    <view class="window" wx:if="{{pop}}">
+      <view class="tip">{{content}}</view>
+      <view class="btn">
+        <view class="btn-item" @tap="cancel">取消
+        </view>
+        <view class="btn-item" @tap="sure">确定</view>
+      </view>
+    </view>
+    <view class="red-peck" wx:if="{{!pop}}">
+      <view class="up-header">
+        <view class="up-text">恭喜您！</view>
+        <image class="red-image" wx:if="{{imageUrl}}"
+                     src="{{imageUrl + '/defaults/share/page/pic-window_red@2x.png'}}"></image>
+      </view>
+      <view class="money">
+        <view class="money-box">
+          <view class="money-icon">¥</view>
+          <view class="mon-text" style="width:{{width}}px">{{money}}
+          </view>
+          <view class="money-icon monry-title">红包</view>
+        </view>
+      </view>
+      <view class="red-text">红包已经存在你的钱包</view>
+      <view class="red-btn" @tap="ansewr">回答认证问题，领取更多红包</view>
+    </view>
+    <image class="red-close" wx:if="{{imageUrl && !pop}}"
                  src="{{imageUrl + '/defaults/share/page/icon-diary_del@2x.png'}}"
-                 @tap="close"></cover-image>
-  </cover-view>
+                 @tap="close"></image>
+  </view>
 </template>
 
 <script>
@@ -113,6 +111,7 @@
         line-height: 124px
         font-size: $font-size-medium
         text-align: center
+        border-bottom :0.5px solid $color-split-line
       .pop-line
         height: 1px
         background: $color-split-line
@@ -128,6 +127,7 @@
           color: $color-text-tr
           position: relative
           &:last-child
+            border-left :0.5px solid $color-split-line
             color: $color-assist-pink
           .btn-line
             top: 0
