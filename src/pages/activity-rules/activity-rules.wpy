@@ -77,9 +77,6 @@
       config = {
         navigationBarTitleText: '活动规则'
       }
-      onLoad(option) {
-        this.getActivityDetail(option)
-      }
       data = {
         activityData: {
           id: 0,
@@ -119,7 +116,9 @@
         }
 
       }
-
+      onLoad(option) {
+        this.getActivityDetail(option)
+      }
       async getActivityDetail(option) {
         let data = {
           type: option.type || 'beautician' // beautician：美导活动 shop:邀请门店 question:问答活动
