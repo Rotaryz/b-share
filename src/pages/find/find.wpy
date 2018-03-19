@@ -155,8 +155,6 @@
     }
 
     async onLoad(option) {
-      this.role = wepy.getStorageSync('user_info').role
-      this.guidanceBanner = wepy.getStorageSync('user_info').role ? URIS.image + '/defaults/share/page/pic-banner_02@2x.png' : URIS.image + '/defaults/share/page/pic-banner_03@2x.png'
       this.findList = await this.load()
       this.showBlank(this.findList)
       this.$apply()
@@ -196,6 +194,8 @@
     }
 
     async onShow() {
+      this.role = wepy.getStorageSync('user_info').role
+      this.guidanceBanner = wepy.getStorageSync('user_info').role ? URIS.image + '/defaults/share/page/pic-banner_02@2x.png' : URIS.image + '/defaults/share/page/pic-banner_03@2x.png'
       if (this.userLiveLogIid.length) {
         wepy.startPullDownRefresh()
         await this.onPullDownRefresh()
