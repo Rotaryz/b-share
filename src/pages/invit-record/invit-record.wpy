@@ -1,230 +1,227 @@
-
 <template>
-    <view class="white">
+  <view class="find">
+    <view class="tab-h">
       <view class="invit-my">
         <text>我的邀请</text>
       </view>
-      <scroll-view scroll-x="true" class="tab-h" scroll-left="{{scrollLeft}}">
-        <view class="tab-item {{currentTab==0?'active':''}}"  data-current="0" bindtap="swichNav">
-          <text class="number rmb-color"><text><text class="rmb-color-min">¥</text>{{myInvit.myMoney || '0.00'}}</text></text>
+      <scroll-view scroll-x="true" class="tab-h-s"  scroll-left="{{scrollLeft}}">
+        <view class="tab-item {{isChecked===0?'active':''}}"  data-current="0" @tap="checkNav(0)">
+          <text class="number rmb-color"><text><text class="rmb-color-min">￥</text>{{myInvit.myMoney || '0.00'}}</text></text>
           <text class="number">获得的红包</text>
         </view>
-        <view class="tab-item {{currentTab==1?'active':''}}" data-current="1" bindtap="swichNav">
+        <view class="tab-item {{isChecked===1?'active':''}}" data-current="1" @tap="checkNav(1)">
           <text class="number number-t"><text>{{myInvit.myPerson || 0}}</text>人</text>
           <text class="number">成功邀请</text>
         </view>
-        <view class="tab-item {{currentTab==2?'active':''}}" data-current="2" bindtap="swichNav">
+        <view class="tab-item {{isChecked===2?'active':''}}" data-current="2" @tap="checkNav(2)">
           <text class="number number-t"><text>{{myInvit.myMoneys || 0}}</text>个</text>
           <text class="number">红包在路上</text>
         </view>
       </scroll-view>
-      <swiper class="tab-content" current="{{currentTab}}" duration="300"  bindchange="switchTab" style="height:{{winHeight}}px" >
-        <swiper-item wx:for="{{expertList}}" wx:key="*this">
-          <scroll-view scroll-y="true" class="scoll-h"  wx:if="{{expertList[index].length>0}}" @scrolltolower="scrolltolower" lower-threshold="50">
-            <block wx:for="{{expertList[index]}}" wx:key="*this">
-              <view class="item-ans">
-                <view class="avatar" wx:if="{{currentTab !=0}}">
-                  <image class="img" wx:if="{{imageUrl}}"
-                         src="{{item.image_url || imageUrl + '/defaults/share/page/'+(role===0?'pic-find_defaulta01@2x':'pic-find_defaulta02@2x')+'.png'}}">
-                  </image>
-                </view>
-                <view class="expertInfo">
-                  <view class="name" wx:if="{{currentTab==0}}">{{item.type==='register'?'邀请奖励红包':'认证奖励红包'}}</view>
-                  <view class="name" wx:else>{{item.name}}</view>
-                  <view class="tag">{{item.updated_at || item.created_at}}</view>
-                </view>
-                <view class="askBtn" wx:if="{{currentTab==0}}"><text>¥</text>{{item.reward}}</view>
-                <view class="askBtn-2" wx:if="{{currentTab==1}}">成功入驻了共享美导</view>
-                <view class="askBtn-2" wx:if="{{currentTab==2}}">还未完成认证</view>
-              </view>
-            </block>
-            <block wx:if="{{pageFlag[currentTab]}}" >
-              <view class="textmsg"><text>没有数据了</text></view>
-            </block>
-          </scroll-view>
-          <scroll-view  wx:else style="text-align: center">
-            <block>
-              <image class="no-packet" src="{{imageUrl + '/defaults/share/page/pic-invite_empty@2x_s.png'}}"></image>
-            </block>
-          </scroll-view>
-        </swiper-item>
-      </swiper>
-      <UnderlineBlock></UnderlineBlock>
-      <Toast></Toast>
     </view>
+    <Blank></Blank>
+    <view class="list-box {{!isLoad ? 'find-box-active' : 'find-big-box'}}">
+      <block wx:for="{{findList}}" wx:key="*this">
+        <view class="item-ans">
+          <view class="avatar" wx:if="{{isChecked !==0}}">
+            <image class="img" wx:if="{{imageUrl}}"
+                   src="{{item.image_url || imageUrl + '/defaults/share/page/'+(roleFlag===0?'pic-find_defaulta01@2x':'pic-find_defaulta02@2x')+'.png'}}">
+            </image>
+          </view>
+          <view class="expertInfo">
+            <view class="name n" wx:if="{{isChecked!==0}}">{{item.name}}</view>
+            <view class="name" wx:else>{{item.type==='register'?'邀请奖励红包':'认证奖励红包'}}</view>
+            <view class="tag">{{item.updated_at || item.created_at}}</view>
+          </view>
+          <view class="askBtn" wx:if="{{isChecked===0}}"><text>￥</text>{{item.reward}}</view>
+          <view class="askBtn-2" wx:if="{{isChecked===1}}">成功入驻了共享美导</view>
+          <view class="askBtn-2" wx:if="{{isChecked===2}}">还未完成认证</view>
+        </view>
+      </block>
+    </view>
+    <UnderlineBlock></UnderlineBlock>
+    <Toast></Toast>
+    <PopUpWindows></PopUpWindows>
+  </view>
 </template>
-<script>
-    import wepy from 'wepy'
-    import Toast from '@/base/toast/toast'
-    import base from 'common/mixins/base'
-    import URIS from 'common/js/config'
-    import {ERR_OK} from 'api/base'
-    import Beauticians from 'api/beauticians'
-    import UnderlineBlock from '@/base/underline-block/underline-block'
 
-    export default class invitRecord extends wepy.page {
-      config = {
-        navigationBarTitleText: '邀请记录',
-        navigationBarBackgroundColor: '#fff',
-        backgroundColor: '#F9F9F9',
-        onReachBottomDistance: 30
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+  import FindDetail from '@/base/find-detail/find-detail'
+  import Toast from '@/base/toast/toast'
+  import PopUpWindows from '@/base/pop-up-windows/pop-up-windows'
+  import UnderlineBlock from '@/base/underline-block/underline-block'
+  import Blank from '@/base/blank/blank'
+  import Beauticians from 'api/beauticians'
+
+  const ROLE = wepy.getStorageSync('user_info').role
+  const NAV = [{title: '获得的红包', type: 0}, {title: '成功邀请', type: 1}, {
+    title: '红包在路上',
+    type: 2
+  }, {title: '门店', type: 3}]
+  export default class find extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '共享美导',
+      onReachBottomDistance: 30,
+      enablePullDownRefresh: true,
+      backgroundTextStyle: 'dark'
+    }
+    data = {
+      imageUrl: URIS.image,
+      nav: NAV,
+      navIndex: 0,
+      isLoad: false,
+      showGuidance: true,
+      findList: [],
+      page: 1,
+      isChecked: 0,
+      scrollTop: '',
+      startTop: 0,
+      endTop: 0,
+      isPull: false,
+      option: 1,
+      loadMore: true,
+      content: '',
+      delIndex: {},
+      bottom: 0,
+      check: false,
+      userLiveLogIid: [],
+      guidanceBanner: !ROLE ? URIS.image + '/defaults/share/page/pic-banner_02@2x.png' : URIS.image + '/defaults/share/page/pic-banner_03@2x.png',
+      roleFlag: ROLE,
+      myInvit: {
+        myMoney: 0,
+        myPerson: 0,
+        myMoneys: 0
       }
-      mixins = [base]
-      components = {
-        Toast: Toast,
-        UnderlineBlock: UnderlineBlock
+    }
+    async onLoad(option) {
+      await this.setInvitFun()
+      this.findList = await this.load(option.id)
+      this.showBlank(this.findList)
+      this.$apply()
+    }
+    showBlank(res) {
+      if (res.length === 0) {
+        this.$invoke('Blank',
+          'show',
+          this.imageUrl + '/defaults/share/page/pic-invite_empty@2x_s.png', '', '55.2')
+      } else {
+        this.$invoke('Blank', 'hide')
       }
-      watch = {
-        loadMore(newValue) {
-          if (!newValue) {
-            this.$invoke('UnderlineBlock', 'show')
-          } else {
-            this.$invoke('UnderlineBlock', 'hide')
-          }
-        }
+    }
+    async setInvitFun() {
+      let Json = await Beauticians.invitDetail()
+      this.loaded()
+      if (Json.error !== ERR_OK) {
+        this.$invoke('Toast', 'show', Json.message)
+        return
       }
-      data = {
-        imageUrl: URIS.image,
-        role: 0,
-        myInvit: {
-          myMoney: 0,
-          myPerson: 0,
-          myMoneys: 0
-        },
-        winHeight: 0, // 窗口高度
-        currentTab: 0, // 预设当前项的值
-        noPacketW: 0,
-        scrollLeft: 0, // tab标题的滚动条位置
-        expertList: [[], [], []],
-        page: [1, 1, 1],
-        pageFlag: [false, false, false],
-        forTest: [1, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3], // 测试数据
-        fillout: true
-      }
-      async onLoad(option) {
-        await this.setInvitFun()
-        await this.load(option.id)
-        await this.tabheight(option)
-        let code = wepy.getStorageSync('user_info')
-        this.role = code.role
+      this.myInvit.myMoney = Json.data.register_rewards
+      this.myInvit.myPerson = Json.data.invited_count
+      this.myInvit.myMoneys = Json.data.wait_checke_count
+      this.$apply()
+    }
+    async onPullDownRefresh() {
+      this.findList = await this.load(this.isChecked)
+      setTimeout(() => {
+        wepy.stopPullDownRefresh()
+        this.bottom = 0
+        this.$parent.updateGlobalData('status', 0)
         this.$apply()
-      }
-      async load(id) { // meta.current_page
-        if (id * 1 === 1) {
-          this.invitRegisterList()
-        } else if (id * 1 === 2) {
-          this.setWaitRewardList()
-        } else { // 0
-          this.setRewardList()
-        }
-      }
-      async setInvitFun() {
-        let Json = await Beauticians.invitDetail()
-        this.loaded()
-        if (Json.error !== ERR_OK) {
-          this.$invoke('Toast', 'show', Json.message)
-          return
-        }
-        this.myInvit.myMoney = Json.data.register_rewards
-        this.myInvit.myPerson = Json.data.invited_count
-        this.myInvit.myMoneys = Json.data.wait_checke_count
-        this.$apply()
-      }
-      // 获得的红包
-      async setRewardList(limit = 10) {
-        let data = { page: this.page[this.currentTab], limit: limit }
-        let Json = await Beauticians.invitRewardList(data) // page,limit
-        this.loaded()
-        if (Json.data.length <= 0) {
-          this.page[0]--
-          this.pageFlag[0] = true
-          this.$apply()
-          return
-        }
-        this.page[0] = Json.meta.current_page
-        if (Json.error !== ERR_OK) {
-          this.$invoke('Toast', 'show', Json.message)
-          return
-        }
-        this.expertList[0] = Json.data
-        this.$apply()
-      }
-      // 成功邀请的记录
-      async invitRegisterList(limit = 10) {
-        let data = { page: this.page[this.currentTab], limit: limit }
-        let Json = await Beauticians.invitRegisterList(data) // page,limit
-        this.loaded()
-        if (Json.data.length <= 0) {
-          this.page[1]--
-          this.pageFlag[1] = true
-          this.$apply()
-          return
-        }
-        this.page[1] = Json.meta.current_page
-        if (Json.error !== ERR_OK) {
-          this.$invoke('Toast', 'show', Json.message)
-          return
-        }
-        this.expertList[1] = Json.data
-        this.$apply()
-      }
-      // 红包在路上
-      async setWaitRewardList(limit = 10) {
-        let data = { page: this.page[this.currentTab], limit: limit }
-        let Json = await Beauticians.invitWaitRewardList(data) // page,limit
-        this.loaded()
-        if (Json.data.length <= 0) {
-          this.page[2]--
-          this.pageFlag[2] = true
-          this.$apply()
-          return
-        }
-        this.page[2] = Json.meta.current_page
-        if (Json.error !== ERR_OK) {
-          this.$invoke('Toast', 'show', Json.message)
-          return
-        }
-        this.expertList[2] = Json.data
-        this.$apply()
-      }
-      methods = {
-        async scrolltolower() {
-          if (!this.pageFlag[this.currentTab]) {
-            this.page[this.currentTab]++
-            this.load(this.currentTab)
-            this.$apply()
-          }
-        },
-        // 滚动切换标签样式
-        switchTab (e) {
-          this.currentTab = e.detail.current
-        },
-        // 点击标题切换当前页时改变样式
-        swichNav (e) {
-          let cur = e.currentTarget.dataset.current
-          if (this.currentTab !== cur) {
-            this.currentTab = cur
-            this.load(this.currentTab)
-          } else {
-            return false
-          }
-        }
-      }
-      async tabheight(options) {
-        this.currentTab = options.id || 0
-        //  高度自适应
-        const res = await wepy.getSystemInfo()
-        let clientHeight = res.windowHeight
-        let calc = clientHeight - 150
-        this.winHeight = calc
+      }, 50)
+      await this.setInvitFun()
+      this.$apply()
+    }
+    async onReachBottom() {
+      this.bottom = 0
+      this.page++
+      if (this.loadMore) {
+        let res = await this.load(this.isChecked, this.page)
+        this.loadMore = res.length !== 0
+        this.findList = this.findList.concat(res)
         this.$apply()
       }
     }
+
+    async load(option = 0, page = 1) {
+      let data = { page: page, limit: 10 }
+      let findList
+      if (option * 1 === 1) {
+        findList = await Beauticians.invitRegisterList(data)
+      } else if (option * 1 === 2) {
+        findList = await Beauticians.invitWaitRewardList(data)
+      } else { // 0
+        findList = await Beauticians.invitRewardList(data)
+      }
+      console.log(findList)
+      let isChecked = wepy.getStorageSync('isChecked')
+      if (!isChecked) {
+        this.isChecked = option
+      }
+      let res = this.infoRes(findList)
+      this.loaded()
+      return res
+    }
+
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+
+    methods = {
+      async checkNav(index) {
+        this.navIndex = index * 1
+        this.option = this.nav[this.navIndex].type
+        this.findList = await this.load(this.option)
+        this.loadMore = true
+        this.showBlank(this.findList)
+        this.$apply()
+      }
+    }
+    watch = {
+      loadMore(newValue) {
+        if (!newValue) {
+          this.$invoke('UnderlineBlock', 'show')
+        } else {
+          this.$invoke('UnderlineBlock', 'hide')
+        }
+      }
+    }
+    components = {
+      Toast: Toast,
+      FindDetail: FindDetail,
+      PopUpWindows: PopUpWindows,
+      UnderlineBlock: UnderlineBlock,
+      Blank: Blank
+    }
+  }
 </script>
+
 <style lang="stylus">
-  @import "../../common/stylus/variable"
-  page
-    background-color:#F9F9F9
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  .find
+    min-height: 100vh
+    overflow-y: auto
+    background: $color-white
+    position: relative
+
+  /*animation :loadRotate 1s linear 2s infinite*/
+  .list-box
+    margin-bottom: 50px
+
+  .find-big-box
+    margin-top: 0px
+
+  .find-box-active
+    margin-top: 135px
+
 
   .invit-my
     font-size: $font-size-medium-x
@@ -292,13 +289,22 @@
         font-size: $font-size-medium
 
   .tab-h
-    height:70px
     width: 100%
-    box-sizing: border-box
-    overflow: hidden
-    line-height: 70px
-    font-size: 16px
-    white-space: nowrap
+    height:125px
+    position: fixed
+    top: 0px
+    z-index: 6
+    background-color: #fff
+    border-top:8px solid #F9F9F9;
+    .tab-h-s
+      width: 100%
+      box-sizing: border-box
+      overflow: hidden
+      height: 70px
+      line-height: 70px
+      font-size: 16px
+      white-space: nowrap
+
 
   .tab-item
     display: inline-block
@@ -392,7 +398,10 @@
     background-color:#F9F9F9
     font-family: $font-family-regular
     font-size: $font-size-small-s
-    color: $color-text
+    color: $color-text-d
     text-align: center
-    padding: 5px
+    padding: 10px 0px 5px 0px
+  .blank view image
+    width: 150px
+    height: 150px
 </style>
