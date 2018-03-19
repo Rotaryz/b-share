@@ -1,7 +1,7 @@
 <template>
   <view class="logn">
     <view class="login-box-img">
-      <image class="login-img">
+      <image class="login-img" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/share/page/pic-login_bg01@2x.png'}}">
       </image>
       <view wx:for="{{resList}}" wx:key="{{index}}"
             class="login-nav-text {{regType === index ? 'login-nav-text-active' : '' }}"
@@ -54,7 +54,7 @@
           </view>
           <view class="eye">
             <image class="close" wx:if="{{imageUri}}"
-                   src="{{imageUri + '/defaults/share/page/iocn-invite_enter@2x.png'}}"></image>
+                   src="{{imageUri + '/defaults/share/page/icon-select-login@2x.png'}}"></image>
           </view>
         </picker>
       </view>
@@ -320,7 +320,7 @@
           this.loaded()
           if (res.error === ERR_OK) {
             wepy.setStorageSync('token', res.data.access_token)
-            wepy.setStorageSync('role', res.data.user_info.role)
+            wepy.setStorageSync('user_info', res.data.user_info)
             this.$invoke('Toast', 'show', '注册成功')
 //            this.rightTip('注册成功')
             setTimeout(async () => {
@@ -357,7 +357,6 @@
       left: 0
       height: 100%
       width: 100vw
-      background: #ccc
     .login-nav-text
       color: $color-white
       font-size: $font-size-large
@@ -366,6 +365,7 @@
       width: 50%
       z-index: 500
       height: ($font-size-large + 21) px
+      background-image: linear-gradient(-179deg, rgba(184,38,85,0.00) 0%, #C5134E 100%)
       &:last-child
         right: 0
 
@@ -404,7 +404,7 @@
       position: relative
       border-bottom: 0.5px solid $color-split-line
       width: 85.333%
-      margin: 0 auto
+      margin: 12px auto 0
       .icon, .close
         position: absolute
         col-center()
@@ -423,8 +423,8 @@
           right: 10px
       .inputs
         text-align: left
-        height: 54px
-        line-height: 54px
+        height: 42px
+        line-height: 42px
         font-size: $font-size-medium-x
         color: #363547
         width: 80%
@@ -461,7 +461,7 @@
       .set-code
         color: $color-text
     .submit
-      margin-top: 14px
+      margin-top: 20px
       background: $color-theme
       color: $color-white
       font-size: $font-size-medium-x

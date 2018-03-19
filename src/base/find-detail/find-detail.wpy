@@ -11,12 +11,7 @@
               {{find.user_data.name}}
             </text>
           </view>
-          <view class="words">
-            {{find.content}}
-            <text class="text-more" wx:if="{{find.showDetail}}"
-                  @tap.stop="showDetail({{find.id}})">查看详情
-            </text>
-          </view>
+          <text class="words">{{find.content}}<text class="text-more" wx:if="{{find.showDetail}}" @tap.stop="showDetail({{find.id}})">查看详情</text></text>
         </view>
         <view class="address" wx:if="{{find.address}}"
               @tap.stop="openLocation({{find}})">
@@ -61,7 +56,7 @@
               {{find.user_data.name}}
             </text>
           </view>
-          <view class="words">{{find.content}}</view>
+          <text class="words {{comment?'':'special'}}">{{find.content}}</text>
           <video src="{{find.user_live_log_details[0].file_url}}"
                  objectFit="cover"
                  class="find-video"></video>
@@ -109,7 +104,7 @@
               {{find.user_data.name}}
             </text>
           </view>
-          <view class="words">{{find.content}}</view>
+          <text class="words {{comment?'':'special'}}">{{find.content}}</text>
           <view @tap.stop="showBigImg({{find}})" class="one-box">
             <image src="{{find.user_live_log_details[0].file_url}}"
                    @tap="setIndex(0)" class="img-one-item"
@@ -159,7 +154,7 @@
               {{find.user_data.name}}
             </text>
           </view>
-          <view class="words">{{find.content}}</view>
+          <text class="words {{comment?'':'special'}}">{{find.content}}</text>
           <view class="img-item-two" @tap.stop="showBigImg({{find}})">
             <image class="two-item" mode="aspectFill"
                    wx:for="{{find.user_live_log_details}}"
@@ -210,7 +205,7 @@
               {{find.user_data.name}}
             </text>
           </view>
-          <view class="words">{{find.content}}</view>
+          <text class="words {{comment?'':'special'}}">{{find.content}}</text>
           <view class="img-item-two" @tap.stop="showBigImg({{find}})">
             <image class="two-item" @tap="setIndex({{index}})" mode="aspectFill"
                    wx:for="{{find.user_live_log_details}}"
@@ -408,6 +403,8 @@
           font-size: $font-size-medium-x
           margin-left: 10px
       .words
+        display: block
+        width: 100%
         font-family: $font-family-light
         font-size: $font-size-medium
         line-height: $font-size-large-l
@@ -415,6 +412,8 @@
         .text-more
           color: $color-del
           margin-left: 12px
+      .words.special
+        height: 21px
       .address
         font-size: $font-size-small
         color: $color-del
@@ -425,11 +424,12 @@
           margin-left: 3px
           transform: translateY(1.5px)
       .information
-        height: 12px
+        height: 20px
         display: flex
-        margin: 16px 0 16px
+        margin: 12px 0 12px
         font-size: $font-size-small
         justify-content: space-between
+        align-items: center
         .del
           color: $color-del
           margin-left: 12px
@@ -442,6 +442,7 @@
           .share-item
             display: flex
             align-items: center
+            padding: 5px
             &:last-child
               margin-left: 22.5px
           .find-icon
@@ -491,6 +492,6 @@
         margin-top: 1vw
 
   .img-more, .img-two, .img-one, .video
-    .words
+    .special
       no-wrap()
 </style>

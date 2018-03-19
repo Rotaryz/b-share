@@ -4,7 +4,7 @@
                  placeholder-class="com-words" focus="{{focus}}"
                  value="{{words}}"
                  show-confirm-bar="{{false}}" @focus="bindfocus"
-                 @blur="showTop" @input="getWords"></textarea>
+                 @blur="showTop" @input="getWords" maxlength="-1"></textarea>
     <view class="com-box" style="height: {{comHeight}}px">
       <view class="com-image">
         <image class="img-item" mode="aspectFill" wx:for="{{imgUrl}}"
@@ -96,7 +96,8 @@
       longitude: 0,
       latitude: 0,
       focus: true,
-      isPic: false
+      isPic: false,
+      send: true
     }
 
     async onShow() {
@@ -115,6 +116,7 @@
         this.longitude = this.$parent.globalData.longitude || 0
         this.latitude = this.$parent.globalData.latitude || 0
         this.address = this.$parent.globalData.address || '你在哪里'
+        this.send = true
         this.$apply()
       }
       this.checkSend()
@@ -136,18 +138,25 @@
       this.$apply()
     }
 
-    _focus() {
-      setTimeout(() => {
-        this.focus = true
-        this.height = this.screenHeight * 0.445
-        this.comHeight = this.screenHeight * 0.179
-        this.$apply()
-      }, 30)
+    _focus(height) {
+      if (height) {
+        this.height = height
+      } else {
+        setTimeout(() => {
+          this.focus = true
+          this.height = this.screenHeight * 0.445
+          this.$apply()
+        }, 30)
+      }
+      this.comHeight = this.screenHeight * 0.179
+      this.$apply()
     }
 
     methods = {
-      bindfocus() {
-        this._focus()
+      bindfocus(e) {
+        console.log(e.detail)
+        let height = e.detail.height
+        this._focus(height)
       },
       showTop() {
         setTimeout(() => {
@@ -222,7 +231,7 @@
         if (!res.address) {
           return
         }
-        this.address = res.address
+        this.address = res.name
         this.longitude = res.longitude
         this.latitude = res.latitude
         this.$parent.updateGlobalData('address', this.address)
@@ -236,28 +245,38 @@
           this.$invoke('Toast', 'show', '内容不能为空')
           return false
         }
-        let detail = []
-        this.fileId.forEach((item, index) => {
-          detail.push({
-            type: this.fileType,
-            detail_id: item
+        if (this.send) {
+          this.send = false
+          let detail = []
+          this.fileId.forEach((item, index) => {
+            detail.push({
+              type: this.fileType,
+              detail_id: item
+            })
           })
-        })
-        let data = {
-          content: this.words,
-          user_live_log_details: detail,
-          address: this.address === '你在哪里' ? '' : this.address,
-          latitude: this.latitude,
-          longitude: this.longitude
-        }
-        let res = await logs.sendFind(data)
-        this.loaded()
-        if (res.error === ERR_OK) {
-          this.$invoke('Toast', 'show', '发表成功')
-          this.$parent.updateGlobalData('status', 1)
-          setTimeout(() => {
-            this.$back(1)
-          }, 500)
+          let data = {
+            content: this.words,
+            user_live_log_details: detail,
+            address: this.address === '你在哪里' ? '' : this.address,
+            latitude: this.latitude,
+            longitude: this.longitude
+          }
+          let res = await logs.sendFind(data)
+          this.loaded()
+          if (res.error === ERR_OK) {
+            this.$invoke('Toast', 'show', '发表成功')
+            this.$parent.updateGlobalData('status', 1)
+            setTimeout(() => {
+              this.$parent.updateGlobalData('fileId', [])
+              this.$parent.updateGlobalData('words', '')
+              this.$parent.updateGlobalData('imgUrl', [])
+              this.$parent.updateGlobalData('videoUrl', '')
+              this.$parent.updateGlobalData('longitude', 0)
+              this.$parent.updateGlobalData('latitude', 0)
+              this.$parent.updateGlobalData('address', '你在哪里')
+              this.$back(1)
+            }, 500)
+          }
         }
       }
     }
