@@ -10,7 +10,7 @@
 <script>
   import wepy from 'wepy'
 
-  export default class blank extends wepy.page {
+  export default class blank extends wepy.component {
     config = {
       navigationBarTitleText: ''
     }

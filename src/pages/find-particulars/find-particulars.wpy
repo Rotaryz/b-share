@@ -219,7 +219,8 @@
       async showMoreCom(id) {
         let index = this.showIndex(id)
         if (!this.findDetail[0].user_live_log_comments[index].more) {
-          let res = this._infoRes(await logs.comments(id))
+          let res = await logs.comments(id)
+          res = this._infoRes(res)
           this.loaded()
           this.findDetail[0].user_live_log_comments[index].comments = res
           this.findDetail[0].user_live_log_comments[index].more = '收起'

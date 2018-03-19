@@ -450,7 +450,6 @@
         }
       },
       showVideo(find, index) {
-        console.log(find)
         this.videoIndex = index
         if (this.navIndex === 0) {
           this.findList[index] = find
@@ -581,7 +580,4 @@
       width: 67px
       height: @width
 
-  cover-view
-    &:active
-      background: $color-white
 </style>

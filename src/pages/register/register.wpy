@@ -137,7 +137,8 @@
     }
 
     async load() {
-      let res = this.infoRes(await industries.industries())
+      let res = await industries.industries()
+      res = this.infoRes(res)
       this.loaded()
       this.industries = res
       this.$apply()
