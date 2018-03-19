@@ -83,6 +83,7 @@
   import UnderlineBlock from '@/base/underline-block/underline-block'
   import Blank from '@/base/blank/blank'
   const ROLE = wepy.getStorageSync('user_info').role
+  console.log(ROLE)
   const NAV = [{title: '我关注的', type: 1}, {title: '全部', type: 0}, {
     title: '美导',
     type: 2

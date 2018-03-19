@@ -1,0 +1,410 @@
+<template>
+  <view class="find">
+    <view class="tab-h">
+      <view class="invit-my">
+        <text>我的邀请</text>
+      </view>
+      <scroll-view scroll-x="true" class="tab-h-s"  scroll-left="{{scrollLeft}}">
+        <view class="tab-item {{isChecked==0?'active':''}}"  data-current="0" @tap="checkNav(0)">
+          <text class="number rmb-color"><text><text class="rmb-color-min">￥</text>{{myInvit.myMoney || '0.00'}}</text></text>
+          <text class="number">获得的红包</text>
+        </view>
+        <view class="tab-item {{isChecked==1?'active':''}}" data-current="1" @tap="checkNav(1)">
+          <text class="number number-t"><text>{{myInvit.myPerson || 0}}</text>人</text>
+          <text class="number">成功邀请</text>
+        </view>
+        <view class="tab-item {{isChecked==2?'active':''}}" data-current="2" @tap="checkNav(2)">
+          <text class="number number-t"><text>{{myInvit.myMoneys || 0}}</text>个</text>
+          <text class="number">红包在路上</text>
+        </view>
+      </scroll-view>
+    </view>
+    <Blank></Blank>
+    <view class="list-box {{!isLoad ? 'find-box-active' : 'find-big-box'}}">
+      <block wx:for="{{findList}}" wx:key="*this">
+        <view class="item-ans">
+          <view class="avatar" wx:if="{{isChecked !=0}}">
+            <image class="img" wx:if="{{imageUrl}}"
+                   src="{{item.image_url || imageUrl + '/defaults/share/page/'+(roleFlag===0?'pic-find_defaulta01@2x':'pic-find_defaulta02@2x')+'.png'}}">
+            </image>
+          </view>
+          <view class="expertInfo">
+            <view class="name" wx:if="{{isChecked==0}}">{{item.type==='register'?'邀请奖励红包':'认证奖励红包'}}</view>
+            <view class="name" wx:else>{{item.name}}</view>
+            <view class="tag">{{item.updated_at || item.created_at}}</view>
+          </view>
+          <view class="askBtn" wx:if="{{isChecked==0}}"><text>￥</text>{{item.reward}}</view>
+          <view class="askBtn-2" wx:if="{{isChecked==1}}">成功入驻了共享美导</view>
+          <view class="askBtn-2" wx:if="{{isChecked==2}}">还未完成认证</view>
+        </view>
+      </block>
+    </view>
+    <UnderlineBlock></UnderlineBlock>
+    <Toast></Toast>
+    <PopUpWindows></PopUpWindows>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from 'common/mixins/base'
+  import URIS from 'common/js/config'
+  import {ERR_OK} from 'api/base'
+  import FindDetail from '@/base/find-detail/find-detail'
+  import Toast from '@/base/toast/toast'
+  import PopUpWindows from '@/base/pop-up-windows/pop-up-windows'
+  import UnderlineBlock from '@/base/underline-block/underline-block'
+  import Blank from '@/base/blank/blank'
+  import Beauticians from 'api/beauticians'
+
+  const ROLE = wepy.getStorageSync('user_info').role
+  const NAV = [{title: '获得的红包', type: 0}, {title: '成功邀请', type: 1}, {
+    title: '红包在路上',
+    type: 2
+  }, {title: '门店', type: 3}]
+  export default class find extends wepy.page {
+    mixins = [base]
+
+    config = {
+      navigationBarTitleText: '共享美导',
+      onReachBottomDistance: 30,
+      enablePullDownRefresh: true,
+      backgroundTextStyle: 'dark'
+    }
+    data = {
+      imageUrl: URIS.image,
+      nav: NAV,
+      navIndex: 0,
+      isLoad: false,
+      showGuidance: true,
+      findList: [],
+      page: 1,
+      isChecked: 0,
+      scrollTop: '',
+      startTop: 0,
+      endTop: 0,
+      isPull: false,
+      option: 1,
+      loadMore: true,
+      content: '',
+      delIndex: {},
+      bottom: 0,
+      check: false,
+      userLiveLogIid: [],
+      guidanceBanner: !ROLE ? URIS.image + '/defaults/share/page/pic-banner_02@2x.png' : URIS.image + '/defaults/share/page/pic-banner_03@2x.png',
+      roleFlag: ROLE,
+      myInvit: {
+        myMoney: 0,
+        myPerson: 0,
+        myMoneys: 0
+      }
+    }
+    async onLoad(option) {
+      await this.setInvitFun()
+      this.findList = await this.load(option.id)
+      this.showBlank(this.findList)
+      this.$apply()
+    }
+    showBlank(res) {
+      if (res.length === 0) {
+        this.$invoke('Blank',
+          'show',
+          this.imageUrl + '/defaults/share/page/pic-invite_empty@2x_s.png', '', '55.2')
+      } else {
+        this.$invoke('Blank', 'hide')
+      }
+    }
+    async setInvitFun() {
+      let Json = await Beauticians.invitDetail()
+      this.loaded()
+      if (Json.error !== ERR_OK) {
+        this.$invoke('Toast', 'show', Json.message)
+        return
+      }
+      this.myInvit.myMoney = Json.data.register_rewards
+      this.myInvit.myPerson = Json.data.invited_count
+      this.myInvit.myMoneys = Json.data.wait_checke_count
+      this.$apply()
+    }
+    async onPullDownRefresh() {
+      this.findList = await this.load(this.isChecked)
+      setTimeout(() => {
+        wepy.stopPullDownRefresh()
+        this.bottom = 0
+        this.$parent.updateGlobalData('status', 0)
+        this.$apply()
+      }, 50)
+      await this.setInvitFun()
+      this.$apply()
+    }
+    async onReachBottom() {
+      this.bottom = 0
+      this.page++
+      if (this.loadMore) {
+        let res = await this.load(this.isChecked, this.page)
+        this.loadMore = res.length !== 0
+        this.findList = this.findList.concat(res)
+        this.$apply()
+      }
+    }
+
+    async load(option = 0, page = 1) {
+      let data = { page: page, limit: 10 }
+      let findList
+      if (option === 1) {
+        findList = await Beauticians.invitRegisterList(data)
+      } else if (option === 2) {
+        findList = await Beauticians.invitWaitRewardList(data)
+      } else { // 0
+        findList = await Beauticians.invitRewardList(data)
+      }
+      let isChecked = wepy.getStorageSync('isChecked')
+      if (!isChecked) {
+        this.isChecked = option
+      }
+
+      let res = this.infoRes(findList)
+      this.loaded()
+      return res
+    }
+
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+
+    methods = {
+      async checkNav(index) {
+        this.navIndex = index * 1
+        this.option = this.nav[this.navIndex].type
+        this.findList = await this.load(this.option)
+        this.loadMore = true
+        if (this.option === 1) {
+          this.findList = []
+        }
+        this.showBlank(this.findList)
+        this.$apply()
+      }
+    }
+    watch = {
+      loadMore(newValue) {
+        if (!newValue) {
+          this.$invoke('UnderlineBlock', 'show')
+        } else {
+          this.$invoke('UnderlineBlock', 'hide')
+        }
+      }
+    }
+    components = {
+      Toast: Toast,
+      FindDetail: FindDetail,
+      PopUpWindows: PopUpWindows,
+      UnderlineBlock: UnderlineBlock,
+      Blank: Blank
+    }
+  }
+</script>
+
+<style lang="stylus">
+  @import '../../common/stylus/variable'
+  @import '../../common/stylus/mixin'
+  .find
+    min-height: 100vh
+    overflow-y: auto
+    background: $color-white
+    position: relative
+
+  /*animation :loadRotate 1s linear 2s infinite*/
+  .list-box
+    margin-bottom: 50px
+
+  .find-big-box
+    margin-top: 0px
+
+  .find-box-active
+    margin-top: 135px
+
+
+  .invit-my
+    font-size: $font-size-medium-x
+    height: 50px
+    line-height: 40px
+    font-family: $font-family-regular
+    color: $color-text
+    padding: 10px 10px 0px 10px
+    text
+      padding-left: 15px
+      color: $color-text
+      position: relative
+    text:before
+      content: ""
+      height: 14px
+      width: 4px
+      background: $color-assist-bule
+      position: absolute
+      top:0px
+      left: 4px
+      bottom: 0px
+      margin: auto
+
+  .number
+    display: block
+    text-align: center
+    margin 5px 0px
+    color: $color-text-d
+    font-size: $font-size-small
+    line-height:17px
+    text
+      font-family: $font-family-regular
+      font-size $font-size-large-m
+      color: $color-text
+  .number.number-t
+    color: $color-text-tr
+  .white
+    background-color: $color-white
+    margin-top: 10px
+
+  .tab-item:nth-child(2):before
+    content: ""
+    display: block
+    height: 30px
+    border-left: .5px solid $color-row-line
+    position: absolute
+    top: 20%
+
+  .tab-item:nth-child(3):before
+    content: ""
+    display: block
+    height: 30px
+    border-left:.6px solid $color-row-line
+    position: absolute
+    top: 20%
+
+  .number.rmb-color
+    display: block
+    text-align: center
+    margin 5px 0px
+    color:$color-assist-pink
+    text
+      color:$color-assist-pink
+      .rmb-color-min
+        font-size: $font-size-medium
+
+  .tab-h
+    width: 100%
+    height:125px
+    position: fixed
+    top: 0px
+    z-index: 6
+    background-color: #fff
+    border-top:8px solid #F9F9F9;
+    .tab-h-s
+      width: 100%
+      box-sizing: border-box
+      overflow: hidden
+      height: 70px
+      line-height: 70px
+      font-size: 16px
+      white-space: nowrap
+
+
+  .tab-item
+    display: inline-block
+    width:33.3%
+    text-align: center
+    height: 90%
+    border-bottom: 0.5px solid $color-row-line
+    position: relative
+
+  .tab-item.active:after
+    content: ""
+    display: block
+    position: absolute
+    height: 2px
+    width: 28px
+    background:$color-assist-pink
+    bottom: -1px
+    left: 0px
+    right: 0px
+    margin: auto
+
+  .item-ans
+    width: 96%
+    display: flex
+    flex-grow: row no-wrap
+    justify-content: space-between
+    padding: 0 20px 0 0
+    box-sizing: border-box
+    height: 55px
+    align-items: center
+    border-bottom: 0.5px solid $color-row-line
+    margin-left: 4%
+
+  .avatar
+    width: 36px
+    height: 36px
+    position: relative
+    padding-right: 12px
+
+  .avatar
+    .img
+      width: 100%
+      height: 100%
+      border-radius:50%
+      border: 1px solid $color-background
+      margin-top: -2px
+
+  .avatar .doyen
+    width: 40rpx
+    height: 40rpx
+    position: absolute
+    bottom: -2px
+    right: 20rpx
+
+  .expertInfo
+    flex-grow: 2
+    font-family: $font-family-light
+    .name
+      font-size: $font-size-medium
+      color:$color-text
+      line-height: 22px
+    .tag
+      line-height: 20px
+      font-size: $font-size-small
+      color: $color-text-tr
+
+  .askBtn
+    width: 80rpx
+    line-height: 20rpx
+    text-align: center
+    color:$color-assist-pink
+    font-family: $font-family-regular
+    font-size: $font-size-medium
+    text
+      font-size: $font-size-small-s
+  .askBtn-2
+    text-align: center
+    font-size: $font-size-small
+    color: $color-text
+    line-height: 24px
+    font-family: $font-family-light
+
+  .scoll-h
+    height: 100%
+
+  .no-packet
+    margin: 50px auto
+    width: 150px
+    height: 150px
+  .textmsg
+    background-color:#F9F9F9
+    font-family: $font-family-regular
+    font-size: $font-size-small-s
+    color: $color-text-d
+    text-align: center
+    padding: 10px 0px 5px 0px
+  .blank view image
+    width: 150px
+    height: 150px
+</style>
