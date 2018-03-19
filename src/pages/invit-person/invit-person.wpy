@@ -106,7 +106,7 @@
         return {
           title: this.userName + '邀请你入驻共享美导第一平台',
           imageUrl: this.imageUrl + '/defaults/share/page/pic-share_02@2x_new.png',
-          path: '/pages/invit-person-write/invit-person?id=' + this.userId
+          path: '/pages/invit-person-write/invit-person-write?id=' + this.userId
         }
       }
     }
