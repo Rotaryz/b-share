@@ -2,7 +2,7 @@
   <view class="compile">
        <textarea class="words-text" placeholder="记录你的点点滴滴…"
                  placeholder-class="com-words" focus="{{focus}}"
-                 value="{{words}}"
+                 value="{{subTxt}}"
                  show-confirm-bar="{{false}}" @focus="bindfocus"
                  @blur="showTop" @input="getWords" maxlength="-1"></textarea>
     <view class="com-box" style="height: {{comHeight}}px">
@@ -97,6 +97,7 @@
       latitude: 0,
       focus: true,
       isPic: false,
+      subTxt: '',
       send: true
     }
 
@@ -104,12 +105,13 @@
       let res = await wepy.getSystemInfo()
       this.screenHeight = res.screenHeight
       this.height = this.screenHeight * 0.445
-      this.comHeight = this.screenHeight * 0.179
+      this.comHeight = this.screenHeight * 0.196
     }
 
     onLoad(option) {
       if (option.status) {
         this.fileId = this.$parent.globalData.fileId || []
+        this.subTxt = this.$parent.globalData.words || ''
         this.words = this.$parent.globalData.words || ''
         this.imgUrl = this.$parent.globalData.imgUrl || []
         this.videoUrl = this.$parent.globalData.videoUrl || ''
@@ -143,26 +145,33 @@
         this.height = height
       } else {
         setTimeout(() => {
-          this.focus = true
           this.height = this.screenHeight * 0.445
           this.$apply()
         }, 30)
       }
-      this.comHeight = this.screenHeight * 0.179
+      this.comHeight = this.screenHeight * 0.196
       this.$apply()
     }
-
+    async _setPic(data) {
+      await Promise.all(data.map(async (val) => {
+        let image = await Uploads.uploadImages(val)
+        this.loaded()
+        this.fileId.push(image.id)
+        this.$parent.updateGlobalData('fileId', this.fileId)
+        this.$parent.updateGlobalData('imgUrl', this.imgUrl)
+        this.checkSend()
+      }))
+    }
     methods = {
       bindfocus(e) {
-        console.log(e.detail)
         let height = e.detail.height
         this._focus(height)
       },
       showTop() {
         setTimeout(() => {
-          this.focus = false
           this.height = 1
           this.comHeight = this.screenHeight * 0.55
+          this.focus = false
           this.$apply()
         }, 30)
       },
@@ -179,20 +188,13 @@
           if (!res) {
             return
           }
+          this.focus = true
           this.fileType = 1
           let imgArr = res.tempFilePaths
-          imgArr.forEach(async (item) => {
-            let image = await Uploads.uploadImages(item)
-            this.loaded()
-            this.fileId.push(image.id)
-            this.imgUrl.push(image.url)
-            this.$parent.updateGlobalData('fileId', this.fileId)
-            this.$parent.updateGlobalData('imgUrl', this.imgUrl)
-            this.checkSend()
-            this.$apply()
-          })
+          await this._setPic(imgArr)
+          this.imgUrl = this.imgUrl.concat(imgArr)
+          this.$apply()
         }
-        console.log(this.fileType)
       },
       async choiceVideo() {
         if (this.fileType !== 1 && this.fileType !== -1) {
@@ -201,6 +203,7 @@
           if (!res) {
             return
           }
+          this.focus = true
           this.fileType = 2
           let video = await Uploads.uploadVideo(res.tempFilePath)
           this.videoUrl = `${video.url}?second=1&width=94&height=94`
@@ -215,9 +218,9 @@
         index = index * 1
         this.imgUrl.splice(index, 1)
         this.fileId.splice(index, 1)
-        this.imgUrl.length === 0 ? this.fileType = 0 : this.fileType = 1
+        this.fileType = this.imgUrl.length === 0 ? 0 : 1
 
-        this.imgUrl.length === 0 ? this.isPic = false : this.isPic = true
+        this.isPic = !this.imgUrl.length === 0
         this.checkSend()
       },
       delVideo() {
@@ -240,7 +243,6 @@
         this.$apply()
       },
       async submit() {
-        console.log(this.fileType)
         if (!this.showSend) {
           this.$invoke('Toast', 'show', '内容不能为空')
           return false
@@ -248,7 +250,7 @@
         if (this.send) {
           this.send = false
           let detail = []
-          this.fileId.forEach((item, index) => {
+          this.fileId.forEach((item) => {
             detail.push({
               type: this.fileType,
               detail_id: item
@@ -276,6 +278,8 @@
               this.$parent.updateGlobalData('address', '你在哪里')
               this.$back(1)
             }, 500)
+          } else {
+            this.$invoke('Toast', 'show', res.message)
           }
         }
       }
@@ -293,7 +297,7 @@
     background: $color-white
 
     .com-box
-      height: 17.9vh
+      height: 18.5vh
       overflow-y: auto
       padding: 0 4vw 0 2.4vw
     .com-words
@@ -318,6 +322,7 @@
     display: flex
     margin-top: 4.56vh
     .com-addrss
+      z-index:100
       position: absolute
       top: -36px
       left: 15px
@@ -398,7 +403,7 @@
             width: 16.5px
     .img-add
       display: inline-block
-      height: 29.6vw
+      height: 30.204vw
       width: @height
       margin: 1.6vw 0 0 1.6vw
       position: relative
