@@ -64,7 +64,8 @@
           </view>
           <text class="words {{comment?'':'special'}}">{{find.content}}</text>
           <video id="{{listNum}}" loop
-                 src="{{find.user_live_log_details[0].file_url}}" @fullscreenchange="hideVideo" objectFit="cover"
+                 src="{{find.user_live_log_details[0].file_url}}"
+                 @fullscreenchange="hideVideo" objectFit="cover"
                  wx:if="{{find.video}}" class="find-video"></video>
           <image @tap.stop="showVideo({{find}},{{listNum}})"
                  src="{{find.user_live_log_details[0].file_url + '?second=1&width=202&height=113'}}"
@@ -315,6 +316,11 @@
     }
 
     methods = {
+      setComment(boolean) {
+        this.comment = boolean
+        this.$apply()
+        console.log(this.comment)
+      },
       hideVideo(e) {
         if (!e.detail.fullScreen) {
 //          this.targetFind.video = false
@@ -353,7 +359,7 @@
         }
       },
       showDetail(id) {
-        if (!this.comment) {
+        if (!this.comment && this.comment !== 'undefined') {
           wepy.navigateTo({
             url: '/pages/find-particulars/find-particulars?id=' + id
           })
@@ -367,7 +373,7 @@
         this.loaded()
         if (res.error === ERR_OK) {
           find.is_like = !find.is_like
-          find.like_count = find.is_like ? find.like_count++ : find.like_count--
+          find.like_count = find.is_like ? ++find.like_count : --find.like_count
         }
         this.$apply()
         this.$emit('good', find, index)

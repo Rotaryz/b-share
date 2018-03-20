@@ -130,18 +130,23 @@
 
     async onPullDownRefresh() {
       this.videoIndex = -1
-      if (this.navIndex === 0) {
-        this.findList = await this.load(this.option)
-        this.page = 1
-      } else if (this.navIndex === 1) {
-        this.findAll = await this.load(this.option)
-        this.pageAll = 1
-      } else if (this.navIndex === 2) {
-        this.findPeo = await this.load(this.option)
-        this.pagePeo = 1
-      } else if (this.navIndex === 3) {
-        this.findShop = await this.load(this.option)
-        this.pageShop = 1
+      switch (this.navIndex) {
+        case 0:
+          this.findList = await this.load(this.option)
+          this.page = 1
+          break
+        case 1:
+          this.findAll = await this.load(this.option)
+          this.pageAll = 1
+          break
+        case 2:
+          this.findPeo = await this.load(this.option)
+          this.pagePeo = 1
+          break
+        case 3:
+          this.findShop = await this.load(this.option)
+          this.pageShop = 1
+          break
       }
       this.loadMore = true
       setTimeout(() => {
@@ -179,15 +184,19 @@
         } else if (this.scroll - e.scrollTop <= 0 && this.scroll - e.scrollTop > -3) {
           status = true
         }
-
-        if (this.navIndex === 0) {
-          this.findList[this.videoIndex].video = status
-        } else if (this.navIndex === 1) {
-          this.findAll[this.videoIndex].video = status
-        } else if (this.navIndex === 2) {
-          this.findPeo[this.videoIndex].video = status
-        } else if (this.navIndex === 3) {
-          this.findShop[this.videoIndex].video = status
+        switch (this.navIndex) {
+          case 0:
+            this.findList[this.videoIndex].video = status
+            break
+          case 1:
+            this.findAll[this.videoIndex].video = status
+            break
+          case 2:
+            this.findPeo[this.videoIndex].video = status
+            break
+          case 3:
+            this.findShop[this.videoIndex].video = status
+            break
         }
         this.$apply()
       }
@@ -217,42 +226,47 @@
       }
       if (this.$parent.globalData.logId) {
         let id = this.$parent.globalData.logId
-        if (this.navIndex === 0) {
-          for (let i = 0; i < this.findList.length; i++) {
-            if (this.findList[i].id === id) {
-              this.findList.splice(i, 1)
-              this.$parent.updateGlobalData('logId', null)
-              this.$apply()
-              break
+        switch (this.navIndex) {
+          case 0:
+            for (let i = 0; i < this.findList.length; i++) {
+              if (this.findList[i].id === id) {
+                this.findList.splice(i, 1)
+                this.$parent.updateGlobalData('logId', null)
+                this.$apply()
+                break
+              }
             }
-          }
-        } else if (this.navIndex === 1) {
-          for (let i = 0; i < this.findAll.length; i++) {
-            if (this.findAll[i].id === id) {
-              this.findAll.splice(i, 1)
-              this.$parent.updateGlobalData('logId', null)
-              this.$apply()
-              break
+            break
+          case 1:
+            for (let i = 0; i < this.findAll.length; i++) {
+              if (this.findAll[i].id === id) {
+                this.findAll.splice(i, 1)
+                this.$parent.updateGlobalData('logId', null)
+                this.$apply()
+                break
+              }
             }
-          }
-        } else if (this.navIndex === 2) {
-          for (let i = 0; i < this.findPeo.length; i++) {
-            if (this.findPeo[i].id === id) {
-              this.findPeo.splice(i, 1)
-              this.$parent.updateGlobalData('logId', null)
-              this.$apply()
-              break
+            break
+          case 2:
+            for (let i = 0; i < this.findPeo.length; i++) {
+              if (this.findPeo[i].id === id) {
+                this.findPeo.splice(i, 1)
+                this.$parent.updateGlobalData('logId', null)
+                this.$apply()
+                break
+              }
             }
-          }
-        } else if (this.navIndex === 3) {
-          for (let i = 0; i < this.findShop.length; i++) {
-            if (this.findShop[i].id === id) {
-              this.findShop.splice(i, 1)
-              this.$parent.updateGlobalData('logId', null)
-              this.$apply()
-              break
+            break
+          case 3:
+            for (let i = 0; i < this.findShop.length; i++) {
+              if (this.findShop[i].id === id) {
+                this.findShop.splice(i, 1)
+                this.$parent.updateGlobalData('logId', null)
+                this.$apply()
+                break
+              }
             }
-          }
+            break
         }
       }
       this.$apply()
@@ -271,26 +285,31 @@
     async onReachBottom() {
       this.bottom = 0
       if (this.loadMore) {
-        if (this.navIndex === 0) {
-          this.page++
-          let res = await this.load(this.option, this.page)
-          this.loadMore = res.length !== 0
-          this.findList = this.findList.concat(res)
-        } else if (this.navIndex === 1) {
-          this.pageAll++
-          let res = await this.load(this.option, this.pageAll)
-          this.loadMore = res.length !== 0
-          this.findAll = this.findAll.concat(res)
-        } else if (this.navIndex === 2) {
-          this.pagePeo++
-          let res = await this.load(this.option, this.pagePeo)
-          this.loadMore = res.length !== 0
-          this.findPeo = this.findPeo.concat(res)
-        } else if (this.navIndex === 3) {
-          this.pageShop++
-          let res = await this.load(this.option, this.pageShop)
-          this.loadMore = res.length !== 0
-          this.findShop = this.findShop.concat(res)
+        switch (this.navIndex) {
+          case 0:
+            this.page++
+            let res = await this.load(this.option, this.page)
+            this.loadMore = res.length !== 0
+            this.findList = this.findList.concat(res)
+            break
+          case 1:
+            this.pageAll++
+            let res1 = await this.load(this.option, this.pageAll)
+            this.loadMore = res1.length !== 0
+            this.findAll = this.findAll.concat(res1)
+            break
+          case 2:
+            this.pagePeo++
+            let res2 = await this.load(this.option, this.pagePeo)
+            this.loadMore = res2.length !== 0
+            this.findPeo = this.findPeo.concat(res2)
+            break
+          case 3:
+            this.pageShop++
+            let res3 = await this.load(this.option, this.pageShop)
+            this.loadMore = res3.length !== 0
+            this.findShop = this.findShop.concat(res3)
+            break
         }
         this.$apply()
       }
@@ -369,14 +388,19 @@
 
     events = {
       good(res, index) {
-        if (this.navIndex === 0) {
-          this.findList[index] = res
-        } else if (this.navIndex === 1) {
-          this.findAll[index] = res
-        } else if (this.navIndex === 2) {
-          this.findPeo[index] = res
-        } else if (this.navIndex === 3) {
-          this.findShop[index] = res
+        switch (this.navIndex) {
+          case 0:
+            this.findList[index] = res
+            break
+          case 1:
+            this.findAll[index] = res
+            break
+          case 2:
+            this.findPeo[index] = res
+            break
+          case 3:
+            this.findShop[index] = res
+            break
         }
         this.$apply()
       },
@@ -384,34 +408,39 @@
         this.$invoke('PopUpWindows', 'show', '是否确定删除服务日志？')
         this.content = false
         this.check = false
-        if (this.navIndex === 0) {
-          for (let i = 0; i < this.findList.length; i++) {
-            if (this.findList[i].id === id) {
-              Object.assign(this.delIndex, {id: id, index: i})
-              break
+        switch (this.navIndex) {
+          case 0:
+            for (let i = 0; i < this.findList.length; i++) {
+              if (this.findList[i].id === id) {
+                Object.assign(this.delIndex, {id: id, index: i})
+                break
+              }
             }
-          }
-        } else if (this.navIndex === 1) {
-          for (let i = 0; i < this.findAll.length; i++) {
-            if (this.findAll[i].id === id) {
-              Object.assign(this.delIndex, {id: id, index: i})
-              break
+            break
+          case 1:
+            for (let i = 0; i < this.findAll.length; i++) {
+              if (this.findAll[i].id === id) {
+                Object.assign(this.delIndex, {id: id, index: i})
+                break
+              }
             }
-          }
-        } else if (this.navIndex === 2) {
-          for (let i = 0; i < this.findPeo.length; i++) {
-            if (this.findPeo[i].id === id) {
-              Object.assign(this.delIndex, {id: id, index: i})
-              break
+            break
+          case 2:
+            for (let i = 0; i < this.findPeo.length; i++) {
+              if (this.findPeo[i].id === id) {
+                Object.assign(this.delIndex, {id: id, index: i})
+                break
+              }
             }
-          }
-        } else if (this.navIndex === 3) {
-          for (let i = 0; i < this.findShop.length; i++) {
-            if (this.findShop[i].id === id) {
-              Object.assign(this.delIndex, {id: id, index: i})
-              break
+            break
+          case 3:
+            for (let i = 0; i < this.findShop.length; i++) {
+              if (this.findShop[i].id === id) {
+                Object.assign(this.delIndex, {id: id, index: i})
+                break
+              }
             }
-          }
+            break
         }
       },
       async sure() {
@@ -419,16 +448,20 @@
           let res = await logs.delFind(this.delIndex.id)
           this.loaded()
           if (res.error === ERR_OK) {
-            if (this.navIndex === 0) {
-              this.findList.splice(this.delIndex.index, 1)
-            } else if (this.navIndex === 1) {
-              this.findAll.splice(this.delIndex.index, 1)
-            } else if (this.navIndex === 2) {
-              this.findPeo.splice(this.delIndex.index, 1)
-            } else if (this.navIndex === 3) {
-              this.findShop.splice(this.delIndex.index, 1)
+            switch (this.navIndex) {
+              case 0:
+                this.findList.splice(this.delIndex.index, 1)
+                break
+              case 1:
+                this.findAll.splice(this.delIndex.index, 1)
+                break
+              case 2:
+                this.findPeo.splice(this.delIndex.index, 1)
+                break
+              case 3:
+                this.findShop.splice(this.delIndex.index, 1)
+                break
             }
-
             this.$apply()
           }
           this.$parent.updateGlobalData('status', 1)
@@ -452,14 +485,19 @@
       },
       showVideo(find, index) {
         this.videoIndex = index
-        if (this.navIndex === 0) {
-          this.findList[index] = find
-        } else if (this.navIndex === 1) {
-          this.findAll[index] = find
-        } else if (this.navIndex === 2) {
-          this.findPeo[index] = find
-        } else if (this.navIndex === 3) {
-          this.findShop[index] = find
+        switch (this.navIndex) {
+          case 0:
+            this.findList[index] = find
+            break
+          case 1:
+            this.findAll[index] = find
+            break
+          case 2:
+            this.findPeo[index] = find
+            break
+          case 3:
+            this.findShop[index] = find
+            break
         }
       }
     }
