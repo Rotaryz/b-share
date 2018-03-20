@@ -212,8 +212,8 @@
     position: relative
 
   /*animation :loadRotate 1s linear 2s infinite*/
-  .list-box
-    margin-bottom: 50px
+  /*.list-box*/
+    /*margin-bottom: 50px*/
 
   .find-big-box
     margin-top: 0px
