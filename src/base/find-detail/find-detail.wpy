@@ -8,15 +8,9 @@
             <image class="header" mode="aspectFill"
                    @tap.stop="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname" @tap.stop="goMine({{find.user_id}})">
-              {{find.user_data.name}}
-            </text>
+            <text class="nickname" @tap.stop="goMine({{find.user_id}})">{{find.user_data.name}}</text>
           </view>
-          <text class="words">{{find.content}}
-            <text class="text-more" wx:if="{{find.showDetail}}"
-                  @tap.stop="showDetail({{find.id}})">查看详情
-            </text>
-          </text>
+          <text class="words">{{find.content}}<text class="text-more" wx:if="{{find.showDetail}}" @tap.stop="showDetail({{find.id}})">查看详情</text></text>
         </view>
         <view class="address" wx:if="{{find.address}}"
               @tap.stop="openLocation({{find}})">
@@ -26,9 +20,7 @@
         </view>
         <view class="information">
           <view class="time">{{find.differ_time}}
-            <text class="del" wx:if="{{find.current_user}}"
-                  @tap.stop="delFind({{find.id}})">删除
-            </text>
+            <text class="del" wx:if="{{find.current_user}}" @tap.stop="delFind({{find.id}})">删除</text>
           </view>
           <view class="share">
             <view class="share-item comment" @tap.stop="isComment({{find.id}})">
@@ -58,9 +50,7 @@
             <image class="header" mode="aspectFill"
                    @tap.stop="goMine({{find.user_id}})"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname" @tap.stop="goMine({{find.user_id}})">
-              {{find.user_data.name}}
-            </text>
+            <text class="nickname" @tap.stop="goMine({{find.user_id}})">{{find.user_data.name}}</text>
           </view>
           <text class="words {{comment?'':'special'}}">{{find.content}}</text>
           <video id="{{listNum}}" loop
@@ -82,9 +72,7 @@
         </view>
         <view class="information">
           <view class="time">{{find.differ_time}}
-            <text class="del" wx:if="{{find.current_user}}"
-                  @tap.stop="delFind({{find.id}})">删除
-            </text>
+            <text class="del" wx:if="{{find.current_user}}" @tap.stop="delFind({{find.id}})">删除</text>
           </view>
           <view class="share">
             <view class="share-item comment" @tap.stop="isComment({{find.id}})">
@@ -114,9 +102,7 @@
             <image class="header" @tap.stop="goMine({{find.user_id}})"
                    mode="aspectFill"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname" @tap.stop="goMine({{find.user_id}})">
-              {{find.user_data.name}}
-            </text>
+            <text class="nickname" @tap.stop="goMine({{find.user_id}})">{{find.user_data.name}}</text>
           </view>
           <text class="words {{comment?'':'special'}}">{{find.content}}</text>
           <view @tap.stop="showBigImg({{find}})" class="one-box">
@@ -133,9 +119,7 @@
         </view>
         <view class="information">
           <view class="time">{{find.differ_time}}
-            <text class="del" wx:if="{{find.current_user}}"
-                  @tap.stop="delFind({{find.id}})">删除
-            </text>
+            <text class="del" wx:if="{{find.current_user}}" @tap.stop="delFind({{find.id}})">删除</text>
           </view>
           <view class="share">
             <view class="share-item comment" @tap.stop="isComment({{find.id}})">
@@ -165,9 +149,7 @@
             <image class="header" @tap.stop="goMine({{find.user_id}})"
                    mode="aspectFill"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname" @tap.stop="goMine({{find.user_id}})">
-              {{find.user_data.name}}
-            </text>
+            <text class="nickname" @tap.stop="goMine({{find.user_id}})">{{find.user_data.name}}</text>
           </view>
           <text class="words {{comment?'':'special'}}">{{find.content}}</text>
           <view class="img-item-two" @tap.stop="showBigImg({{find}})">
@@ -185,9 +167,7 @@
         </view>
         <view class="information">
           <view class="time">{{find.differ_time}}
-            <text class="del" wx:if="{{find.current_user}}"
-                  @tap.stop="delFind({{find.id}})">删除
-            </text>
+            <text class="del" wx:if="{{find.current_user}}" @tap.stop="delFind({{find.id}})">删除</text>
           </view>
           <view class="share">
             <view class="share-item comment" @tap.stop="isComment({{find.id}})">
@@ -217,9 +197,7 @@
             <image class="header" @tap.stop="goMine({{find.user_id}})"
                    mode="aspectFill"
                    src="{{!find.user_data.image_url && find.role === 1 ? imageUrl + '/defaults/share/page/pic-find_defaulta02@2x.png' : !find.user_data.image_url && find.role === 0 ? imageUrl + '/defaults/share/page/pic-find_defaulta01@2x.png' : find.user_data.image_url}}"></image>
-            <text class="nickname" @tap.stop="goMine({{find.user_id}})">
-              {{find.user_data.name}}
-            </text>
+            <text class="nickname" @tap.stop="goMine({{find.user_id}})">{{find.user_data.name}}</text>
           </view>
           <text class="words {{comment?'':'special'}}">{{find.content}}</text>
           <view class="img-item-two" @tap.stop="showBigImg({{find}})">
@@ -236,9 +214,7 @@
         </view>
         <view class="information">
           <view class="time">{{find.differ_time}}
-            <text class="del" wx:if="{{find.current_user}}"
-                  @tap.stop="delFind({{find.id}})">删除
-            </text>
+            <text class="del" wx:if="{{find.current_user}}" @tap.stop="delFind({{find.id}})">删除</text>
           </view>
           <view class="share">
             <view class="share-item comment" @tap.stop="isComment({{find.id}})">
@@ -319,7 +295,6 @@
       setComment(boolean) {
         this.comment = boolean
         this.$apply()
-        console.log(this.comment)
       },
       hideVideo(e) {
         if (!e.detail.fullScreen) {
@@ -445,7 +420,7 @@
           font-family: $font-family-regular
           color: $color-text
           font-size: $font-size-medium-x
-          margin-left: 10px
+          margin-left: 10.5px
       .words
         display: block
         width: 100%
@@ -478,8 +453,6 @@
           color: $color-del
           margin-left: 12px
         .find-num, .time
-
-          margin-left: 3px
           color: $color-text-tr
         .share
           display: flex

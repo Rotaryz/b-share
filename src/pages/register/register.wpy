@@ -129,7 +129,8 @@
       showLogo: false,
       isSet: false,
       phoneFocus: false,
-      industries: []
+      industries: [],
+      setSubmit: true
     }
 
     async onLoad() {
@@ -312,31 +313,34 @@
       },
 //      注册
       async submit() {
-        let data = await wepy.login()
-        if (this.submit) {
+        if (this.setSubmit) {
+          this.setSubmit = false
+          let data = await wepy.login()
+          if (this.submit) {
 //            注册
-          let res = await user.register({
-            mobile: this.phoneNum,
-            password: this.password,
-            code: this.code,
-            wx_code: data.code,
-            industry_id: this.industryId,
-            role: this.regType
-          })
-          this.loaded()
-          if (res.error === ERR_OK) {
-            wepy.setStorageSync('token', res.data.access_token)
-            wepy.setStorageSync('user_info', res.data.user_info)
-            this.$invoke('Toast', 'show', '注册成功')
+            let res = await user.register({
+              mobile: this.phoneNum,
+              password: this.password,
+              code: this.code,
+              wx_code: data.code,
+              industry_id: this.industryId,
+              role: this.regType
+            })
+            this.loaded()
+            if (res.error === ERR_OK) {
+              wepy.setStorageSync('token', res.data.access_token)
+              wepy.setStorageSync('user_info', res.data.user_info)
+              this.$invoke('Toast', 'show', '注册成功')
 //            this.rightTip('注册成功')
-            setTimeout(async () => {
-              await wepy.switchTab({
-                url: '/pages/find/find'
-              })
-            }, 1000)
-          } else {
-            this.$invoke('Toast', 'show', res.message)
+              setTimeout(async () => {
+                await wepy.switchTab({
+                  url: '/pages/find/find'
+                })
+              }, 1000)
+            } else {
+              this.$invoke('Toast', 'show', res.message)
 //            this.rightTip(res.message, false)
+            }
           }
         }
       }
