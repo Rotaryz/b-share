@@ -50,13 +50,13 @@
             </view>
             <view class="tr">
               <view class="td td-1">注册成功</view>
-              <view class="td td-2"><text>¥</text>{{activityData.detail.prizes.register.be_invite || 0}}</view>
-              <view class="td td-3"><text>¥</text>{{activityData.detail.prizes.register.invite_by_self || 0}}</view>
+              <view class="td td-2"><text>¥</text>{{activityData.detail.prizes.register.invite_by_self || 0 }}</view>
+              <view class="td td-3"><text>¥</text>{{activityData.detail.prizes.register.be_invite || 0}}</view>
             </view>
             <view class="tr">
               <view class="td td-1">完成认证</view>
-              <view class="td td-2"><text>¥</text>{{activityData.detail.prizes.be_checked.be_invite || 0}}</view>
-              <view class="td td-3"><text>¥</text>{{activityData.detail.prizes.be_checked.invite_by_self || 0}}</view>
+              <view class="td td-2"><text>¥</text>{{activityData.detail.prizes.be_checked.invite_by_self || 0}}</view>
+              <view class="td td-3"><text>¥</text>{{activityData.detail.prizes.be_checked.be_invite || 0}}</view>
             </view>
           </view>
         </view>

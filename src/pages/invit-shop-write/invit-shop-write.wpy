@@ -60,6 +60,7 @@
   import {ERR_OK} from 'api/base'
   import user from 'api/user'
   import Beauticians from 'api/beauticians'
+  import Info from 'api/info'
 
   let REGPASS = /^[a-zA-Z0-9]{6,18}$/
   let REGPHONE = /^1[3|4|5|7|8][0-9]{9}$/
@@ -105,7 +106,13 @@
       submit: false
     }
     async onLoad(options) {
-      this.invited_by = options.id || 10
+      let id = await this._getUser()
+      if (options.id * 1 === id) {
+        await wepy.switchTab({// 跳转到发现页面
+          url: '/pages/find/find'
+        })
+      }
+      this.invited_by = options.id
       await this.load()
       this.$apply()
     }
@@ -119,6 +126,14 @@
       if (res.error === ERR_OK) {
         return res.data
       }
+    }
+    async _getUser() {
+      let Json = await Info.getUserInfo()
+      this.loaded()
+      if (Json.error !== ERR_OK) {
+        return
+      }
+      return Json.data.user_id
     }
     methods = {
       putPhone(e) {
