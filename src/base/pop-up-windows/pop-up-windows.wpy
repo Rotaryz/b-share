@@ -37,7 +37,7 @@
   import URIS from 'common/js/config'
   import {ERR_OK} from 'api/base'
 
-  export default class popUpWindows extends wepy.page {
+  export default class popUpWindows extends wepy.component {
     mixins = [base]
 
     config = {
@@ -69,9 +69,9 @@
         this.$emit('sure')
       },
       show(content, pop, money) {
-        typeof content === 'object' ? this.content = '' : this.content = content
-        typeof pop === 'object' ? this.pop = true : this.pop = pop
-        typeof money === 'object' ? this.money = 0 : this.money = money + ''
+        this.content = typeof content === 'object' ? '' : content
+        this.pop = typeof pop === 'object' ? true : pop
+        this.money = typeof money === 'object' ? 0 : money + ''
         this.width = this.money.length * 22
         this.showWindow = true
       },
