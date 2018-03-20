@@ -11,8 +11,7 @@
                  @input="putPhone" maxlength="11"/>
           <view class="eye" @tap.stop="clearPhone">
             <image wx:if="{{showClose && imageUrl}}" class="close"
-                   src="{{imageUrl + '/defaults/share/page/icon-del@2x.png'}}"
-            ></image>
+                   src="{{imageUrl + '/defaults/share/page/icon-del@2x.png'}}"></image>
           </view>
         </view>
         <view class="invit-form-v">

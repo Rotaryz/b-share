@@ -185,6 +185,8 @@
       display inline-block
       line-height 28px
       height: 28px
+      padding-left: 8px
+      position: relative
     text:before
       content: ""
       display: inline-block
@@ -193,7 +195,9 @@
       background: #EFEEEE
       border-radius: 50%
       vertical-align: middle
-
+      position: absolute
+      top: 40%
+      left: 0px
 
   .activity-rules-withdraw
     font-family:$font-family-light
