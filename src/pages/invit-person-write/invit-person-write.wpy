@@ -258,6 +258,8 @@
       // 提交
       async submitForm () {
         if (this.submit) {
+          this.submit = false
+          this.$apply()
           let data = await wepy.login()
           let formData = {
             mobile: this.phoneNum,

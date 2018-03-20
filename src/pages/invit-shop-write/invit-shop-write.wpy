@@ -259,6 +259,8 @@
       // 提交
       async submitForm () {
         if (this.submit) {
+          this.submit = false
+          this.$apply()
           let data = await wepy.login()
           let formData = {
             mobile: this.phoneNum,
@@ -269,7 +271,6 @@
             role: 1,
             industry_id: this.industryId
           }
-          console.log(formData)
           let res = await Beauticians.invitRegister(formData)
           this.loaded()
           if (res.error === ERR_OK) {
