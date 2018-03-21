@@ -339,6 +339,7 @@
               }, 1000)
             } else {
               this.$invoke('Toast', 'show', res.message)
+              this.setSubmit = true
 //            this.rightTip(res.message, false)
             }
           }
