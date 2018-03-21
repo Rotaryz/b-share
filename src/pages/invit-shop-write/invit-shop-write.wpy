@@ -1,10 +1,6 @@
 <template>
   <view class="invit">
     <image class="invit-bac-white" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg02@2x_new.png'}}"></image>
-    <!--<image class="invit-bac-btn write"  wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg@2x.png'}}"></image>-->
-    <!--<view class="invit-text">-->
-      <!--<image class="invit-text-img" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_word@2x.png'}}"></image>-->
-    <!--</view>-->
     <view class="invit-text-white" style="height: 83%;top: 42%">
       <image wx:if="{{imageUrl}}"  class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg_white2@2x_new.png'}}"></image>
       <view class="invit-form">
@@ -15,8 +11,7 @@
                  @input="putPhone" maxlength="11"/>
           <view class="eye" @tap.stop="clearPhone">
             <image wx:if="{{showClose && imageUrl}}" class="close"
-                   src="{{imageUrl + '/defaults/share/page/icon-del@2x.png'}}"
-            ></image>
+                   src="{{imageUrl + '/defaults/share/page/icon-del@2x.png'}}"></image>
           </view>
         </view>
         <view class="invit-form-v">
@@ -64,6 +59,7 @@
   import {ERR_OK} from 'api/base'
   import user from 'api/user'
   import Beauticians from 'api/beauticians'
+  import Info from 'api/info'
 
   let REGPASS = /^[a-zA-Z0-9]{6,18}$/
   let REGPHONE = /^1[3|4|5|7|8][0-9]{9}$/
@@ -109,7 +105,13 @@
       submit: false
     }
     async onLoad(options) {
-      this.invited_by = options.id || 10
+      let id = await this._getUser()
+      if (options.id * 1 === id) {
+        await wepy.switchTab({// 跳转到发现页面
+          url: '/pages/find/find'
+        })
+      }
+      this.invited_by = options.id
       await this.load()
       this.$apply()
     }
@@ -123,6 +125,14 @@
       if (res.error === ERR_OK) {
         return res.data
       }
+    }
+    async _getUser() {
+      let Json = await Info.getUserInfo()
+      this.loaded()
+      if (Json.error !== ERR_OK) {
+        return
+      }
+      return Json.data.user_id
     }
     methods = {
       putPhone(e) {
@@ -248,6 +258,8 @@
       // 提交
       async submitForm () {
         if (this.submit) {
+          this.submit = false
+          this.$apply()
           let data = await wepy.login()
           let formData = {
             mobile: this.phoneNum,
@@ -258,7 +270,6 @@
             role: 1,
             industry_id: this.industryId
           }
-          console.log(formData)
           let res = await Beauticians.invitRegister(formData)
           this.loaded()
           if (res.error === ERR_OK) {

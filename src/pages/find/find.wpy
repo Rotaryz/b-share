@@ -82,7 +82,6 @@
   import PopUpWindows from '@/base/pop-up-windows/pop-up-windows'
   import UnderlineBlock from '@/base/underline-block/underline-block'
   import Blank from '@/base/blank/blank'
-  const ROLE = wepy.getStorageSync('user_info').role
   const NAV = [{title: '我关注的', type: 1}, {title: '全部', type: 0}, {
     title: '美导',
     type: 2
@@ -101,7 +100,7 @@
       findAll: [],
       findPeo: [],
       findShop: [],
-      role: ROLE,
+      role: wepy.getStorageSync('user_info').role,
       imageUrl: URIS.image,
       nav: NAV,
       navIndex: 0,
@@ -126,7 +125,7 @@
       userLiveLogIid: [],
       videoIndex: 0,
       scroll: -1,
-      guidanceBanner: ROLE ? URIS.image + '/defaults/share/page/pic-banner_02@2x.png' : URIS.image + '/defaults/share/page/pic-banner_03@2x.png'
+      guidanceBanner: wepy.getStorageSync('user_info').role ? URIS.image + '/defaults/share/page/pic-banner_02@2x.png' : URIS.image + '/defaults/share/page/pic-banner_03@2x.png'
     }
 
     async onPullDownRefresh() {
@@ -195,6 +194,8 @@
     }
 
     async onShow() {
+      this.role = wepy.getStorageSync('user_info').role
+      this.guidanceBanner = wepy.getStorageSync('user_info').role ? URIS.image + '/defaults/share/page/pic-banner_02@2x.png' : URIS.image + '/defaults/share/page/pic-banner_03@2x.png'
       if (this.userLiveLogIid.length) {
         wepy.startPullDownRefresh()
         await this.onPullDownRefresh()
@@ -450,7 +451,6 @@
         }
       },
       showVideo(find, index) {
-        console.log(find)
         this.videoIndex = index
         if (this.navIndex === 0) {
           this.findList[index] = find
@@ -581,7 +581,4 @@
       width: 67px
       height: @width
 
-  cover-view
-    &:active
-      background: $color-white
 </style>

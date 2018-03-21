@@ -1,41 +1,11 @@
 <template>
-  <!--<image class="invit-bac" style="height: 100%" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_women@2x_new.png'}}"></image>-->
   <view class="invit">
-    <image class="invit-bac" style="height: 100%" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_women@2x_new.png'}}"></image>
-    <!--<image class="invit-bac-btn" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg@2x.png'}}"></image>-->
-    <!--<view class="invit-text" >-->
-      <!--<image class="invit-text-img" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_word_women@2x.png'}}"></image>-->
-    <!--</view>-->
-    <view class="invit-text-white" >
-      <image wx:if="{{fillout && imageUrl}}" class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_white2@2x_new.png'}}"></image>
-      <view class="invit-li-img" style="display: none">
-        <view class="li-img">
-          <image wx:if="{{imageUrl}}"   src="{{imageUrl + '/defaults/share/page/pic-invite_girl@2x.png'}}"></image>
-        </view>
-        <view class="li-img">
-          <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-invite_ questions@2x.png'}}"></image>
-        </view>
-        <view class="li-img">
-          <image wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_ money@2x.png'}}"></image>
-        </view>
-      </view>
-      <view class="invit-arrow" style="display: none">
-        <view class="view-1">
-          <image wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_ arrow@2x.png'}}"></image>
-        </view>
-        <view class="view-2">
-          <image wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_ arrow@2x.png'}}"></image>
-        </view>
-      </view>
-      <view class="invit-li-text" style="display: none">
-        <text>邀请美导入驻</text>
-        <text>美导参与问答</text>
-        <text>通过后你获得红包</text>
-      </view>
-
-      <view wx:if="{{fillout}}" class="invit-click">
+    <image class="invit-bac" style="height: 100%" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_shop@2x_new.png'}}"></image>
+    <view class="invit-text-white">
+      <image wx:if="{{fillout && imageUrl}}" class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-invite_bg_white@2x_new.png'}}"></image>
+      <view wx:if="{{fillout}}" class="invit-click ">
         <button open-type="share" style="font-size: 16px" class="invit-click-btn submit {{submit ? 'can-use' : 'disable'}}">
-          邀请我的美导好友
+          邀请美业门店入驻
         </button>
       </view>
       <view wx:if="{{fillout}}" class="invit-my">
@@ -44,9 +14,7 @@
       </view>
       <view wx:if="{{fillout}}" class="invit-my-li" >
         <view @tap="lookPack" data-current="0">
-          <text class="rmb-color"><text>
-            <text class="rmb-color-min">¥</text>{{myInvit.myMoney || '0.00'}}</text>
-          </text>
+          <text class="rmb-color"><text><text class="rmb-color-min">¥</text>{{myInvit.myMoney || '0.00'}}</text></text>
           <text class="number">获得的红包</text>
         </view>
         <view @tap="lookPack" data-current="1">
@@ -79,7 +47,7 @@
   export default class invit extends wepy.page {
     mixins = [base]
     config = {
-      navigationBarTitleText: '邀请美导赚钱'
+      navigationBarTitleText: '邀请门店赚钱'
     }
     components = {
       Toast: Toast
@@ -116,7 +84,6 @@
       this.myInvit.myMoney = Json.data.register_rewards
       this.myInvit.myPerson = Json.data.invited_count
       this.myInvit.myMoneys = Json.data.wait_checke_count
-      this.$apply()
     }
     methods = {
       lookPack(e) {
@@ -128,21 +95,20 @@
       },
       promtClose(e) {
         wepy.navigateTo({
-          url: '/pages/activity-rules/activity-rules?type=beautician'
+          url: '/pages/activity-rules/activity-rules?type=shop'
         })
       },
       // 分享
       onShareAppMessage() {
         return {
           title: this.userName + '邀请你入驻共享美导第一平台',
-          imageUrl: this.imageUrl + '/defaults/share/page/pic-share_02@2x_new.png',
-          path: '/pages/invitPerson-write/invitPerson?id=' + this.userId
+          imageUrl: this.imageUrl + '/defaults/share/page/pic-share_01@2x_new.png',
+          path: '/pages/invit-shop-write/invit-shop-write?id=' + this.userId
         }
       }
     }
     async getUser() {
       let Json = await Info.getUserInfo()
-      console.log(Json)
       this.loaded()
       if (Json.error !== ERR_OK) {
         return
@@ -155,4 +121,5 @@
 </script>
 <style lang="stylus">
   @import "../../common/stylus/invit"
+
 </style>

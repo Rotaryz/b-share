@@ -121,7 +121,7 @@
 //        switch (num * 1) {
 //          case 1:
 //            if (!this.invite) {
-//              this.$navigate('/pages/invitPerson/invitPerson')
+//              this.$navigate('/pages/invit-person/invit-person')
 //            }
 //            break
 //          case 2:
