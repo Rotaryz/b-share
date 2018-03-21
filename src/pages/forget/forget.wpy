@@ -1,14 +1,15 @@
 <template>
   <view class="logn">
     <view class="login-img">
-      <image class="login-foget-logo" wx:if="{{imageUri}}" src="{{imageUri + '/defaults/share/page/pic-login_logo@2x.png'}}"></image>
+      <image class="login-foget-logo" wx:if="{{imageUri}}"
+             src="{{imageUri + '/defaults/share/page/pic-login_logo@2x.png'}}"></image>
     </view>
     <view class="lg-from">
       <!--<view class="mistake {{showLogo ? 'right-tip':''}}"-->
-            <!--wx:if="{{showMistake}}">-->
-        <!--<image-->
-          <!--src="{{showLogo ? imageUri+'/defaults/b-image/page/icon-login_right@2x.png':imageUri+'/defaults/b-image/page/icon-login_prompt@2x.png'}}"></image>-->
-        <!--{{mistakeTip}}-->
+      <!--wx:if="{{showMistake}}">-->
+      <!--<image-->
+      <!--src="{{showLogo ? imageUri+'/defaults/b-image/page/icon-login_right@2x.png':imageUri+'/defaults/b-image/page/icon-login_prompt@2x.png'}}"></image>-->
+      <!--{{mistakeTip}}-->
       <!--</view>-->
       <view
         class="lg-ch phone">
@@ -122,7 +123,8 @@
       mistakeTip: '',
       showLogo: false,
       isSet: false,
-      phoneFocus: false
+      phoneFocus: false,
+      setSubmit: true
     }
 
     infoRes(res) {
@@ -130,12 +132,13 @@
         return res.data
       }
     }
-    onShareAppMessage () {
+
+    onShareAppMessage() {
       this.ShareAppMessage()
     }
 
 //      判断是否可登陆
-    checkAngin () {
+    checkAngin() {
       if (REGPHONE.test(this.phoneNum) && REGPASS.test(this.password) && this.code.length === 6 && this.anPassword === this.password) {
         this.submit = true
       } else {
@@ -145,7 +148,7 @@
       this.checkTip()
     }
 
-    showTip (status, title) {
+    showTip(status, title) {
       this.showMistake = status
       this.mistakeTip = title
       this.showLogo = false
@@ -153,7 +156,7 @@
     }
 
 //  正确提示（闪现）
-    rightTip (content, showLogo = true) {
+    rightTip(content, showLogo = true) {
       this.mistakeTip = content
       this.showLogo = showLogo
       this.showMistake = true
@@ -165,7 +168,7 @@
     }
 
 //  报错提示（停留）
-    checkTip () {
+    checkTip() {
       let phoneStatus = REGPHONE.test(this.phoneNum)
       let passStatus = REGPASS.test(this.password)
       if ((this.phoneNum.length < 11 && this.password.length < 6) ||
@@ -319,8 +322,9 @@
       },
 //      忘记密码的确定
       async submit(subType) {
-        if (this.submit) {
+        if (this.submit && this.setSubmit) {
 //            找回密码
+          this.setSubmit = false
           let res = await user.resetPassword({
             'mobile': this.phoneNum,
             'password': this.password,
@@ -357,8 +361,8 @@
       width: 100vw
       position: relative
       .login-foget-logo
-        width : 21.734vw
-        height :13.867vw
+        width: 21.734vw
+        height: 13.867vw
         all-center()
 
   .login-nav-text-active

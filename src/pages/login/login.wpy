@@ -1,6 +1,7 @@
 <template>
   <view class="login">
-    <image class="login-img"  wx:if="{{imageUri}}" src="{{imageUri + '/defaults/share/page/pic-login_bg01@2x.png'}}"></image>
+    <image class="login-img" wx:if="{{imageUri}}"
+           src="{{imageUri + '/defaults/share/page/pic-login_bg01@2x.png'}}"></image>
     <view class="lg-from">
       <view class="mistake {{showLogo ? 'right-tip':''}}"
             wx:if="{{showMistake}}">
@@ -97,7 +98,8 @@
       mistakeTip: '',
       showLogo: false,
       isSet: false,
-      phoneFocus: false
+      phoneFocus: false,
+      setSubmit: true
     }
 
     infoRes(res) {
@@ -197,8 +199,9 @@
         return this.password
       },
       async submit() {
-        if (this.submit) {
+        if (this.submit && this.setSubmit) {
 //            登陆
+          this.setSubmit = false
           let res = await user.login({
             mobile: this.phoneNum,
             password: this.password
