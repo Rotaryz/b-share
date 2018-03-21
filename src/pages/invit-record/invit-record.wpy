@@ -33,7 +33,7 @@
             <view class="name" wx:else>{{item.type==='register'?'邀请奖励红包':'认证奖励红包'}}</view>
             <view class="tag">{{item.updated_at || item.created_at}}</view>
           </view>
-          <view class="askBtn" wx:if="{{isChecked*1===0}}"><text>￥</text>{{item.reward}}</view>
+          <view class="askBtn" wx:if="{{isChecked*1===0}}"><text>¥</text>{{item.reward}}</view>
           <view class="askBtn-2" wx:if="{{isChecked*1===1}}">成功入驻了共享美导</view>
           <view class="askBtn-2" wx:if="{{isChecked*1===2}}">还未完成认证</view>
         </view>
@@ -152,7 +152,6 @@
 
     async load(option = 0, page = 1) {
       let data = { page: page, limit: 10 }
-      console.log(data)
       let findList
       if (option * 1 === 1) {
         findList = await Beauticians.invitRegisterList(data)
@@ -161,12 +160,8 @@
       } else { // 0
         findList = await Beauticians.invitRewardList(data)
       }
-      console.log(findList)
-      // let isChecked = wepy.getStorageSync('isChecked')
-      // if (!isChecked) {
       this.isChecked = option
       this.$apply()
-      // }
       let res = this.infoRes(findList)
       this.loaded()
       return res
@@ -217,8 +212,8 @@
     position: relative
 
   /*animation :loadRotate 1s linear 2s infinite*/
-  .list-box
-    margin-bottom: 50px
+  /*.list-box*/
+    /*margin-bottom: 50px*/
 
   .find-big-box
     margin-top: 0px
