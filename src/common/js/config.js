@@ -33,23 +33,23 @@ const version = '/v1'
  * 测试环境
  * @type {{image: string, login: string, api: string}}
  */
-const URLS = {
-  image: 'https://img.jkweixin.net',
-  login: 'https://share-jwt.jkweixin.net',
-  api: 'https://share-wap-api.jkweixin.net' + version,
-  socket: 'wss://ws.jkweixin.net'
-}
+// const URLS = {
+//   image: 'https://img.jkweixin.net',
+//   login: 'https://share-jwt.jkweixin.net',
+//   api: 'https://share-wap-api.jkweixin.net' + version,
+//   socket: 'wss://ws.jkweixin.net'
+// }
 
 /**
  * 生产环境
  * @type {{image: string, login: string, api: string}}
  */
-// const URLS = {
-//   image: 'https://img.jkweixin.com',
-//   login: 'https://jwt.jkweixin.com',
-//   api: 'https://share-wap-api.jkweixin.com' + version,
-//   socket: 'wss://ws.jkweixin.com'
-// }
+const URLS = {
+  image: 'https://img.jkweixin.com',
+  login: 'https://share-jwt.jkweixin.com',
+  api: 'https://share-wap-api.jkweixin.com' + version,
+  socket: 'wss://ws.jkweixin.com'
+}
 
 class URIS {
   constructor() {
