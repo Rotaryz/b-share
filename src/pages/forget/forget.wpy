@@ -341,6 +341,7 @@
               })
             }, 1000)
           } else {
+            this.setSubmit = true
             this.$invoke('Toast', 'show', res.message)
           }
         }
