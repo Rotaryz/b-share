@@ -14,7 +14,7 @@
       </view>
       <view wx:if="{{fillout}}" class="invit-my-li" >
         <view @tap="lookPack" data-current="0">
-          <text class="rmb-color"><text><text class="rmb-color-min">￥</text>{{myInvit.myMoney || '0.00'}}</text></text>
+          <text class="rmb-color"><text><text class="rmb-color-min">¥</text>{{myInvit.myMoney || '0.00'}}</text></text>
           <text class="number">获得的红包</text>
         </view>
         <view @tap="lookPack" data-current="1">

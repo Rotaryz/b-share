@@ -5,15 +5,15 @@
         <text>我的邀请</text>
       </view>
       <scroll-view scroll-x="true" class="tab-h-s"  scroll-left="{{scrollLeft}}">
-        <view class="tab-item {{isChecked*1===0?'active':''}}"  data-current="0" @tap="checkNav(0)">
+        <view class="tab-item {{isChecked==0?'active':''}}"  data-current="0" @tap="checkNav(0)">
           <text class="number rmb-color"><text><text class="rmb-color-min">￥</text>{{myInvit.myMoney || '0.00'}}</text></text>
           <text class="number">获得的红包</text>
         </view>
-        <view class="tab-item {{isChecked*1===1?'active':''}}" data-current="1" @tap="checkNav(1)">
+        <view class="tab-item {{isChecked==1?'active':''}}" data-current="1" @tap="checkNav(1)">
           <text class="number number-t"><text>{{myInvit.myPerson || 0}}</text>人</text>
           <text class="number">成功邀请</text>
         </view>
-        <view class="tab-item {{isChecked*1===2?'active':''}}" data-current="2" @tap="checkNav(2)">
+        <view class="tab-item {{isChecked==2?'active':''}}" data-current="2" @tap="checkNav(2)">
           <text class="number number-t"><text>{{myInvit.myMoneys || 0}}</text>个</text>
           <text class="number">红包在路上</text>
         </view>
@@ -23,19 +23,19 @@
     <view class="list-box {{!isLoad ? 'find-box-active' : 'find-big-box'}}">
       <block wx:for="{{findList}}" wx:key="*this">
         <view class="item-ans">
-          <view class="avatar" wx:if="{{isChecked*1 !==0}}">
+          <view class="avatar" wx:if="{{isChecked !=0}}">
             <image class="img" wx:if="{{imageUrl}}"
                    src="{{item.image_url || imageUrl + '/defaults/share/page/'+(roleFlag===0?'pic-find_defaulta01@2x':'pic-find_defaulta02@2x')+'.png'}}">
             </image>
           </view>
           <view class="expertInfo">
-            <view class="name n" wx:if="{{isChecked*1!==0}}">{{item.name}}</view>
-            <view class="name" wx:else>{{item.type==='register'?'邀请奖励红包':'认证奖励红包'}}</view>
+            <view class="name" wx:if="{{isChecked==0}}">{{item.type==='register'?'邀请奖励红包':'认证奖励红包'}}</view>
+            <view class="name" wx:else>{{item.name}}</view>
             <view class="tag">{{item.updated_at || item.created_at}}</view>
           </view>
-          <view class="askBtn" wx:if="{{isChecked*1===0}}"><text>¥</text>{{item.reward}}</view>
-          <view class="askBtn-2" wx:if="{{isChecked*1===1}}">成功入驻了共享美导</view>
-          <view class="askBtn-2" wx:if="{{isChecked*1===2}}">还未完成认证</view>
+          <view class="askBtn" wx:if="{{isChecked==0}}"><text>￥</text>{{item.reward}}</view>
+          <view class="askBtn-2" wx:if="{{isChecked==1}}">成功入驻了共享美导</view>
+          <view class="askBtn-2" wx:if="{{isChecked==2}}">还未完成认证</view>
         </view>
       </block>
     </view>
@@ -101,7 +101,7 @@
     }
     async onLoad(option) {
       await this.setInvitFun()
-      this.findList = await this.load(option.id, 1)
+      this.findList = await this.load(option.id)
       this.showBlank(this.findList)
       this.$apply()
     }
@@ -127,12 +127,10 @@
       this.$apply()
     }
     async onPullDownRefresh() {
-      this.findList = await this.load(this.isChecked, 1)
+      this.findList = await this.load(this.isChecked)
       setTimeout(() => {
         wepy.stopPullDownRefresh()
         this.bottom = 0
-        this.loadMore = true
-        this.page = 1
         this.$parent.updateGlobalData('status', 0)
         this.$apply()
       }, 50)
@@ -153,15 +151,18 @@
     async load(option = 0, page = 1) {
       let data = { page: page, limit: 10 }
       let findList
-      if (option * 1 === 1) {
+      if (option === 1) {
         findList = await Beauticians.invitRegisterList(data)
-      } else if (option * 1 === 2) {
+      } else if (option === 2) {
         findList = await Beauticians.invitWaitRewardList(data)
       } else { // 0
         findList = await Beauticians.invitRewardList(data)
       }
-      this.isChecked = option
-      this.$apply()
+      let isChecked = wepy.getStorageSync('isChecked')
+      if (!isChecked) {
+        this.isChecked = option
+      }
+
       let res = this.infoRes(findList)
       this.loaded()
       return res
@@ -179,6 +180,9 @@
         this.option = this.nav[this.navIndex].type
         this.findList = await this.load(this.option)
         this.loadMore = true
+        if (this.option === 1) {
+          this.findList = []
+        }
         this.showBlank(this.findList)
         this.$apply()
       }
@@ -212,8 +216,8 @@
     position: relative
 
   /*animation :loadRotate 1s linear 2s infinite*/
-  /*.list-box*/
-    /*margin-bottom: 50px*/
+  .list-box
+    margin-bottom: 50px
 
   .find-big-box
     margin-top: 0px
