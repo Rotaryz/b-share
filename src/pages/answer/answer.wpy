@@ -539,20 +539,21 @@
             align-items: center
             .item
               width: 73.0666666vw
-              height: 12vw
+              height: 11vw
               border-radius: 6vw
               box-sizing: border-box
               text-align: center
-              line-height: 12vw
+              line-height: 11vw
               font-family: PingFangSC-Regular
               font-size: $font-size-medium-x
+              margin-bottom: 10px
               .submit
                 background: $color-theme
                 color: $color-white
                 font-size: $font-size-medium-x
-                height: 45px
-                line-height: 45px
-                width: 90.667%
+                height: 11vw
+                line-height: 11vw
+                width: 100%
                 border-radius: 50px
                 &::after
                   border: 1px solid rgba(0, 0, 0, 0)
@@ -562,5 +563,7 @@
                   hover-icon()
               .disable
                 disable-icon()
-
+            .white
+              border 1px solid $color-theme
+              color: $color-theme
 </style>
