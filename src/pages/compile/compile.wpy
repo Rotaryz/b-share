@@ -206,7 +206,7 @@
           this.focus = true
           this.fileType = 2
           let video = await Uploads.uploadVideo(res.tempFilePath)
-          this.videoUrl = `${video.url}?second=1&width=94&height=94`
+          this.videoUrl = video.cover_url.replace(/.jpg$/, '_111x111.jpg')
           this.fileId.push(video.id)
           this.$parent.updateGlobalData('fileId', this.fileId)
           this.$parent.updateGlobalData('videoUrl', this.videoUrl)

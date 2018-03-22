@@ -3,10 +3,13 @@
     <view class="container-box" wx:if="{{!answerOver}}">
       <view class="container">
         <view class="container-BC-box">
-          <image class="container-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-answer_bg-top@3x.png'}}"></image>
+          <image class="container-BC" wx:if="{{imageUrl}}"
+                 src="{{imageUrl + '/defaults/share/page/pic-answer_bg-top@3x.png'}}"></image>
           <view class="time-box">
-            <canvas class="canvas {{brand === 'iPhone' ? 'iphone' : ''}}" canvas-id="redCanvas"></canvas>
-            <canvas class="canvas {{brand === 'iPhone' ? 'iphone' : ''}}" canvas-id="whiteCanvas"></canvas>
+            <canvas class="canvas {{brand === 'iPhone' ? 'iphone' : ''}}"
+                    canvas-id="redCanvas"></canvas>
+            <canvas class="canvas {{brand === 'iPhone' ? 'iphone' : ''}}"
+                    canvas-id="whiteCanvas"></canvas>
             <view class="time-num">{{time}}</view>
           </view>
         </view>
@@ -14,12 +17,18 @@
           <view class="title">{{ansCount}}/{{count}} {{questionTitle}}</view>
           <view class="img-box">
             <view class="img-bc">
-              <image class="topic-img" mode="aspectFit" src="{{questionImg}}"></image>
+              <image class="topic-img" mode="aspectFit"
+                     src="{{questionImg}}"></image>
             </view>
           </view>
           <view class="options">
-            <view class="option-item" wx:for="{{questionArr}}" wx:key="{{item}}">
-              <view class="item {{btnDis?'dis':''}} {{answerChecked===item.id ? checkResult?'right':'error' : ''}}" @tap="chioceAnswer({{item.id}})">{{letterArr[index]}}、{{item.answer}}</view>
+            <view class="option-item" wx:for="{{questionArr}}"
+                  wx:key="{{item}}">
+              <view
+                class="item {{btnDis?'dis':''}} {{answerChecked===item.id ? checkResult?'right':'error' : ''}}"
+                @tap="chioceAnswer({{item.id}})">
+                {{letterArr[index]}}、{{item.answer}}
+              </view>
             </view>
           </view>
         </view>
@@ -29,21 +38,34 @@
     <view class="result-container" wx:if="{{answerOver}}">
       <view class="result-BC">
         <view class="result-title">
-          <image class="title-BC" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-answer_head@2x.png'}}"></image>
+          <image class="title-BC" wx:if="{{imageUrl}}"
+                 src="{{imageUrl + '/defaults/share/page/pic-answer_head@2x.png'}}"></image>
           <view class="title-txt">答题结束咯</view>
         </view>
         <view class="result-top">
-          <view class="big-txt">本轮答对<text class="black">{{resRightCount}}</text>题</view>
-          <view class="small-txt">你是专业美导的概率{{resRightCount ? ' > ' + resBeauticiansPercentage : '为 ' + resBeauticiansPercentage}}</view>
-          <view class="img-box">
-            <image wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/pic-win@2x.png'}}" class="res-img"></image>
+          <view class="big-txt">本轮答对
+            <text class="black">{{resRightCount}}</text>
+            题
           </view>
-          <view class="big-txt">获得<text class="red-small">¥</text><text class="red-big">{{prizes}}</text>的红包奖励</view>
+          <view class="small-txt">
+            你是专业美导的概率{{resRightCount ? ' > ' + resBeauticiansPercentage : '为 ' + resBeauticiansPercentage}}
+          </view>
+          <view class="img-box">
+            <image wx:if="{{imageUrl}}"
+                   src="{{imageUrl + '/defaults/share/page/pic-win@2x.png'}}"
+                   class="res-img"></image>
+          </view>
+          <view class="big-txt">获得
+            <text class="red-small">¥</text>
+            <text class="red-big">{{prizes}}</text>
+            的红包奖励
+          </view>
           <view class="small-txt">红包已经存在你的钱包</view>
         </view>
         <view class="result-down">
           <view class="item red">
-            <button open-type="share" style="font-size: 16px" class="submit {{submit ? 'can-use' : 'disable'}}">
+            <button open-type="share" style="font-size: 16px"
+                    class="submit {{submit ? 'can-use' : 'disable'}}">
               分享战绩
             </button>
           </view>
@@ -114,6 +136,7 @@
     onUnload() {
       this._clearAll()
     }
+
     // 分享
     onShareAppMessage(res) {
       return {
@@ -274,6 +297,7 @@
       this.resBeauticiansPercentage = res.beauticians_percentage
       this.prizes = res.prizes
       this.answerOver = true
+      wepy.setStorageSync('isChecked', true)
       this.$apply()
     }
 
@@ -352,7 +376,7 @@
             width: 100%
             box-sizing: border-box
             border-radius: 4px
-            box-shadow: 0 11px 22px 0 rgba(177,177,177,0.20)
+            box-shadow: 0 11px 22px 0 rgba(177, 177, 177, 0.20)
             border: 1px solid #eaeaea
             background: $color-white
             padding: 40px 17.5px 0
@@ -418,7 +442,6 @@
                     line-height: 13.333333333vw
                     border-radius: 6.6666666665vw
 
-
           .time-box
             width: 14.14vw
             height: 14.14vw
@@ -464,13 +487,13 @@
         height: 100%
         padding: 14vw 15px 15px
         box-sizing: border-box
-        background-image: linear-gradient(0deg, rgba(154,146,255,0.98) 6%, #F743B7 50%, #FF92B4 100%)
+        background-image: linear-gradient(0deg, rgba(154, 146, 255, 0.98) 6%, #F743B7 50%, #FF92B4 100%)
         .result-BC
           width: 100%
           height: 100%
           background: $color-white
           border: 1px solid $color-col-line
-          border-shadow: 0 11px 22px 0 rgba(177,177,177,0.20)
+          border-shadow: 0 11px 22px 0 rgba(177, 177, 177, 0.20)
           border-radius: 4px
           position: relative
           .result-title
