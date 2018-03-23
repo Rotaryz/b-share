@@ -5,7 +5,7 @@
         <text>我的邀请</text>
       </view>
       <scroll-view scroll-x="true" class="tab-h-s"  scroll-left="{{scrollLeft}}">
-        <view class="tab-item {{isChecked*1===0?'active':''}}"  data-current="0" @tap="checkNav(0)">
+        <view class="tab-item {{isChecked*1===0?'active':''}}" data-current="0" @tap="checkNav(0)">
           <text class="number rmb-color"><text><text class="rmb-color-min">￥</text>{{myInvit.myMoney || '0.00'}}</text></text>
           <text class="number">获得的红包</text>
         </view>
@@ -99,12 +99,43 @@
         myMoneys: 0
       }
     }
+
+    methods = {
+      async checkNav(index) {
+        this.navIndex = index * 1
+        this.option = this.nav[this.navIndex].type
+        this.findList = await this.load(this.option)
+        this.loadMore = true
+        this.showBlank(this.findList)
+        this.$apply()
+      }
+    }
+
+    watch = {
+      loadMore(newValue) {
+        if (!newValue) {
+          this.$invoke('UnderlineBlock', 'show')
+        } else {
+          this.$invoke('UnderlineBlock', 'hide')
+        }
+      }
+    }
+
+    components = {
+      Toast: Toast,
+      FindDetail: FindDetail,
+      PopUpWindows: PopUpWindows,
+      UnderlineBlock: UnderlineBlock,
+      Blank: Blank
+    }
+
     async onLoad(option) {
       await this.setInvitFun()
       this.findList = await this.load(option.id, 1)
       this.showBlank(this.findList)
       this.$apply()
     }
+
     showBlank(res) {
       if (res.length === 0) {
         this.$invoke('Blank',
@@ -114,6 +145,7 @@
         this.$invoke('Blank', 'hide')
       }
     }
+
     async setInvitFun() {
       let Json = await Beauticians.invitDetail()
       this.loaded()
@@ -126,6 +158,7 @@
       this.myInvit.myMoneys = Json.data.wait_checke_count
       this.$apply()
     }
+
     async onPullDownRefresh() {
       this.findList = await this.load(this.isChecked, 1)
       setTimeout(() => {
@@ -139,6 +172,7 @@
       await this.setInvitFun()
       this.$apply()
     }
+
     async onReachBottom() {
       this.bottom = 0
       this.page++
@@ -157,7 +191,7 @@
         findList = await Beauticians.invitRegisterList(data)
       } else if (option * 1 === 2) {
         findList = await Beauticians.invitWaitRewardList(data)
-      } else { // 0
+      } else {
         findList = await Beauticians.invitRewardList(data)
       }
       this.isChecked = option
@@ -172,33 +206,6 @@
         return res.data
       }
     }
-
-    methods = {
-      async checkNav(index) {
-        this.navIndex = index * 1
-        this.option = this.nav[this.navIndex].type
-        this.findList = await this.load(this.option)
-        this.loadMore = true
-        this.showBlank(this.findList)
-        this.$apply()
-      }
-    }
-    watch = {
-      loadMore(newValue) {
-        if (!newValue) {
-          this.$invoke('UnderlineBlock', 'show')
-        } else {
-          this.$invoke('UnderlineBlock', 'hide')
-        }
-      }
-    }
-    components = {
-      Toast: Toast,
-      FindDetail: FindDetail,
-      PopUpWindows: PopUpWindows,
-      UnderlineBlock: UnderlineBlock,
-      Blank: Blank
-    }
   }
 </script>
 
@@ -211,16 +218,11 @@
     background: $color-white
     position: relative
 
-  /*animation :loadRotate 1s linear 2s infinite*/
-  /*.list-box*/
-    /*margin-bottom: 50px*/
-
   .find-big-box
     margin-top: 0px
 
   .find-box-active
     margin-top: 135px
-
 
   .invit-my
     font-size: $font-size-medium-x

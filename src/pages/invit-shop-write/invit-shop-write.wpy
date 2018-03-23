@@ -1,27 +1,24 @@
 <template>
   <view class="invit">
     <image class="invit-bac-white" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg02@2x_new.png'}}"></image>
-    <view class="invit-text-white" style="height: 83%;top: 42%">
-      <image wx:if="{{imageUrl}}"  class="invit-white-img"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg_white2@2x_new.png'}}"></image>
+    <view class="invit-text-white-person" >
+      <image class="invit-white-img" wx:if="{{imageUrl}}"  src="{{imageUrl + '/defaults/share/page/pic-beinvite_bg_white2@2x_new.png'}}"></image>
       <view class="invit-form">
         <view class="invit-form-title">填写入驻信息</view>
         <view class="invit-form-v">
-          <input id="phones" class="phone {{phoneStatus ? '' : 'error'}}" type="number" placeholder-class="placeholder"
+          <input class="phone {{phoneStatus ? '' : 'error'}}"  id="phones" type="number" placeholder-class="placeholder"
                  placeholder="手机" value="{{phoneNum}}" focus="{{phoneFocus}}"
                  @input="putPhone" maxlength="11"/>
           <view class="eye" @tap.stop="clearPhone">
-            <image wx:if="{{showClose && imageUrl}}" class="close"
-                   src="{{imageUrl + '/defaults/share/page/icon-del@2x.png'}}"></image>
+            <image class="close" wx:if="{{showClose && imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-del@2x.png'}}"></image>
           </view>
         </view>
         <view class="invit-form-v">
-          <input type="text" value="{{verificationCode}}" placeholder-class="placeholder" placeholder="验证码" maxlength="6" @input="putVerificationCode" />
+          <input placeholder-class="placeholder" type="text" value="{{verificationCode}}" placeholder="验证码" maxlength="6" @input="putVerificationCode" />
           <text class="invit-form-v-getcode codes {{isSet ? 'set-code' : ''}}" @tap="setCode">{{time}}</text>
         </view>
         <view class="invit-form-v">
-          <input type="{{ciphertext ? 'text' : 'password'}}"
-                 placeholder="{{passtext}}"
-                 placeholder-class="placeholder"  @input="putPassword"
+          <input placeholder-class="placeholder" type="{{ciphertext ? 'text' : 'password'}}" placeholder="{{passtext}}" @input="putPassword"
                  maxlength="18" value="{{password}}" focus="{{isfocus}}"/>
           <view class="eye" @tap="showCiphertext">
             <image class="close" wx:if="{{imageUrl}}"
@@ -29,14 +26,13 @@
           </view>
         </view>
         <view class="invit-form-v">
-          <picker mode="selector" class="invit-form-v-picker"
+          <picker class="invit-form-v-picker" mode="selector"
                   range="{{industryArray}}" range-key="{{'name'}}" value="{{index}}" @change="bindPickerChange">
             <text class="{{industry ==='行业' ?'text-default':''}}">{{industry}}</text>
             <view class="eye">
               <image class="close" wx:if="{{imageUrl}}" src="{{imageUrl + '/defaults/share/page/icon-select@2x_new.png'}}"></image>
             </view>
           </picker>
-
         </view>
         <view class="form-msg"><text>{{msg}}</text></view>
         <view class="invit-form-v-submit">
@@ -103,36 +99,6 @@
       msgShow: false,
       submitType: 1,
       submit: false
-    }
-    async onLoad(options) {
-      let id = await this._getUser()
-      if (options.id * 1 === id) {
-        await wepy.switchTab({// 跳转到发现页面
-          url: '/pages/find/find'
-        })
-      }
-      this.invited_by = options.id
-      await this.load()
-      this.$apply()
-    }
-    async load() {
-      let res = this.infoRes(await industries.industries())
-      this.loaded()
-      this.industryArray = res
-      this.$apply()
-    }
-    infoRes(res) {
-      if (res.error === ERR_OK) {
-        return res.data
-      }
-    }
-    async _getUser() {
-      let Json = await Info.getUserInfo()
-      this.loaded()
-      if (Json.error !== ERR_OK) {
-        return
-      }
-      return Json.data.user_id
     }
     methods = {
       putPhone(e) {
@@ -295,6 +261,36 @@
           url: '/pages/activity-rules/activity-rules'
         })
       }
+    }
+    async onLoad(options) {
+      let id = await wepy.getStorageSync('user_info').user_data.user_id
+      if (options.id * 1 === id) {
+        await wepy.switchTab({// 跳转到发现页面
+          url: '/pages/find/find'
+        })
+      }
+      this.invited_by = options.id
+      await this.load()
+      this.$apply()
+    }
+    async load() {
+      let res = this.infoRes(await industries.industries())
+      this.loaded()
+      this.industryArray = res
+      this.$apply()
+    }
+    infoRes(res) {
+      if (res.error === ERR_OK) {
+        return res.data
+      }
+    }
+    async _getUser() {
+      let Json = await Info.getUserInfo()
+      this.loaded()
+      if (Json.error !== ERR_OK) {
+        return
+      }
+      return Json.data.user_id
     }
     async verifiFun() { // 检验
       if (this.isPhone && this.isVer && this.isPassword) {
