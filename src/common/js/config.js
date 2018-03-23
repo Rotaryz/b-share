@@ -46,7 +46,7 @@ const URLS = {
  */
 // const URLS = {
 //   image: 'https://img.jkweixin.com',
-//   login: 'https://jwt.jkweixin.com',
+//   login: 'https://share-jwt.jkweixin.com',
 //   api: 'https://share-wap-api.jkweixin.com' + version,
 //   socket: 'wss://ws.jkweixin.com'
 // }
