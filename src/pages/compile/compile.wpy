@@ -152,16 +152,20 @@
       this.comHeight = this.screenHeight * 0.196
       this.$apply()
     }
+
     async _setPic(data) {
+      let imgAll = []
       await Promise.all(data.map(async (val) => {
         let image = await Uploads.uploadImages(val)
         this.loaded()
+        imgAll.push(image.url)
         this.fileId.push(image.id)
         this.$parent.updateGlobalData('fileId', this.fileId)
         this.$parent.updateGlobalData('imgUrl', this.imgUrl)
-        this.checkSend()
       }))
+      return imgAll
     }
+
     methods = {
       bindfocus(e) {
         let height = e.detail.height
@@ -193,6 +197,7 @@
           let imgArr = res.tempFilePaths
           await this._setPic(imgArr)
           this.imgUrl = this.imgUrl.concat(imgArr)
+          this.checkSend()
           this.$apply()
         }
       },
@@ -322,7 +327,7 @@
     display: flex
     margin-top: 4.56vh
     .com-addrss
-      z-index:100
+      z-index: 100
       position: absolute
       top: -36px
       left: 15px
@@ -403,7 +408,7 @@
             width: 16.5px
     .img-add
       display: inline-block
-      height: 30.204vw
+      height: 29.6vw
       width: @height
       margin: 1.6vw 0 0 1.6vw
       position: relative
