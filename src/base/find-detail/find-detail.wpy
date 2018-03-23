@@ -58,7 +58,7 @@
                  @fullscreenchange="hideVideo" objectFit="cover"
                  wx:if="{{find.video}}" class="find-video"></video>
           <image @tap.stop="showVideo({{find}},{{listNum}})"
-                 src="{{find.user_live_log_details[0].file_url + '?second=1&width=202&height=113'}}"
+                 src="{{find.user_live_log_details[0].cover_url}}"
                  wx:if="{{!find.video}}" class="find-video">
             <image class="play-icon" wx:if="{{imageUrl}}"
                    src="{{imageUrl + '/defaults/share/page/icon-find_video@2x.png'}}"></image>

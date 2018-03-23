@@ -111,7 +111,7 @@
       pageAll: 1,
       pageShop: 1,
       pagePeo: 1,
-      isChecked: true,
+      isChecked: false,
       scrollTop: '',
       startTop: 0,
       endTop: 0,
@@ -129,6 +129,7 @@
     }
 
     async onPullDownRefresh() {
+//      下拉刷新
       this.videoIndex = -1
       switch (this.navIndex) {
         case 0:
@@ -176,6 +177,7 @@
     }
 
     onPageScroll(e) {
+//      滚动时视频变回图片的展示方式
       if (this.videoIndex !== -1) {
         let status = false
         if ((e.scrollTop - this.scroll > 2 || this.scroll - e.scrollTop > 2) && this.scroll - e.scrollTop === e.scrollTop - this.scroll) {
@@ -203,6 +205,23 @@
     }
 
     async onShow() {
+//      判断是否验证
+      this.isChecked = wepy.getStorageSync('isChecked') || this.isChecked
+      switch (this.navIndex) {
+        case 0:
+          this.showBlank(this.findList)
+          break
+        case 1:
+          this.showBlank(this.findAll)
+          break
+        case 2:
+          this.showBlank(this.findPeo)
+          break
+        case 3:
+          this.showBlank(this.findShop)
+          break
+      }
+//      判断角色属性
       this.role = wepy.getStorageSync('user_info').role
       this.guidanceBanner = wepy.getStorageSync('user_info').role ? URIS.image + '/defaults/share/page/pic-banner_02@2x.png' : URIS.image + '/defaults/share/page/pic-banner_03@2x.png'
       if (this.userLiveLogIid.length) {
@@ -224,6 +243,7 @@
         wepy.startPullDownRefresh()
         await this.onPullDownRefresh()
       }
+//      从详情页回来时所需要删除的日志
       if (this.$parent.globalData.logId) {
         let id = this.$parent.globalData.logId
         switch (this.navIndex) {
@@ -282,6 +302,7 @@
       }
     }
 
+// 底部加载更多
     async onReachBottom() {
       this.bottom = 0
       if (this.loadMore) {
@@ -329,6 +350,9 @@
             item.content = item.content.slice(0, 50)
             item.content = item.content.replace(/\s+$/g, '')
             item.showDetail = true
+          }
+          if (item.user_live_log_details.length && item.user_live_log_details[0].type === 2) {
+            item.user_live_log_details[0].cover_url = item.user_live_log_details[0].cover_url.replace(/.jpg$/, '_187x113.jpg')
           }
           item.video = false
           item.object = false
